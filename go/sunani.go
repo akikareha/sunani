@@ -126,15 +126,6 @@ func main() {
 		strPtr = callU32("TextBufPtr")
 	}
 
-	if fbFound {
-		gl.MatrixMode(gl.PROJECTION)
-		gl.LoadIdentity()
-		gl.Ortho(-1, 1, -1, 1, -1, 1)
-
-		gl.MatrixMode(gl.MODELVIEW)
-		gl.LoadIdentity()
-	}
-
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.Enable(gl.TEXTURE_2D)
@@ -167,7 +158,12 @@ func main() {
 
 	// --- main loop ---
 	for !window.ShouldClose() {
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+
 		if drawFnFound {
+			canvas.Init()
+			gl.Disable(gl.TEXTURE_2D)
+
 			_, callErr := drawFn.Call(ctx)
 			if callErr != nil {
 				log.Fatalln("draw call failed:", callErr)
@@ -175,8 +171,19 @@ func main() {
 		}
 
 		if fbFound {
+			gl.MatrixMode(gl.PROJECTION)
+			gl.LoadIdentity()
+			gl.Ortho(-1, 1, -1, 1, -1, 1)
+
+			gl.MatrixMode(gl.MODELVIEW)
+			gl.LoadIdentity()
+		}
+
+		if fbFound {
+			gl.Enable(gl.TEXTURE_2D)
+
 			msg := "Hello, Sunani!"
-			call("Clear", 0, 0, 0, 255)
+			call("Clear", 0, 0, 0, 0)
 			writeStringToWasm(mem, strPtr, msg)
 			call("DrawText", 16, 32, uint64(strPtr), uint64(len(msg)))
 
@@ -185,7 +192,6 @@ func main() {
 				panic("mem.Read failed")
 			}
 
-			gl.Clear(gl.COLOR_BUFFER_BIT)
 			fw, fh := window.GetFramebufferSize()
 			scale := min(fw/fbW, fh/fbH)
 			drawW := fbW * scale
@@ -207,6 +213,7 @@ func main() {
 				gl.Ptr(pix),
 			)
 
+			gl.Color4f(1, 1, 1, 1)
 			gl.Begin(gl.QUADS)
 			gl.TexCoord2f(0, 1)
 			gl.Vertex2f(-1, -1)
