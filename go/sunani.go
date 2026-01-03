@@ -85,7 +85,7 @@ func main() {
 
 	// Don't call _start automatically.
 	// draw() must be called from each frame.
-	mod, err = r.InstantiateWithConfig(ctx, wasmBytes, wazero.NewModuleConfig()/*.WithArgs(wasmArgs...)*/.WithStartFunctions())
+	mod, err = r.InstantiateWithConfig(ctx, wasmBytes, wazero.NewModuleConfig(). /*.WithArgs(wasmArgs...)*/ WithStartFunctions())
 	if err != nil {
 		log.Fatalln("instantiate guest:", err)
 	}
@@ -115,6 +115,12 @@ func main() {
 
 		canvas.Init(window)
 		fb.Init(window)
+
+		window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+			if key == glfw.KeyQ && action == glfw.Press {
+				w.SetShouldClose(true)
+			}
+		})
 	}
 
 	if fb.IsEnabled() {
