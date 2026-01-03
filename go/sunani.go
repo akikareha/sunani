@@ -64,7 +64,7 @@ func main() {
 	}
 
 	canvas := NewCanvas(W, H)
-	canvas.Init()
+	fb := NewFB(window)
 
 	// --- wazero init ---
 	r := wazero.NewRuntime(ctx)
@@ -104,8 +104,10 @@ func main() {
 	if err != nil {
 		log.Fatalln("instantiate guest:", err)
 	}
-	drawFn := mod.ExportedFunction("draw")
-	drawFnFound := drawFn != nil
+	drawFnFound := isFnExist("draw")
+	if drawFnFound {
+		canvas.Init()
+	}
 
 	mem = mod.ExportedMemory("memory")
 	if mem == nil {
@@ -113,16 +115,9 @@ func main() {
 	}
 
 	fbFound := isFnExist("FBPtr")
-	var fbPtr uint32
-	var fbW int
-	var fbH int
-	var fbSize int
 	var strPtr uint32
 	if fbFound {
-		fbPtr = callU32("FBPtr")
-		fbW = int(callU32("FBW"))
-		fbH = int(callU32("FBH"))
-		fbSize = fbW * fbH * 4
+		fb.Init()
 		strPtr = callU32("TextBufPtr")
 	}
 
@@ -130,29 +125,11 @@ func main() {
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 	gl.Enable(gl.TEXTURE_2D)
 
-	var tex uint32
-	gl.GenTextures(1, &tex)
-	gl.BindTexture(gl.TEXTURE_2D, tex)
-
 	// font orientation
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-
-	if fbFound {
-		gl.TexImage2D(
-			gl.TEXTURE_2D,
-			0,
-			gl.RGBA,
-			int32(fbW),
-			int32(fbH),
-			0,
-			gl.RGBA,
-			gl.UNSIGNED_BYTE,
-			nil,
-		)
-	}
 
 	gl.PixelStorei(gl.UNPACK_ALIGNMENT, 1)
 
@@ -161,69 +138,20 @@ func main() {
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
 		if drawFnFound {
-			canvas.Init()
-			gl.Disable(gl.TEXTURE_2D)
+			canvas.Begin()
 
-			_, callErr := drawFn.Call(ctx)
-			if callErr != nil {
-				log.Fatalln("draw call failed:", callErr)
-			}
+			canvas.Draw()
 		}
 
 		if fbFound {
-			gl.MatrixMode(gl.PROJECTION)
-			gl.LoadIdentity()
-			gl.Ortho(-1, 1, -1, 1, -1, 1)
-
-			gl.MatrixMode(gl.MODELVIEW)
-			gl.LoadIdentity()
-		}
-
-		if fbFound {
-			gl.Enable(gl.TEXTURE_2D)
+			fb.Begin()
 
 			msg := "Hello, Sunani!"
 			call("Clear", 0, 0, 0, 0)
 			writeStringToWasm(mem, strPtr, msg)
 			call("DrawText", 16, 32, uint64(strPtr), uint64(len(msg)))
 
-			pix, ok := mem.Read(fbPtr, uint32(fbSize))
-			if !ok {
-				panic("mem.Read failed")
-			}
-
-			fw, fh := window.GetFramebufferSize()
-			scale := min(fw/fbW, fh/fbH)
-			drawW := fbW * scale
-			drawH := fbH * scale
-
-			ox := (fw - drawW) / 2
-			oy := (fh - drawH) / 2
-
-			gl.Viewport(int32(ox), int32(oy), int32(drawW), int32(drawH))
-
-			gl.BindTexture(gl.TEXTURE_2D, tex)
-			gl.TexSubImage2D(
-				gl.TEXTURE_2D,
-				0,
-				0, 0,
-				int32(fbW), int32(fbH),
-				gl.RGBA,
-				gl.UNSIGNED_BYTE,
-				gl.Ptr(pix),
-			)
-
-			gl.Color4f(1, 1, 1, 1)
-			gl.Begin(gl.QUADS)
-			gl.TexCoord2f(0, 1)
-			gl.Vertex2f(-1, -1)
-			gl.TexCoord2f(1, 1)
-			gl.Vertex2f(1, -1)
-			gl.TexCoord2f(1, 0)
-			gl.Vertex2f(1, 1)
-			gl.TexCoord2f(0, 0)
-			gl.Vertex2f(-1, 1)
-			gl.End()
+			fb.Draw()
 		}
 
 		window.SwapBuffers()

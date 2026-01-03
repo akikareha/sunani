@@ -1,10 +1,16 @@
 package main
 
-import "github.com/go-gl/gl/v2.1/gl"
+import (
+	"log"
+
+	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/tetratelabs/wazero/api"
+)
 
 type Canvas struct {
 	width, height  int
 	cr, cg, cb, ca float32
+	drawFn         api.Function
 }
 
 func NewCanvas(w, h int) *Canvas {
@@ -16,20 +22,28 @@ func NewCanvas(w, h int) *Canvas {
 }
 
 func (c *Canvas) Init() {
+	c.drawFn = mod.ExportedFunction("draw")
+}
+
+func (c *Canvas) Begin() {
 	gl.Viewport(0, 0, int32(c.width), int32(c.height))
 
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(
-		0, float64(c.width),
-		float64(c.height), 0,
-		-1, 1,
-	)
+	gl.Ortho(0, float64(c.width), float64(c.height), 0, -1, 1)
 
 	gl.MatrixMode(gl.MODELVIEW)
 	gl.LoadIdentity()
 
 	gl.Disable(gl.DEPTH_TEST)
+	gl.Disable(gl.TEXTURE_2D)
+}
+
+func (c *Canvas) Draw() {
+	_, callErr := c.drawFn.Call(ctx)
+	if callErr != nil {
+		log.Fatalln("draw call failed:", callErr)
+	}
 }
 
 func (c *Canvas) Clear(r, g, b, a float32) {
