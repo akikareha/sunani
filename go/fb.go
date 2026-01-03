@@ -1,30 +1,47 @@
 package main
 
 import (
+	"log"
+
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/tetratelabs/wazero/api"
 )
 
 type FB struct {
 	window *glfw.Window
 
-	fbPtr uint32
-	fbW   int
-	fbH   int
+	ptr    uint32
+	width  int
+	height int
 
 	tex uint32
+
+	draw api.Function
 }
 
-func NewFB(window *glfw.Window) *FB {
-	return &FB{
-		window: window,
+func NewFB() *FB {
+	return &FB{}
+}
+
+func (fb *FB) Preinit() {
+	fb.draw = mod.ExportedFunction("sunani_fb_draw")
+}
+
+func (fb *FB) IsEnabled() bool {
+	return fb.draw != nil
+}
+
+func (fb *FB) Init(window *glfw.Window) {
+	if !fb.IsEnabled() {
+		return
 	}
-}
 
-func (fb *FB) Init() {
-	fb.fbPtr = callU32("FBPtr")
-	fb.fbW = int(callU32("FBW"))
-	fb.fbH = int(callU32("FBH"))
+	fb.window = window
+
+	fb.ptr = callU32("sunani_fb_ptr")
+	fb.width = int(callU32("sunani_fb_width"))
+	fb.height = int(callU32("sunani_fb_height"))
 
 	gl.GenTextures(1, &fb.tex)
 	gl.BindTexture(gl.TEXTURE_2D, fb.tex)
@@ -33,8 +50,8 @@ func (fb *FB) Init() {
 		gl.TEXTURE_2D,
 		0,
 		gl.RGBA,
-		int32(fb.fbW),
-		int32(fb.fbH),
+		int32(fb.width),
+		int32(fb.height),
 		0,
 		gl.RGBA,
 		gl.UNSIGNED_BYTE,
@@ -43,6 +60,10 @@ func (fb *FB) Init() {
 }
 
 func (fb *FB) Begin() {
+	if !fb.IsEnabled() {
+		return
+	}
+
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
 	gl.Ortho(-1, 1, -1, 1, -1, 1)
@@ -50,22 +71,32 @@ func (fb *FB) Begin() {
 	gl.MatrixMode(gl.MODELVIEW)
 	gl.LoadIdentity()
 
+	gl.Disable(gl.DEPTH_TEST)
 	gl.Enable(gl.TEXTURE_2D)
 
 	fw, fh := fb.window.GetFramebufferSize()
-	scale := min(fw/fb.fbW, fh/fb.fbH)
-	drawW := fb.fbW * scale
-	drawH := fb.fbH * scale
+	scale := min(fw/fb.width, fh/fb.height)
+	width := fb.width * scale
+	height := fb.height * scale
 
-	ox := (fw - drawW) / 2
-	oy := (fh - drawH) / 2
+	ox := (fw - width) / 2
+	oy := (fh - height) / 2
 
-	gl.Viewport(int32(ox), int32(oy), int32(drawW), int32(drawH))
+	gl.Viewport(int32(ox), int32(oy), int32(width), int32(height))
 }
 
 func (fb *FB) Draw() {
-	fbSize := fb.fbW * fb.fbH * 4
-	pix, ok := mem.Read(fb.fbPtr, uint32(fbSize))
+	if !fb.IsEnabled() {
+		return
+	}
+
+	_, err := fb.draw.Call(ctx)
+	if err != nil {
+		log.Fatalln("fb draw call failed:", err)
+	}
+
+	size := fb.width * fb.height * 4
+	pix, ok := mem.Read(fb.ptr, uint32(size))
 	if !ok {
 		panic("mem.Read failed")
 	}
@@ -75,7 +106,7 @@ func (fb *FB) Draw() {
 		gl.TEXTURE_2D,
 		0,
 		0, 0,
-		int32(fb.fbW), int32(fb.fbH),
+		int32(fb.width), int32(fb.height),
 		gl.RGBA,
 		gl.UNSIGNED_BYTE,
 		gl.Ptr(pix),

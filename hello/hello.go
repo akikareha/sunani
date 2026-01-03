@@ -2,19 +2,19 @@ package main
 
 import "unsafe"
 
-//go:wasmimport canvas clear
+//go:wasmimport sunani canvas_clear
 func canvasClear(r, g, b, a float32)
 
-//go:wasmimport canvas setColor
+//go:wasmimport sunani canvas_color
 func canvasSetColor(r, g, b, a float32)
 
-//go:wasmimport canvas line
+//go:wasmimport sunani canvas_line
 func canvasLine(x1, y1, x2, y2 float32)
 
-//go:wasmimport canvas rect
+//go:wasmimport sunani canvas_rect
 func canvasRect(x, y, w, h float32, fill uint32)
 
-//export draw
+//export sunani_canvas_draw
 func draw() {
 	canvasClear(0.10, 0.10, 0.15, 1.0)
 
@@ -41,16 +41,15 @@ const (
 
 var framebuffer = make([]byte, FBW*FBH*4)
 
-//export FBPtr
+//export sunani_fb_ptr
 func FBPtr() uint32 { return uint32(uintptr(unsafe.Pointer(&framebuffer[0]))) }
 
-//export FBW
+//export sunani_fb_width
 func FBW_() uint32 { return FBW }
 
-//export FBH
+//export sunani_fb_height
 func FBH_() uint32 { return FBH }
 
-//export Clear
 func Clear(r, g, b, a uint32) {
 	for i := 0; i < len(framebuffer); i += 4 {
 		framebuffer[i+0] = byte(r)
@@ -60,7 +59,6 @@ func Clear(r, g, b, a uint32) {
 	}
 }
 
-//export DrawText
 func DrawText(x, y uint32, strPtr uint32, strLen uint32) {
 	s := bytesFromWasm(strPtr, strLen)
 
@@ -138,9 +136,17 @@ func unsafeSlice(ptr uint32, n uint32) []byte {
 
 var textBuf = make([]byte, 256)
 
-//export TextBufPtr
 func TextBufPtr() uint32 {
 	return uint32(uintptr(unsafe.Pointer(&textBuf[0])))
 }
 
-func main() {}
+//export sunani_fb_draw
+func FBDraw() {
+	hello := "Hello, Sunani!"
+
+	Clear(0, 0, 0, 0)
+	for i, b := range []byte(hello) {
+		textBuf[i] = b
+	}
+	DrawText(16, 32, TextBufPtr(), uint32(len(hello)))
+}

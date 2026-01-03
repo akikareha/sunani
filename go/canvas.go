@@ -4,45 +4,66 @@ import (
 	"log"
 
 	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tetratelabs/wazero/api"
 )
 
 type Canvas struct {
-	width, height  int
-	cr, cg, cb, ca float32
-	drawFn         api.Function
+	window *glfw.Window
+
+	r, g, b, a float32
+
+	draw api.Function
 }
 
-func NewCanvas(w, h int) *Canvas {
-	return &Canvas{
-		width:  w,
-		height: h,
-		cr:     1, cg: 1, cb: 1, ca: 1,
+func NewCanvas() *Canvas {
+	return &Canvas{}
+}
+
+func (c *Canvas) Preinit() {
+	c.draw = mod.ExportedFunction("sunani_canvas_draw")
+}
+
+func (c *Canvas) IsEnabled() bool {
+	return c.draw != nil
+}
+
+func (c *Canvas) Init(window *glfw.Window) {
+	if !c.IsEnabled() {
+		return
 	}
-}
 
-func (c *Canvas) Init() {
-	c.drawFn = mod.ExportedFunction("draw")
+	c.window = window
 }
 
 func (c *Canvas) Begin() {
-	gl.Viewport(0, 0, int32(c.width), int32(c.height))
+	if !c.IsEnabled() {
+		return
+	}
+
+	fw, fh := c.window.GetFramebufferSize()
 
 	gl.MatrixMode(gl.PROJECTION)
 	gl.LoadIdentity()
-	gl.Ortho(0, float64(c.width), float64(c.height), 0, -1, 1)
+	gl.Ortho(0, float64(fw), float64(fh), 0, -1, 1)
 
 	gl.MatrixMode(gl.MODELVIEW)
 	gl.LoadIdentity()
 
 	gl.Disable(gl.DEPTH_TEST)
 	gl.Disable(gl.TEXTURE_2D)
+
+	gl.Viewport(0, 0, int32(fw), int32(fh))
 }
 
 func (c *Canvas) Draw() {
-	_, callErr := c.drawFn.Call(ctx)
-	if callErr != nil {
-		log.Fatalln("draw call failed:", callErr)
+	if !c.IsEnabled() {
+		return
+	}
+
+	_, err := c.draw.Call(ctx)
+	if err != nil {
+		log.Fatalln("canvas draw call failed:", err)
 	}
 }
 
@@ -52,12 +73,12 @@ func (c *Canvas) Clear(r, g, b, a float32) {
 }
 
 func (c *Canvas) SetColor(r, g, b, a float32) {
-	c.cr, c.cg, c.cb, c.ca = r, g, b, a
+	c.r, c.g, c.b, c.a = r, g, b, a
 	gl.Color4f(r, g, b, a)
 }
 
 func (c *Canvas) Line(x1, y1, x2, y2 float32) {
-	gl.Color4f(c.cr, c.cg, c.cb, c.ca)
+	gl.Color4f(c.r, c.g, c.b, c.a)
 	gl.Begin(gl.LINES)
 	gl.Vertex2f(x1, y1)
 	gl.Vertex2f(x2, y2)
@@ -65,7 +86,7 @@ func (c *Canvas) Line(x1, y1, x2, y2 float32) {
 }
 
 func (c *Canvas) Rect(x, y, w, h float32, fill bool) {
-	gl.Color4f(c.cr, c.cg, c.cb, c.ca)
+	gl.Color4f(c.r, c.g, c.b, c.a)
 	if fill {
 		gl.Begin(gl.QUADS)
 	} else {
