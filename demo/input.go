@@ -25,7 +25,7 @@ func InputMouseMotion(
 }
 
 //export sunani_input_mouse_button
-func InputMouse(
+func InputMouseButton(
 	button uint32,
 	action uint32,
 ) {
@@ -43,5 +43,18 @@ func InputMouse(
 		if a == input.ActionPress {
 			anchorEnabled = false
 		}
+	}
+}
+
+//export sunani_input_mouse_wheel
+func InputMouseWheel(
+	xoff float32,
+	yoff float32,
+) {
+	mouseSize += yoff
+	if mouseSize < 1 {
+		mouseSize = 1
+	} else if mouseSize > 128 {
+		mouseSize = 128
 	}
 }

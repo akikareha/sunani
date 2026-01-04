@@ -7,6 +7,7 @@ import (
 var mouseX float32
 var mouseY float32
 var mouseBlink int
+var mouseSize float32 = 16
 
 var anchorEnabled bool
 var anchorX float32
@@ -40,7 +41,7 @@ func draw() {
 	} else {
 		api.CanvasColor(1, 1, 0, 1)
 	}
-	api.CanvasRect(mouseX-8, mouseY-8, 16, 16, 1)
+	api.CanvasRect(mouseX-mouseSize/2, mouseY-mouseSize/2, mouseSize, mouseSize, 1)
 
 	mouseBlink++
 }

@@ -14,6 +14,7 @@ type Input struct {
 	key   api.Function
 	mouseMotion api.Function
 	mouseButton api.Function
+	mouseWheel api.Function
 }
 
 func NewInput() *Input {
@@ -24,6 +25,7 @@ func (in *Input) Preinit() {
 	in.key = mod.ExportedFunction("sunani_input_key")
 	in.mouseMotion = mod.ExportedFunction("sunani_input_mouse_motion")
 	in.mouseButton = mod.ExportedFunction("sunani_input_mouse_button")
+	in.mouseWheel = mod.ExportedFunction("sunani_input_mouse_wheel")
 }
 
 func (in *Input) IsKeyEnabled() bool {
@@ -38,8 +40,14 @@ func (in *Input) IsMouseButtonEnabled() bool {
 	return in.mouseButton != nil
 }
 
+func (in *Input) IsMouseWheelEnabled() bool {
+	return in.mouseWheel != nil
+}
+
 func (in *Input) IsMouseEnabled() bool {
-	return in.IsMouseMotionEnabled() || in.IsMouseButtonEnabled()
+	return in.IsMouseMotionEnabled() ||
+		in.IsMouseButtonEnabled() ||
+		in.IsMouseWheelEnabled()
 }
 
 func (in *Input) IsEnabled() bool {
@@ -73,7 +81,7 @@ func (in *Input) Init(window *glfw.Window) {
 				uint64(math.Float32bits(float32(y))),
 			)
 			if err != nil {
-				log.Fatalln("input mouse call failed:", err)
+				log.Fatalln("input mouse motion call failed:", err)
 			}
 		})
 	}
@@ -94,7 +102,24 @@ func (in *Input) Init(window *glfw.Window) {
 				uint64(a),
 			)
 			if err != nil {
-				log.Fatalln("input mouse call failed:", err)
+				log.Fatalln("input mouse button call failed:", err)
+			}
+		})
+	}
+
+	if in.IsMouseWheelEnabled() {
+		window.SetScrollCallback(func(
+			w *glfw.Window,
+			xoff float64,
+			yoff float64,
+		) {
+			_, err := in.mouseWheel.Call(
+				ctx,
+				uint64(math.Float32bits(float32(xoff))),
+				uint64(math.Float32bits(float32(yoff))),
+			)
+			if err != nil {
+				log.Fatalln("input mouse wheel call failed:", err)
 			}
 		})
 	}
