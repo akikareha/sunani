@@ -3,112 +3,112 @@ package main
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"github.com/akikareha/sunani/api"
+	"github.com/akikareha/sunani/input"
 )
 
-func mapGLFWKey(k glfw.Key) api.Key {
+func mapGLFWKey(k glfw.Key) input.Key {
 	switch k {
 
 	// Letters
 	case glfw.KeyA:
-		return api.KeyA
+		return input.KeyA
 	case glfw.KeyB:
-		return api.KeyB
+		return input.KeyB
 	case glfw.KeyC:
-		return api.KeyC
+		return input.KeyC
 	case glfw.KeyD:
-		return api.KeyD
+		return input.KeyD
 	case glfw.KeyE:
-		return api.KeyE
+		return input.KeyE
 	case glfw.KeyF:
-		return api.KeyF
+		return input.KeyF
 	case glfw.KeyG:
-		return api.KeyG
+		return input.KeyG
 	case glfw.KeyH:
-		return api.KeyH
+		return input.KeyH
 	case glfw.KeyI:
-		return api.KeyI
+		return input.KeyI
 	case glfw.KeyJ:
-		return api.KeyJ
+		return input.KeyJ
 	case glfw.KeyK:
-		return api.KeyK
+		return input.KeyK
 	case glfw.KeyL:
-		return api.KeyL
+		return input.KeyL
 	case glfw.KeyM:
-		return api.KeyM
+		return input.KeyM
 	case glfw.KeyN:
-		return api.KeyN
+		return input.KeyN
 	case glfw.KeyO:
-		return api.KeyO
+		return input.KeyO
 	case glfw.KeyP:
-		return api.KeyP
+		return input.KeyP
 	case glfw.KeyQ:
-		return api.KeyQ
+		return input.KeyQ
 	case glfw.KeyR:
-		return api.KeyR
+		return input.KeyR
 	case glfw.KeyS:
-		return api.KeyS
+		return input.KeyS
 	case glfw.KeyT:
-		return api.KeyT
+		return input.KeyT
 	case glfw.KeyU:
-		return api.KeyU
+		return input.KeyU
 	case glfw.KeyV:
-		return api.KeyV
+		return input.KeyV
 	case glfw.KeyW:
-		return api.KeyW
+		return input.KeyW
 	case glfw.KeyX:
-		return api.KeyX
+		return input.KeyX
 	case glfw.KeyY:
-		return api.KeyY
+		return input.KeyY
 	case glfw.KeyZ:
-		return api.KeyZ
+		return input.KeyZ
 
 	// Digits
 	case glfw.Key0:
-		return api.Key0
+		return input.Key0
 	case glfw.Key1:
-		return api.Key1
+		return input.Key1
 	case glfw.Key2:
-		return api.Key2
+		return input.Key2
 	case glfw.Key3:
-		return api.Key3
+		return input.Key3
 	case glfw.Key4:
-		return api.Key4
+		return input.Key4
 	case glfw.Key5:
-		return api.Key5
+		return input.Key5
 	case glfw.Key6:
-		return api.Key6
+		return input.Key6
 	case glfw.Key7:
-		return api.Key7
+		return input.Key7
 	case glfw.Key8:
-		return api.Key8
+		return input.Key8
 	case glfw.Key9:
-		return api.Key9
+		return input.Key9
 
 	// Control
 	case glfw.KeyEscape:
-		return api.KeyEscape
+		return input.KeyEscape
 	case glfw.KeyEnter:
-		return api.KeyEnter
+		return input.KeyEnter
 	case glfw.KeySpace:
-		return api.KeySpace
+		return input.KeySpace
 	case glfw.KeyTab:
-		return api.KeyTab
+		return input.KeyTab
 	case glfw.KeyBackspace:
-		return api.KeyBackspace
+		return input.KeyBackspace
 
 	// Arrows
 	case glfw.KeyUp:
-		return api.KeyUp
+		return input.KeyUp
 	case glfw.KeyDown:
-		return api.KeyDown
+		return input.KeyDown
 	case glfw.KeyLeft:
-		return api.KeyLeft
+		return input.KeyLeft
 	case glfw.KeyRight:
-		return api.KeyRight
+		return input.KeyRight
 
 	// Others
 	default:
-		return api.KeyUnknown
+		return input.KeyUnknown
 	}
 }

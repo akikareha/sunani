@@ -3,64 +3,8 @@ package main
 import (
 	"unsafe"
 
-	"github.com/akikareha/sunani/api"
+	"github.com/akikareha/sunani/resources/fonts"
 )
-
-var mouseX float32
-var mouseY float32
-var mouseBlink int
-
-var anchorEnabled bool
-var anchorX float32
-var anchorY float32
-
-//go:wasmimport sunani system_quit
-func systemQuit()
-
-//go:wasmimport sunani canvas_clear
-func canvasClear(r, g, b, a float32)
-
-//go:wasmimport sunani canvas_color
-func canvasSetColor(r, g, b, a float32)
-
-//go:wasmimport sunani canvas_line
-func canvasLine(x1, y1, x2, y2 float32)
-
-//go:wasmimport sunani canvas_rect
-func canvasRect(x, y, w, h float32, fill uint32)
-
-//export sunani_canvas_draw
-func draw() {
-	canvasClear(0.10, 0.10, 0.15, 1.0)
-
-	canvasSetColor(1, 1, 1, 1)
-	canvasLine(50, 50, 300, 200)
-
-	canvasSetColor(0.2, 0.8, 0.4, 1)
-	canvasRect(100, 300, 200, 120, 1)
-
-	canvasSetColor(1, 0.3, 0.3, 1)
-	canvasRect(400, 100, 180, 180, 0)
-
-	if anchorEnabled {
-		canvasSetColor(0, 1, 0, 1)
-		canvasRect(anchorX-8, anchorY-8, 16, 16, 1)
-	}
-
-	if anchorEnabled {
-		canvasSetColor(0, 1, 1, 1)
-		canvasLine(anchorX, anchorY, mouseX, mouseY)
-	}
-
-	if mouseBlink&0x10 == 0 {
-		canvasSetColor(1, 0, 0, 1)
-	} else {
-		canvasSetColor(1, 1, 0, 1)
-	}
-	canvasRect(mouseX-8, mouseY-8, 16, 16, 1)
-
-	mouseBlink++
-}
 
 const (
 	AtlasW = 128
@@ -126,10 +70,10 @@ func drawGlyph(dstX, dstY int, ch byte) {
 			si := (sy*AtlasW + sx) * 4
 			di := (dy*FBW + dx) * 4
 
-			sr := FontAtlasRGBA[si+0]
-			sg := FontAtlasRGBA[si+1]
-			sb := FontAtlasRGBA[si+2]
-			sa := FontAtlasRGBA[si+3]
+			sr := fonts.FontAtlasRGBA[si+0]
+			sg := fonts.FontAtlasRGBA[si+1]
+			sb := fonts.FontAtlasRGBA[si+2]
+			sa := fonts.FontAtlasRGBA[si+3]
 
 			// skip transparent pixels
 			if sa == 0 {
@@ -172,56 +116,4 @@ var textBuf = make([]byte, 256)
 
 func TextBufPtr() uint32 {
 	return uint32(uintptr(unsafe.Pointer(&textBuf[0])))
-}
-
-//export sunani_fb_draw
-func FBDraw() {
-	hello := "Hello, Sunani!"
-
-	Clear(0, 0, 0, 0)
-	for i, b := range []byte(hello) {
-		textBuf[i] = b
-	}
-	DrawText(16, 32, TextBufPtr(), uint32(len(hello)))
-}
-
-//export sunani_input_key
-func InputKey(key uint32, action uint32) {
-	k := api.Key(key)
-	a := api.Action(action)
-
-	if k == api.KeyQ && a == api.ActionPress {
-		systemQuit()
-	}
-}
-
-//export sunani_input_mouse_motion
-func InputMouseMotion(
-	x float32,
-	y float32,
-) {
-	mouseX = x
-	mouseY = y
-}
-
-//export sunani_input_mouse_button
-func InputMouse(
-	button uint32,
-	action uint32,
-) {
-	b := api.Mouse(button)
-	a := api.Action(action)
-
-	switch b {
-	case api.MouseLeft:
-		if a == api.ActionPress {
-			anchorEnabled = true
-			anchorX = mouseX
-			anchorY = mouseY
-		}
-	case api.MouseRight:
-		if a == api.ActionPress {
-			anchorEnabled = false
-		}
-	}
 }

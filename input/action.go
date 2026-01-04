@@ -1,4 +1,4 @@
-package api
+package input
 
 type Action uint16
 

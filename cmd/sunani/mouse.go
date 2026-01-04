@@ -3,19 +3,19 @@ package main
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"github.com/akikareha/sunani/api"
+	"github.com/akikareha/sunani/input"
 )
 
-func mapGLFWMouseButton(b glfw.MouseButton) api.Mouse {
+func mapGLFWMouseButton(b glfw.MouseButton) input.Mouse {
 	switch b {
 	case glfw.MouseButtonLeft:
-		return api.MouseLeft
+		return input.MouseLeft
 	case glfw.MouseButtonMiddle:
-		return api.MouseMiddle
+		return input.MouseMiddle
 	case glfw.MouseButtonRight:
-		return api.MouseRight
+		return input.MouseRight
 
 	default:
-		return api.MouseUnknown
+		return input.MouseUnknown
 	}
 }
