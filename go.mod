@@ -1,4 +1,4 @@
-module github.com/akikareha/sunani/go
+module github.com/akikareha/sunani
 
 go 1.24.4
 

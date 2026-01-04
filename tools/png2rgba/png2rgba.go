@@ -12,7 +12,7 @@ import (
 func main() {
 	in := flag.String("in", "ascii8x8.png", "input 128x128 PNG")
 	out := flag.String("out", "wasm/font_atlas.go", "output .go file")
-	//pkg := flag.String("pkg", "main", "package name for output")
+	pkg := flag.String("pkg", "main", "package name for output")
 	varName := flag.String("var", "FontAtlasRGBA", "var name for atlas")
 	flag.Parse()
 
@@ -42,7 +42,7 @@ func main() {
 	}
 
 	var buf bytes.Buffer
-	//fmt.Fprintf(&buf, "package %s\n\n", *pkg)
+	fmt.Fprintf(&buf, "package %s\n\n", *pkg)
 	fmt.Fprintf(&buf, "// %s is 128x128 RGBA atlas: 65536 bytes.\n", *varName)
 	fmt.Fprintf(&buf, "var %s = [%d]byte{\n", *varName, len(atlas))
 	for i := 0; i < len(atlas); i++ {

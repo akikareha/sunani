@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"github.com/akikareha/sunani/go/api"
+	"github.com/akikareha/sunani/api"
 )
 
 func mapGLFWKey(k glfw.Key) api.Key {

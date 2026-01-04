@@ -1,15 +1,14 @@
-all:
-	make -C tools
-	make -C go
-	./tools/png2rgba/png2rgba -in ./assets/font_ascii8x8.png -out ./hello/font_ascii8x8._go
-	make -C hello
+all: build
+
+build:
+	go build -o sunani ./cmd/sunani
+	go build -o png2rgba ./tools/png2rgba
+	./png2rgba -in ./resources/fonts/ascii8x8.png -out ./demo/ascii8x8.go -pkg main
+	tinygo build -target=wasm-unknown -scheduler=none -o demo.wasm ./demo
 
 clean:
-	make -C tools clean
-	make -C go clean
-	make -C hello clean
+	rm -f sunani png2rgba demo.wasm
+	rm -f demo/ascii8x8.go
 
 fmt:
-	make -C tools fmt
-	make -C go fmt
-	make -C hello fmt
+	go fmt ./...

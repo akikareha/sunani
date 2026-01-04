@@ -3,7 +3,7 @@ package main
 import (
 	"unsafe"
 
-	"github.com/akikareha/sunani/hello/api"
+	"github.com/akikareha/sunani/api"
 )
 
 var mouseEnabled bool
@@ -195,25 +195,42 @@ func FBDraw() {
 
 //export sunani_input_key
 func InputKey(key uint32, action uint32) {
-	if key == uint32(api.KeyQ) && action == uint32(api.KeyPress) {
+	k := api.Key(key)
+	a := api.KeyAction(action)
+
+	if k == api.KeyQ && a == api.KeyPress {
 		systemQuit()
 	}
 }
 
 //export sunani_input_mouse
-func InputMouse(action uint32, x float32, y float32, dx float32, dy float32, wheelX float32, wheelY float32, button uint32) {
-	if action == uint32(api.MouseMove) {
+func InputMouse(
+	action uint32,
+	x float32,
+	y float32,
+	dx float32,
+	dy float32,
+	wheelX float32,
+	wheelY float32,
+	button uint32,
+) {
+	a := api.MouseAction(action)
+	b := api.MouseButton(button)
+
+	switch a {
+	case api.MouseMove:
 		mouseEnabled = true
 		mouseX = x
 		mouseY = y
 		mouseDX = dx
 		mouseDY = dy
-	} else if action == uint32(api.MousePress) {
-		if button == uint32(api.MouseLeft) {
+	case api.MousePress:
+		switch b {
+		case api.MouseLeft:
 			anchorEnabled = true
 			anchorX = x
 			anchorY = y
-		} else if button == uint32(api.MouseRight) {
+		case api.MouseRight:
 			anchorEnabled = false
 		}
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	wapi "github.com/tetratelabs/wazero/api"
 
-	"github.com/akikareha/sunani/go/api"
+	"github.com/akikareha/sunani/api"
 )
 
 type Input struct {
