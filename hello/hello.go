@@ -1,6 +1,13 @@
 package main
 
-import "unsafe"
+import (
+	"unsafe"
+
+	"github.com/akikareha/sunani/hello/api"
+)
+
+//go:wasmimport sunani system_quit
+func systemQuit()
 
 //go:wasmimport sunani canvas_clear
 func canvasClear(r, g, b, a float32)
@@ -149,4 +156,11 @@ func FBDraw() {
 		textBuf[i] = b
 	}
 	DrawText(16, 32, TextBufPtr(), uint32(len(hello)))
+}
+
+//export sunani_input_key
+func InputKey(key uint32, action uint32) {
+	if key == uint32(api.KeyQ) && action == uint32(api.ActionPress) {
+		systemQuit()
+	}
 }

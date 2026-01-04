@@ -55,11 +55,17 @@ func main() {
 	// for Go(wasip1) runtime
 	//wasi_snapshot_preview1.MustInstantiate(ctx, r)
 
+	system := NewSystem()
 	canvas := NewCanvas()
 	fb := NewFB()
+	input := NewInput()
 
 	// Host module "canvas": expose Clear/SetColor/Line/Rect
 	_, err := r.NewHostModuleBuilder("sunani").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			system.Quit()
+		}).Export("system_quit").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a float32) {
 			canvas.Clear(r, g, b, a)
@@ -92,6 +98,8 @@ func main() {
 
 	canvas.Preinit()
 	fb.Preinit()
+	input.Preinit()
+
 	var window *glfw.Window
 	if canvas.IsEnabled() || fb.IsEnabled() {
 		// --- GLFW/GL init ---
@@ -113,14 +121,10 @@ func main() {
 		}
 		window.MakeContextCurrent()
 
+		system.Init(window)
 		canvas.Init(window)
 		fb.Init(window)
-
-		window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-			if key == glfw.KeyQ && action == glfw.Press {
-				w.SetShouldClose(true)
-			}
-		})
+		input.Init(window)
 	}
 
 	if fb.IsEnabled() {

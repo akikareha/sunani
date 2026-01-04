@@ -1,10 +1,10 @@
-all: sunani
+all: build
 
-sunani: sunani.go canvas.go fb.go util.go
-	go build sunani.go canvas.go fb.go util.go
+build:
+	go build -o sunani ./cmd/sunani
 
 clean:
 	rm -f sunani
 
 fmt:
-	go fmt .
+	go fmt ./...
