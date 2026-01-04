@@ -6,6 +6,17 @@ import (
 	"github.com/akikareha/sunani/hello/api"
 )
 
+var mouseEnabled bool
+var mouseX float32
+var mouseY float32
+var mouseDX float32
+var mouseDY float32
+var mouseBlink int
+
+var anchorEnabled bool
+var anchorX float32
+var anchorY float32
+
 //go:wasmimport sunani system_quit
 func systemQuit()
 
@@ -33,6 +44,30 @@ func draw() {
 
 	canvasSetColor(1, 0.3, 0.3, 1)
 	canvasRect(400, 100, 180, 180, 0)
+
+	if anchorEnabled {
+		canvasSetColor(0, 1, 0, 1)
+		canvasRect(anchorX-8, anchorY-8, 16, 16, 1)
+	}
+
+	if mouseEnabled {
+		if anchorEnabled {
+			canvasSetColor(0, 1, 1, 1)
+			canvasLine(anchorX, anchorY, mouseX, mouseY)
+		}
+
+		canvasSetColor(0.5, 0.5, 0.5, 1)
+		canvasRect(mouseX-8-mouseDX, mouseY-8-mouseDY, 16, 16, 1)
+
+		if mouseBlink&0x10 == 0 {
+			canvasSetColor(1, 0, 0, 1)
+		} else {
+			canvasSetColor(1, 1, 0, 1)
+		}
+		canvasRect(mouseX-8, mouseY-8, 16, 16, 1)
+
+		mouseBlink++
+	}
 }
 
 const (
@@ -160,7 +195,26 @@ func FBDraw() {
 
 //export sunani_input_key
 func InputKey(key uint32, action uint32) {
-	if key == uint32(api.KeyQ) && action == uint32(api.ActionPress) {
+	if key == uint32(api.KeyQ) && action == uint32(api.KeyPress) {
 		systemQuit()
+	}
+}
+
+//export sunani_input_mouse
+func InputMouse(action uint32, x float32, y float32, dx float32, dy float32, wheelX float32, wheelY float32, button uint32) {
+	if action == uint32(api.MouseMove) {
+		mouseEnabled = true
+		mouseX = x
+		mouseY = y
+		mouseDX = dx
+		mouseDY = dy
+	} else if action == uint32(api.MousePress) {
+		if button == uint32(api.MouseLeft) {
+			anchorEnabled = true
+			anchorX = x
+			anchorY = y
+		} else if button == uint32(api.MouseRight) {
+			anchorEnabled = false
+		}
 	}
 }

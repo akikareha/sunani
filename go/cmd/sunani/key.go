@@ -113,14 +113,14 @@ func mapGLFWKey(k glfw.Key) api.Key {
 	}
 }
 
-func mapGLFWAction(a glfw.Action) api.Action {
+func mapGLFWAction(a glfw.Action) api.KeyAction {
 	switch a {
 	case glfw.Press:
-		return api.ActionPress
+		return api.KeyPress
 	case glfw.Release:
-		return api.ActionRelease
+		return api.KeyRelease
 
 	default:
-		return api.ActionUnknown
+		return api.KeyActionUnknown
 	}
 }

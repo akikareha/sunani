@@ -96,6 +96,7 @@ func main() {
 		log.Fatalln("instantiate guest:", err)
 	}
 
+	system.Preinit()
 	canvas.Preinit()
 	fb.Preinit()
 	input.Preinit()

@@ -12,6 +12,12 @@ func NewSystem() *System {
 	return &System{}
 }
 
+func (sys *System) Preinit() {}
+
+func (sys *System) IsEnabled() bool {
+	return true
+}
+
 func (sys *System) Init(window *glfw.Window) {
 	sys.window = window
 }

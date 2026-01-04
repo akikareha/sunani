@@ -59,11 +59,11 @@ const (
 	KeyRight
 )
 
-type Action uint16
+type KeyAction uint16
 
 const (
-	ActionUnknown Action = iota
+	KeyActionUnknown KeyAction = iota
 
-	ActionPress
-	ActionRelease
+	KeyPress
+	KeyRelease
 )
