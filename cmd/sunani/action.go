@@ -3,17 +3,17 @@ package main
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 
-	"github.com/akikareha/sunani/input"
+	"github.com/akikareha/sunani/lib"
 )
 
-func mapGLFWAction(a glfw.Action) input.Action {
+func mapGLFWAction(a glfw.Action) lib.Action {
 	switch a {
 	case glfw.Press:
-		return input.ActionPress
+		return lib.ActionPress
 	case glfw.Release:
-		return input.ActionRelease
+		return lib.ActionRelease
 
 	default:
-		return input.ActionUnknown
+		return lib.ActionUnknown
 	}
 }

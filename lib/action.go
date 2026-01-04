@@ -1,4 +1,4 @@
-package input
+package lib
 
 type Action uint16
 

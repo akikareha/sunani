@@ -13,7 +13,7 @@ type Canvas struct {
 
 	r, g, b, a float32
 
-	draw api.Function
+	init api.Function
 }
 
 func NewCanvas() *Canvas {
@@ -21,11 +21,11 @@ func NewCanvas() *Canvas {
 }
 
 func (c *Canvas) Preinit() {
-	c.draw = mod.ExportedFunction("sunani_canvas_draw")
+	c.init = mod.ExportedFunction("sunani_canvas_init")
 }
 
 func (c *Canvas) IsEnabled() bool {
-	return c.draw != nil
+	return c.init != nil
 }
 
 func (c *Canvas) Init(window *glfw.Window) {
@@ -34,6 +34,11 @@ func (c *Canvas) Init(window *glfw.Window) {
 	}
 
 	c.window = window
+
+	_, err := c.init.Call(ctx)
+	if err != nil {
+		log.Fatalln("canvas init call failed:", err)
+	}
 }
 
 func (c *Canvas) Begin() {
@@ -54,17 +59,6 @@ func (c *Canvas) Begin() {
 	gl.Disable(gl.TEXTURE_2D)
 
 	gl.Viewport(0, 0, int32(fw), int32(fh))
-}
-
-func (c *Canvas) Draw() {
-	if !c.IsEnabled() {
-		return
-	}
-
-	_, err := c.draw.Call(ctx)
-	if err != nil {
-		log.Fatalln("canvas draw call failed:", err)
-	}
 }
 
 func (c *Canvas) Clear(r, g, b, a float32) {

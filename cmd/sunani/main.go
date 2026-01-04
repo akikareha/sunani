@@ -58,30 +58,44 @@ func main() {
 	system := NewSystem()
 	canvas := NewCanvas()
 	fb := NewFB()
-	input := NewInput()
+	key := NewKey()
+	mouse := NewMouse()
 
 	// Host module "canvas": expose Clear/SetColor/Line/Rect
 	_, err := r.NewHostModuleBuilder("sunani").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			system.Quit()
-		}).Export("system_quit").
+		}).Export("system.quit").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			canvas.Begin()
+		}).Export("canvas.begin").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a float32) {
 			canvas.Clear(r, g, b, a)
-		}).Export("canvas_clear").
+		}).Export("canvas.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a float32) {
 			canvas.SetColor(r, g, b, a)
-		}).Export("canvas_color").
+		}).Export("canvas.color").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, x1, y1, x2, y2 float32) {
 			canvas.Line(x1, y1, x2, y2)
-		}).Export("canvas_line").
+		}).Export("canvas.line").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y, w, h float32, fill uint32) {
-			canvas.Rect(x, y, w, h, fill != 0)
-		}).Export("canvas_rect").
+		WithFunc(func(ctx context.Context, x, y, w, h float32) {
+			canvas.Rect(x, y, w, h, false)
+		}).Export("canvas.rect").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, x, y, w, h float32) {
+			canvas.Rect(x, y, w, h, true)
+		}).Export("canvas.fill_rect").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			fb.Begin()
+			fb.Draw()
+		}).Export("fb.paint").
 		Instantiate(ctx)
 	if err != nil {
 		log.Fatalln("instantiate host sunani module:", err)
@@ -99,7 +113,8 @@ func main() {
 	system.Preinit()
 	canvas.Preinit()
 	fb.Preinit()
-	input.Preinit()
+	key.Preinit()
+	mouse.Preinit()
 
 	var window *glfw.Window
 	if canvas.IsEnabled() || fb.IsEnabled() {
@@ -125,7 +140,8 @@ func main() {
 		system.Init(window)
 		canvas.Init(window)
 		fb.Init(window)
-		input.Init(window)
+		key.Init(window)
+		mouse.Init(window)
 	}
 
 	if fb.IsEnabled() {
@@ -150,10 +166,7 @@ func main() {
 
 		// --- main loop ---
 		for !window.ShouldClose() {
-			gl.Clear(gl.COLOR_BUFFER_BIT)
-
-			canvas.Begin()
-			canvas.Draw()
+			system.Frame()
 
 			fb.Begin()
 			fb.Draw()

@@ -17,7 +17,7 @@ type FB struct {
 
 	tex uint32
 
-	draw api.Function
+	init api.Function
 }
 
 func NewFB() *FB {
@@ -25,11 +25,11 @@ func NewFB() *FB {
 }
 
 func (fb *FB) Preinit() {
-	fb.draw = mod.ExportedFunction("sunani_fb_draw")
+	fb.init = mod.ExportedFunction("sunani_fb_init")
 }
 
 func (fb *FB) IsEnabled() bool {
-	return fb.draw != nil
+	return fb.init != nil
 }
 
 func (fb *FB) Init(window *glfw.Window) {
@@ -38,6 +38,11 @@ func (fb *FB) Init(window *glfw.Window) {
 	}
 
 	fb.window = window
+
+	_, err := fb.init.Call(ctx)
+	if err != nil {
+		log.Fatalln("fb init call failed:", err)
+	}
 
 	fb.ptr = callU32("sunani_fb_ptr")
 	fb.width = int(callU32("sunani_fb_width"))
@@ -88,11 +93,6 @@ func (fb *FB) Begin() {
 func (fb *FB) Draw() {
 	if !fb.IsEnabled() {
 		return
-	}
-
-	_, err := fb.draw.Call(ctx)
-	if err != nil {
-		log.Fatalln("fb draw call failed:", err)
 	}
 
 	size := fb.width * fb.height * 4

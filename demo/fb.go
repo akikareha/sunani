@@ -37,14 +37,12 @@ func Clear(r, g, b, a uint32) {
 	}
 }
 
-func DrawText(x, y uint32, strPtr uint32, strLen uint32) {
-	s := bytesFromWasm(strPtr, strLen)
-
+func DrawText(x, y uint32, s string) {
 	cx := int(x)
 	cy := int(y)
 
-	for _, ch := range s {
-		drawGlyph(cx, cy, ch)
+	for _, r := range s {
+		drawGlyph(cx, cy, byte(r))
 		cx += GlyphW
 	}
 }

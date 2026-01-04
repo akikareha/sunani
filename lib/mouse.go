@@ -1,4 +1,4 @@
-package input
+package lib
 
 type Mouse uint16
 
