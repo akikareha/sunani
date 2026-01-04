@@ -58,12 +58,3 @@ const (
 	KeyLeft
 	KeyRight
 )
-
-type KeyAction uint16
-
-const (
-	KeyActionUnknown KeyAction = iota
-
-	KeyPress
-	KeyRelease
-)

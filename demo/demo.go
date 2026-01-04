@@ -6,11 +6,8 @@ import (
 	"github.com/akikareha/sunani/api"
 )
 
-var mouseEnabled bool
 var mouseX float32
 var mouseY float32
-var mouseDX float32
-var mouseDY float32
 var mouseBlink int
 
 var anchorEnabled bool
@@ -50,24 +47,19 @@ func draw() {
 		canvasRect(anchorX-8, anchorY-8, 16, 16, 1)
 	}
 
-	if mouseEnabled {
-		if anchorEnabled {
-			canvasSetColor(0, 1, 1, 1)
-			canvasLine(anchorX, anchorY, mouseX, mouseY)
-		}
-
-		canvasSetColor(0.5, 0.5, 0.5, 1)
-		canvasRect(mouseX-8-mouseDX, mouseY-8-mouseDY, 16, 16, 1)
-
-		if mouseBlink&0x10 == 0 {
-			canvasSetColor(1, 0, 0, 1)
-		} else {
-			canvasSetColor(1, 1, 0, 1)
-		}
-		canvasRect(mouseX-8, mouseY-8, 16, 16, 1)
-
-		mouseBlink++
+	if anchorEnabled {
+		canvasSetColor(0, 1, 1, 1)
+		canvasLine(anchorX, anchorY, mouseX, mouseY)
 	}
+
+	if mouseBlink&0x10 == 0 {
+		canvasSetColor(1, 0, 0, 1)
+	} else {
+		canvasSetColor(1, 1, 0, 1)
+	}
+	canvasRect(mouseX-8, mouseY-8, 16, 16, 1)
+
+	mouseBlink++
 }
 
 const (
@@ -196,41 +188,39 @@ func FBDraw() {
 //export sunani_input_key
 func InputKey(key uint32, action uint32) {
 	k := api.Key(key)
-	a := api.KeyAction(action)
+	a := api.Action(action)
 
-	if k == api.KeyQ && a == api.KeyPress {
+	if k == api.KeyQ && a == api.ActionPress {
 		systemQuit()
 	}
 }
 
-//export sunani_input_mouse
-func InputMouse(
-	action uint32,
+//export sunani_input_mouse_motion
+func InputMouseMotion(
 	x float32,
 	y float32,
-	dx float32,
-	dy float32,
-	wheelX float32,
-	wheelY float32,
-	button uint32,
 ) {
-	a := api.MouseAction(action)
-	b := api.MouseButton(button)
+	mouseX = x
+	mouseY = y
+}
 
-	switch a {
-	case api.MouseMove:
-		mouseEnabled = true
-		mouseX = x
-		mouseY = y
-		mouseDX = dx
-		mouseDY = dy
-	case api.MousePress:
-		switch b {
-		case api.MouseLeft:
+//export sunani_input_mouse_button
+func InputMouse(
+	button uint32,
+	action uint32,
+) {
+	b := api.Mouse(button)
+	a := api.Action(action)
+
+	switch b {
+	case api.MouseLeft:
+		if a == api.ActionPress {
 			anchorEnabled = true
-			anchorX = x
-			anchorY = y
-		case api.MouseRight:
+			anchorX = mouseX
+			anchorY = mouseY
+		}
+	case api.MouseRight:
+		if a == api.ActionPress {
 			anchorEnabled = false
 		}
 	}

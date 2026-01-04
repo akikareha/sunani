@@ -6,7 +6,7 @@ import (
 	"github.com/akikareha/sunani/api"
 )
 
-func mapGLFWMouseButton(b glfw.MouseButton) api.MouseButton {
+func mapGLFWMouseButton(b glfw.MouseButton) api.Mouse {
 	switch b {
 	case glfw.MouseButtonLeft:
 		return api.MouseLeft
@@ -16,18 +16,6 @@ func mapGLFWMouseButton(b glfw.MouseButton) api.MouseButton {
 		return api.MouseRight
 
 	default:
-		return api.MouseButtonUnknown
-	}
-}
-
-func mapGLFWMouseAction(a glfw.Action) api.MouseAction {
-	switch a {
-	case glfw.Press:
-		return api.MousePress
-	case glfw.Release:
-		return api.MouseRelease
-
-	default:
-		return api.MouseActionUnknown
+		return api.MouseUnknown
 	}
 }

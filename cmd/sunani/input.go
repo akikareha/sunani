@@ -5,20 +5,15 @@ import (
 	"math"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
-	wapi "github.com/tetratelabs/wazero/api"
-
-	"github.com/akikareha/sunani/api"
+	"github.com/tetratelabs/wazero/api"
 )
 
 type Input struct {
 	window *glfw.Window
 
-	key   wapi.Function
-	mouse wapi.Function
-
-	hasPrev bool
-	prevX   float64
-	prevY   float64
+	key   api.Function
+	mouseMotion api.Function
+	mouseButton api.Function
 }
 
 func NewInput() *Input {
@@ -27,19 +22,28 @@ func NewInput() *Input {
 
 func (in *Input) Preinit() {
 	in.key = mod.ExportedFunction("sunani_input_key")
-	in.mouse = mod.ExportedFunction("sunani_input_mouse")
+	in.mouseMotion = mod.ExportedFunction("sunani_input_mouse_motion")
+	in.mouseButton = mod.ExportedFunction("sunani_input_mouse_button")
 }
 
 func (in *Input) IsKeyEnabled() bool {
 	return in.key != nil
 }
 
+func (in *Input) IsMouseMotionEnabled() bool {
+	return in.mouseMotion != nil
+}
+
+func (in *Input) IsMouseButtonEnabled() bool {
+	return in.mouseButton != nil
+}
+
 func (in *Input) IsMouseEnabled() bool {
-	return in.mouse != nil
+	return in.IsMouseMotionEnabled() || in.IsMouseButtonEnabled()
 }
 
 func (in *Input) IsEnabled() bool {
-	return in.key != nil || in.mouse != nil
+	return in.IsKeyEnabled() || in.IsMouseEnabled()
 }
 
 func (in *Input) Init(window *glfw.Window) {
@@ -61,66 +65,33 @@ func (in *Input) Init(window *glfw.Window) {
 		})
 	}
 
-	if in.IsMouseEnabled() {
+	if in.IsMouseMotionEnabled() {
 		window.SetCursorPosCallback(func(w *glfw.Window, x, y float64) {
-			if !in.hasPrev {
-				in.prevX = x
-				in.prevY = y
-
-				in.hasPrev = true
-			}
-
-			dx := x - in.prevX
-			dy := y - in.prevY
-
-			wheelX := 0
-			wheelY := 0
-
-			_, err := in.mouse.Call(
+			_, err := in.mouseMotion.Call(
 				ctx,
-				uint64(api.MouseMove),
 				uint64(math.Float32bits(float32(x))),
 				uint64(math.Float32bits(float32(y))),
-				uint64(math.Float32bits(float32(dx))),
-				uint64(math.Float32bits(float32(dy))),
-				uint64(math.Float32bits(float32(wheelX))),
-				uint64(math.Float32bits(float32(wheelY))),
-				uint64(api.MouseButtonUnknown),
 			)
 			if err != nil {
 				log.Fatalln("input mouse call failed:", err)
 			}
-
-			in.prevX = x
-			in.prevY = y
 		})
+	}
 
+	if in.IsMouseButtonEnabled() {
 		window.SetMouseButtonCallback(func(
 			w *glfw.Window,
 			button glfw.MouseButton,
 			action glfw.Action,
 			mods glfw.ModifierKey,
 		) {
-			a := mapGLFWMouseAction(action)
-
-			dx := 0
-			dy := 0
-
-			wheelX := 0
-			wheelY := 0
-
 			b := mapGLFWMouseButton(button)
+			a := mapGLFWAction(action)
 
-			_, err := in.mouse.Call(
+			_, err := in.mouseButton.Call(
 				ctx,
-				uint64(a),
-				uint64(math.Float32bits(float32(in.prevX))),
-				uint64(math.Float32bits(float32(in.prevY))),
-				uint64(math.Float32bits(float32(dx))),
-				uint64(math.Float32bits(float32(dy))),
-				uint64(math.Float32bits(float32(wheelX))),
-				uint64(math.Float32bits(float32(wheelY))),
 				uint64(b),
+				uint64(a),
 			)
 			if err != nil {
 				log.Fatalln("input mouse call failed:", err)
