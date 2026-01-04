@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/akikareha/sunani/api/fb"
+)
+
 //export sunani_system_init
 func systemInit() {}
 
@@ -7,7 +11,9 @@ func systemInit() {}
 func canvasInit() {}
 
 //export sunani_fb_init
-func fbInit() {}
+func fbInit() {
+	fb.Params(FBPtr(), FBW_(), FBH_())
+}
 
 //export sunani_key_init
 func keyInit() {}

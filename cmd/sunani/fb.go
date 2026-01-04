@@ -15,6 +15,8 @@ type FB struct {
 	width  int
 	height int
 
+	paramsSet bool
+
 	tex uint32
 
 	init api.Function
@@ -43,10 +45,14 @@ func (fb *FB) Init(window *glfw.Window) {
 	if err != nil {
 		log.Fatalln("fb init call failed:", err)
 	}
+}
 
-	fb.ptr = callU32("sunani_fb_ptr")
-	fb.width = int(callU32("sunani_fb_width"))
-	fb.height = int(callU32("sunani_fb_height"))
+func (fb *FB) Params(ptr uint32, width int, height int) {
+	fb.ptr = ptr
+	fb.width = width
+	fb.height = height
+
+	fb.paramsSet = true
 
 	gl.GenTextures(1, &fb.tex)
 	gl.BindTexture(gl.TEXTURE_2D, fb.tex)
@@ -66,6 +72,9 @@ func (fb *FB) Init(window *glfw.Window) {
 
 func (fb *FB) Begin() {
 	if !fb.IsEnabled() {
+		return
+	}
+	if !fb.paramsSet {
 		return
 	}
 
@@ -92,6 +101,9 @@ func (fb *FB) Begin() {
 
 func (fb *FB) Draw() {
 	if !fb.IsEnabled() {
+		return
+	}
+	if !fb.paramsSet {
 		return
 	}
 

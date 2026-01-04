@@ -19,13 +19,10 @@ const (
 
 var framebuffer = make([]byte, FBW*FBH*4)
 
-//export sunani_fb_ptr
 func FBPtr() uint32 { return uint32(uintptr(unsafe.Pointer(&framebuffer[0]))) }
 
-//export sunani_fb_width
 func FBW_() uint32 { return FBW }
 
-//export sunani_fb_height
 func FBH_() uint32 { return FBH }
 
 func Clear(r, g, b, a uint32) {

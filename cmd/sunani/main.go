@@ -92,6 +92,10 @@ func main() {
 			canvas.Rect(x, y, w, h, true)
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, ptr, width, height uint32) {
+			fb.Params(ptr, int(width), int(height))
+		}).Export("fb.params").
+		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			fb.Begin()
 			fb.Draw()
