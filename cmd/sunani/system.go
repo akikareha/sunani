@@ -33,6 +33,11 @@ func (sys *System) Init(window *glfw.Window) {
 	}
 
 	sys.window = window
+
+	_, err := sys.init.Call(ctx)
+	if err != nil {
+		log.Fatalln("system init call failed:", err)
+	}
 }
 
 func (sys *System) Halt() {
@@ -41,6 +46,21 @@ func (sys *System) Halt() {
 	}
 
 	sys.window.SetShouldClose(true)
+}
+
+func (sys *System) Cursor(enabled uint32) {
+	if !sys.IsEnabled() {
+		return
+	}
+	if sys.window == nil {
+		return
+	}
+
+	if enabled == 0 {
+		sys.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
+	} else {
+		sys.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
+	}
 }
 
 func (sys *System) Frame() {

@@ -2,10 +2,13 @@ package main
 
 import (
 	"github.com/akikareha/sunani/api/fb"
+	"github.com/akikareha/sunani/api/system"
 )
 
 //export sunani_system_init
-func systemInit() {}
+func systemInit() {
+	system.Cursor(0)
+}
 
 //export sunani_canvas_init
 func canvasInit() {}

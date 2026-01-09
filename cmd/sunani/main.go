@@ -68,6 +68,10 @@ func main() {
 			system.Halt()
 		}).Export("system.halt").
 		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, enabled uint32) {
+			system.Cursor(enabled)
+		}).Export("system.cursor").
+		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			canvas.Begin()
 		}).Export("canvas.begin").
