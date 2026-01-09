@@ -68,6 +68,10 @@ func main() {
 			system.Halt()
 		}).Export("system.halt").
 		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
+			system.Title(ptr, length)
+		}).Export("system.title").
+		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, enabled uint32) {
 			system.Cursor(enabled)
 		}).Export("system.cursor").
@@ -155,7 +159,7 @@ func main() {
 			log.Fatalln("gl init failed:", err)
 		}
 
-		window, err = glfw.CreateWindow(512, 512, "wazero + GLFW", nil, nil)
+		window, err = glfw.CreateWindow(512, 512, "Sunani", nil, nil)
 		if err != nil {
 			log.Fatalln(err)
 		}

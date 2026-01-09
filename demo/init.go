@@ -1,12 +1,22 @@
 package main
 
 import (
+	"unsafe"
+
 	"github.com/akikareha/sunani/api/fb"
 	"github.com/akikareha/sunani/api/system"
 )
 
+const title = "Demo"
+
 //export sunani_system_init
 func systemInit() {
+	b := []byte(title)
+	system.Title(
+		uint32(uintptr(unsafe.Pointer(&b[0]))),
+		uint32(len(title)),
+	)
+
 	system.Cursor(0)
 }
 

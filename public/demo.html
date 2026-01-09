@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Sunani Web Host</title>
+  <title>Sunani</title>
   <style>
     html, body { margin: 0; height: 100%; background: #111; overflow: hidden; }
     canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
@@ -121,6 +121,17 @@
         // ---- system ----
         "system.halt": () => {
           running = false;
+        },
+        "system.title": (ptr, length) => {
+          const mem = wasm.exports.memory;
+          const bytes = new Uint8Array(mem.buffer, ptr, length);
+          let title = new TextDecoder("utf-8").decode(bytes);
+          if (title === "") {
+            title = "Sunani"
+          } else {
+            title += " - Sunani"
+          }
+          document.title = title;
         },
         "system.cursor": (enabled) => {
           if (enabled === 0) {

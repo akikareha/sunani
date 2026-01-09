@@ -48,6 +48,28 @@ func (sys *System) Halt() {
 	sys.window.SetShouldClose(true)
 }
 
+func (sys *System) Title(ptr uint32, length uint32) {
+	if !sys.IsEnabled() {
+		return
+	}
+	if sys.window == nil {
+		return
+	}
+
+	mem := mod.Memory()
+	buf, ok := mem.Read(ptr, length)
+	if !ok {
+		return
+	}
+	title := string(buf)
+	if title == "" {
+		title = "Sunani"
+	} else {
+		title += " - Sunani"
+	}
+	sys.window.SetTitle(title)
+}
+
 func (sys *System) Cursor(enabled uint32) {
 	if !sys.IsEnabled() {
 		return
