@@ -56,6 +56,12 @@ func canvasDraw() {
 	}
 	canvas.FillRect(mouseX-mouseSize/2, mouseY-mouseSize/2, mouseSize, mouseSize)
 
+	canvas.Path(mouseX, mouseY)
+	canvas.Vertex(mouseX+48, mouseY+24)
+	canvas.Vertex(mouseX+24, mouseY+24)
+	canvas.Vertex(mouseX+24, mouseY+48)
+	canvas.FillPolygon()
+
 	mouseBlink++
 }
 

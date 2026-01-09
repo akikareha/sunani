@@ -149,6 +149,21 @@
         "canvas.fill_rect": (x, y, w, h) => {
           ctx2d.fillRect(x, y, w, h);
         },
+        "canvas.path": (x, y) => {
+          ctx2d.beginPath();
+          ctx2d.moveTo(x, y);
+        },
+        "canvas.vertex": (x, y) => {
+          ctx2d.lineTo(x, y);
+        },
+        "canvas.polygon": () => {
+          ctx2d.closePath();
+          ctx2d.stroke();
+        },
+        "canvas.fill_polygon": () => {
+          ctx2d.closePath();
+          ctx2d.fill();
+        },
 
         // ---- fb ----
         "fb.params": (ptr, width, height) => {

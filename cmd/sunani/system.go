@@ -10,7 +10,7 @@ import (
 type System struct {
 	window *glfw.Window
 
-	init api.Function
+	init  api.Function
 	frame api.Function
 }
 

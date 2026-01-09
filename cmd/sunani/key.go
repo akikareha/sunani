@@ -10,8 +10,8 @@ import (
 type Key struct {
 	window *glfw.Window
 
-	init api.Function
-	event   api.Function
+	init  api.Function
+	event api.Function
 }
 
 func NewKey() *Key {

@@ -17,3 +17,15 @@ func Rect(x, y, w, h float32)
 
 //go:wasmimport sunani canvas.fill_rect
 func FillRect(x, y, w, h float32)
+
+//go:wasmimport sunani canvas.path
+func Path(x, y float32)
+
+//go:wasmimport sunani canvas.vertex
+func Vertex(x, y float32)
+
+//go:wasmimport sunani canvas.polygon
+func Polygon()
+
+//go:wasmimport sunani canvas.fill_polygon
+func FillPolygon()

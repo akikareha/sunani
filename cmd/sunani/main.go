@@ -92,6 +92,22 @@ func main() {
 			canvas.Rect(x, y, w, h, true)
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, x, y float32) {
+			canvas.Path(x, y)
+		}).Export("canvas.path").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, x, y float32) {
+			canvas.Vertex(x, y)
+		}).Export("canvas.vertex").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			canvas.Polygon()
+		}).Export("canvas.polygon").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			canvas.FillPolygon()
+		}).Export("canvas.fill_polygon").
+		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr, width, height uint32) {
 			fb.Params(ptr, int(width), int(height))
 		}).Export("fb.params").

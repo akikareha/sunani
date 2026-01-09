@@ -11,10 +11,10 @@ import (
 type Mouse struct {
 	window *glfw.Window
 
-	init api.Function
+	init   api.Function
 	motion api.Function
 	button api.Function
-	wheel api.Function
+	wheel  api.Function
 }
 
 func NewMouse() *Mouse {
