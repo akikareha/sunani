@@ -65,8 +65,8 @@ func main() {
 	_, err := r.NewHostModuleBuilder("sunani").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
-			system.Quit()
-		}).Export("system.quit").
+			system.Halt()
+		}).Export("system.halt").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			canvas.Begin()

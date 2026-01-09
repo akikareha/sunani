@@ -1,4 +1,4 @@
 package system
 
-//go:wasmimport sunani system.quit
-func Quit()
+//go:wasmimport sunani system.halt
+func Halt()

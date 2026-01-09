@@ -35,7 +35,7 @@ func (sys *System) Init(window *glfw.Window) {
 	sys.window = window
 }
 
-func (sys *System) Quit() {
+func (sys *System) Halt() {
 	if !sys.IsEnabled() {
 		return
 	}

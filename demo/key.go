@@ -10,7 +10,7 @@ func KeyEvent(key uint32, action uint32) {
 	k := lib.Key(key)
 	a := lib.Action(action)
 
-	if k == lib.KeyQ && a == lib.ActionPress {
-		system.Quit()
+	if k == lib.KeyEscape && a == lib.ActionPress {
+		system.Halt()
 	}
 }
