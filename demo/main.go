@@ -7,6 +7,8 @@ import (
 	"github.com/akikareha/sunani/api/fb"
 )
 
+var width, height float32
+
 var clock uint64
 
 var mouseX float32
@@ -17,6 +19,12 @@ var mouseSize float32 = 16
 var anchorEnabled bool
 var anchorX float32
 var anchorY float32
+
+//export sunani_system_resize
+func resize(w, h float32) {
+	width = w
+	height = h
+}
 
 //export sunani_system_frame
 func frame() {
@@ -29,6 +37,9 @@ func frame() {
 func canvasDraw() {
 	canvas.Begin()
 	canvas.Clear(0.10, 0.10, 0.15, 1.0)
+
+	canvas.Color(0.5, 0.5, 0.5, 1)
+	canvas.Rect(8, 8, width-16, height-16)
 
 	canvas.Color(1, 1, 1, 1)
 	canvas.Line(50, 50, 300, 200)

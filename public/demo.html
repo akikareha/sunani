@@ -248,6 +248,24 @@
     call("sunani_key_init");
     call("sunani_mouse_init");
 
+    function notifyResize() {
+      const rect = canvasEl.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      const width  = Math.floor(rect.width  * dpr);
+      const height = Math.floor(rect.height * dpr);
+
+      canvasEl.width  = width;
+      canvasEl.height = height;
+
+      call("sunani_system_resize", width, height);
+    }
+
+    const ro = new ResizeObserver(() => {
+      notifyResize();
+    });
+    ro.observe(canvasEl);
+
     // ========== input wiring ==========
     window.addEventListener("keydown", (e) => {
       if (e.repeat) return;
@@ -288,6 +306,9 @@
       const yoff = -e.deltaY / 128;
       call("sunani_mouse_wheel", xoff, yoff);
     }, { passive: false });
+
+    // init
+    notifyResize();
 
     // ========== main loop ==========
     function frame() {
