@@ -4,12 +4,21 @@
   <meta charset="utf-8" />
   <title>Sunani</title>
   <style>
-    html, body { margin: 0; height: 100%; background: #111; overflow: hidden; }
-    canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+    html, body { margin: 0; }
+    canvas { display: block; width: 100vw; height: 75vh; image-rendering: pixelated; }
+  pre {
+    width: 100vw;
+    height: 25vh;
+    border: 1px solid #aaa;
+    overflow-y: auto;
+    padding: 8px;
+    white-space: pre-wrap;
+  }
   </style>
 </head>
 <body>
   <canvas id="c"></canvas>
+  <pre id="con"></pre>
   <script type="module">
     // ========== Sunani codes (match your Go enums) ==========
     const Action = { Unknown: 0, Press: 1, Release: 2 };
@@ -77,6 +86,9 @@
       }
     };
 
+    // Console
+    const consoleEl = document.getElementById("con")
+
     // ========== Canvas / FB host ==========
     const canvasEl = document.getElementById("c");
     const ctx2d = canvasEl.getContext("2d", { alpha: true });
@@ -139,6 +151,15 @@
           } else {
             canvasEl.style.cursor = "";
           }
+        },
+
+        // ---- console ----
+        "console.put": (ptr, length) => {
+          const mem = wasm.exports.memory;
+          const bytes = new Uint8Array(mem.buffer, ptr, length);
+          let s = new TextDecoder("utf-8").decode(bytes);
+          consoleEl.textContent += s;
+          consoleEl.scrollTop = consoleEl.scrollHeight;
         },
 
         // ---- canvas ----
@@ -243,6 +264,7 @@
 
     // init exports (call if exists)
     call("sunani_system_init");
+    call("sunani_console_init");
     call("sunani_canvas_init");
     call("sunani_fb_init");
     call("sunani_key_init");

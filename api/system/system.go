@@ -4,7 +4,7 @@ package system
 func Halt()
 
 //go:wasmimport sunani system.title
-func Title(ptr uint32, len uint32)
+func Title(ptr uint32, length uint32)
 
 //go:wasmimport sunani system.cursor
 func Cursor(enabled uint32)

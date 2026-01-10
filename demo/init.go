@@ -3,11 +3,13 @@ package main
 import (
 	"unsafe"
 
+	"github.com/akikareha/sunani/api/console"
 	"github.com/akikareha/sunani/api/fb"
 	"github.com/akikareha/sunani/api/system"
 )
 
 const title = "Demo"
+const hello = "Hello, World!\n"
 
 //export sunani_system_init
 func systemInit() {
@@ -18,6 +20,15 @@ func systemInit() {
 	)
 
 	system.Cursor(0)
+}
+
+//export sunani_console_init
+func consoleInit() {
+	b := []byte(hello)
+	console.Put(
+		uint32(uintptr(unsafe.Pointer(&b[0]))),
+		uint32(len(hello)),
+	)
 }
 
 //export sunani_canvas_init

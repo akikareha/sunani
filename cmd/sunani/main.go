@@ -56,6 +56,7 @@ func main() {
 	//wasi_snapshot_preview1.MustInstantiate(ctx, r)
 
 	system := NewSystem()
+	console := NewConsole()
 	canvas := NewCanvas()
 	fb := NewFB()
 	key := NewKey()
@@ -75,6 +76,10 @@ func main() {
 		WithFunc(func(ctx context.Context, enabled uint32) {
 			system.Cursor(enabled)
 		}).Export("system.cursor").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
+			console.Put(ptr, length)
+		}).Export("console.put").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			canvas.Begin()
@@ -139,11 +144,13 @@ func main() {
 	}
 
 	system.Preinit()
+	console.Preinit()
 	canvas.Preinit()
 	fb.Preinit()
 	key.Preinit()
 	mouse.Preinit()
 
+	console.Init()
 	var window *glfw.Window
 	if canvas.IsEnabled() || fb.IsEnabled() {
 		// --- GLFW/GL init ---
