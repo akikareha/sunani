@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"unsafe"
 
 	"github.com/akikareha/sunani/api/canvas"
+	"github.com/akikareha/sunani/api/console"
 	"github.com/akikareha/sunani/api/fb"
 )
 
@@ -32,6 +34,20 @@ func frame() {
 
 	canvasDraw()
 	fbDraw()
+}
+
+//export sunani_console_get
+func consoleGet(ptr uint32, length uint32) {
+	b := unsafe.Slice((*byte)(unsafe.Pointer(uintptr(ptr))), length)
+	line := string(b)
+
+	reply := fmt.Sprintf("input: %s\n", line)
+
+	b2 := []byte(reply)
+	console.Put(
+		uint32(uintptr(unsafe.Pointer(&b2[0]))),
+		uint32(len(reply)),
+	)
 }
 
 func canvasDraw() {

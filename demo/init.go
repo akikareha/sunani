@@ -24,6 +24,8 @@ func systemInit() {
 
 //export sunani_console_init
 func consoleInit() {
+	console.Params(consoleBufferPtr(), consoleBufferSize_())
+
 	b := []byte(hello)
 	console.Put(
 		uint32(uintptr(unsafe.Pointer(&b[0]))),

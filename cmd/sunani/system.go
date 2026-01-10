@@ -11,9 +11,9 @@ import (
 type System struct {
 	window *glfw.Window
 
-	init  api.Function
+	init   api.Function
 	resize api.Function
-	frame api.Function
+	frame  api.Function
 }
 
 func NewSystem() *System {
@@ -46,7 +46,7 @@ func (sys *System) Init(window *glfw.Window) {
 		w *glfw.Window,
 		width int,
 		height int,
-	){
+	) {
 		sys.Resize(float32(width), float32(height))
 	})
 

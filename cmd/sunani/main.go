@@ -78,6 +78,10 @@ func main() {
 		}).Export("system.cursor").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
+			console.Params(ptr, int(length))
+		}).Export("console.params").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
 			console.Put(ptr, length)
 		}).Export("console.put").
 		NewFunctionBuilder().
@@ -121,7 +125,7 @@ func main() {
 			canvas.FillPolygon()
 		}).Export("canvas.fill_polygon").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, ptr, width, height uint32) {
+		WithFunc(func(ctx context.Context, ptr uint32, width, height uint32) {
 			fb.Params(ptr, int(width), int(height))
 		}).Export("fb.params").
 		NewFunctionBuilder().
