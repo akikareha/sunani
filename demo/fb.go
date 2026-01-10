@@ -1,31 +1,23 @@
 package main
 
 import (
-	"unsafe"
-
 	"github.com/akikareha/sunani/resources/fonts"
 )
 
 const (
-	AtlasW = 128
-	AtlasH = 128
-	GlyphW = 8
-	GlyphH = 8
+	atlasWidth = 128
+	atlasHeight = 128
+	glyphWidth = 8
+	glyphHeight = 8
 
 	// frame buffer
-	FBW = 256
-	FBH = 256
+	fbWidth = 256
+	fbHeight = 256
 )
 
-var framebuffer = make([]byte, FBW*FBH*4)
+var framebuffer = make([]byte, fbWidth*fbHeight*4)
 
-func FBPtr() uint32 { return uint32(uintptr(unsafe.Pointer(&framebuffer[0]))) }
-
-func FBW_() uint32 { return FBW }
-
-func FBH_() uint32 { return FBH }
-
-func Clear(r, g, b, a uint32) {
+func fbClear(r, g, b, a uint32) {
 	for i := 0; i < len(framebuffer); i += 4 {
 		framebuffer[i+0] = byte(r)
 		framebuffer[i+1] = byte(g)
@@ -34,36 +26,36 @@ func Clear(r, g, b, a uint32) {
 	}
 }
 
-func DrawText(x, y uint32, s string) {
+func drawText(x, y uint32, s string) {
 	cx := int(x)
 	cy := int(y)
 
 	for _, r := range s {
 		drawGlyph(cx, cy, byte(r))
-		cx += GlyphW
+		cx += glyphWidth
 	}
 }
 
 func drawGlyph(dstX, dstY int, ch byte) {
 	// ASCII 0..127, 16x8 tiles
-	tx := int(ch%16) * GlyphW
-	ty := int(ch/16) * GlyphH
+	tx := int(ch%16) * glyphWidth
+	ty := int(ch/16) * glyphHeight
 
-	for gy := 0; gy < GlyphH; gy++ {
+	for gy := 0; gy < glyphHeight; gy++ {
 		sy := ty + gy
 		dy := dstY + gy
-		if dy < 0 || dy >= FBH {
+		if dy < 0 || dy >= fbHeight {
 			continue
 		}
-		for gx := 0; gx < GlyphW; gx++ {
+		for gx := 0; gx < glyphWidth; gx++ {
 			sx := tx + gx
 			dx := dstX + gx
-			if dx < 0 || dx >= FBW {
+			if dx < 0 || dx >= fbWidth {
 				continue
 			}
 
-			si := (sy*AtlasW + sx) * 4
-			di := (dy*FBW + dx) * 4
+			si := (sy*atlasWidth + sx) * 4
+			di := (dy*fbWidth + dx) * 4
 
 			sr := fonts.FontAtlasRGBA[si+0]
 			sg := fonts.FontAtlasRGBA[si+1]
@@ -87,28 +79,7 @@ func drawGlyph(dstX, dstY int, ch byte) {
 			framebuffer[di+0] = byte((uint32(sr)*a + uint32(dr)*inv) / 255)
 			framebuffer[di+1] = byte((uint32(sg)*a + uint32(dg)*inv) / 255)
 			framebuffer[di+2] = byte((uint32(sb)*a + uint32(db)*inv) / 255)
-			framebuffer[di+3] = byte((a + uint32(da)*inv/255)) // ざっくり
+			framebuffer[di+3] = byte((a + uint32(da)*inv/255))
 		}
 	}
-}
-
-func bytesFromWasm(ptr uint32, n uint32) []byte {
-	if n == 0 {
-		return nil
-	}
-	return unsafeSlice(ptr, n)
-}
-
-func unsafeSlice(ptr uint32, n uint32) []byte {
-	return *(*[]byte)(unsafe.Pointer(&struct {
-		addr uintptr
-		len  int
-		cap  int
-	}{uintptr(ptr), int(n), int(n)}))
-}
-
-var textBuf = make([]byte, 256)
-
-func TextBufPtr() uint32 {
-	return uint32(uintptr(unsafe.Pointer(&textBuf[0])))
 }

@@ -24,7 +24,10 @@ func systemInit() {
 
 //export sunani_console_init
 func consoleInit() {
-	console.Params(consoleBufferPtr(), consoleBufferSize_())
+	console.Params(
+		uint32(uintptr(unsafe.Pointer(&consoleBuffer[0]))),
+		uint32(consoleBufferLength),
+	)
 
 	b := []byte(hello)
 	console.Put(
@@ -38,7 +41,11 @@ func canvasInit() {}
 
 //export sunani_fb_init
 func fbInit() {
-	fb.Params(FBPtr(), FBW_(), FBH_())
+	fb.Params(
+		uint32(uintptr(unsafe.Pointer(&framebuffer[0]))),
+		uint32(fbWidth),
+		uint32(fbHeight),
+	)
 }
 
 //export sunani_key_init

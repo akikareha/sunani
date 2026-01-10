@@ -10,13 +10,13 @@ func Clear(r, g, b, a float32)
 func Color(r, g, b, a float32)
 
 //go:wasmimport sunani canvas.line
-func Line(x1, y1, x2, y2 float32)
+func Line(x1, y1 float32, x2, y2 float32)
 
 //go:wasmimport sunani canvas.rect
-func Rect(x, y, w, h float32)
+func Rect(x, y float32, w, h float32)
 
 //go:wasmimport sunani canvas.fill_rect
-func FillRect(x, y, w, h float32)
+func FillRect(x, y float32, w, h float32)
 
 //go:wasmimport sunani canvas.path
 func Path(x, y float32)

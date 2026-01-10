@@ -67,12 +67,12 @@ func (c *Canvas) Clear(r, g, b, a float32) {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
-func (c *Canvas) SetColor(r, g, b, a float32) {
+func (c *Canvas) Color(r, g, b, a float32) {
 	c.r, c.g, c.b, c.a = r, g, b, a
 	gl.Color4f(r, g, b, a)
 }
 
-func (c *Canvas) Line(x1, y1, x2, y2 float32) {
+func (c *Canvas) Line(x1, y1 float32, x2, y2 float32) {
 	gl.Color4f(c.r, c.g, c.b, c.a)
 	gl.Begin(gl.LINES)
 	gl.Vertex2f(x1, y1)
@@ -80,13 +80,19 @@ func (c *Canvas) Line(x1, y1, x2, y2 float32) {
 	gl.End()
 }
 
-func (c *Canvas) Rect(x, y, w, h float32, fill bool) {
+func (c *Canvas) Rect(x, y float32, w, h float32) {
 	gl.Color4f(c.r, c.g, c.b, c.a)
-	if fill {
-		gl.Begin(gl.QUADS)
-	} else {
-		gl.Begin(gl.LINE_LOOP)
-	}
+	gl.Begin(gl.LINE_LOOP)
+	gl.Vertex2f(x, y)
+	gl.Vertex2f(x+w, y)
+	gl.Vertex2f(x+w, y+h)
+	gl.Vertex2f(x, y+h)
+	gl.End()
+}
+
+func (c *Canvas) FillRect(x, y float32, w, h float32) {
+	gl.Color4f(c.r, c.g, c.b, c.a)
+	gl.Begin(gl.QUADS)
 	gl.Vertex2f(x, y)
 	gl.Vertex2f(x+w, y)
 	gl.Vertex2f(x+w, y+h)

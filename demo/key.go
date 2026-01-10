@@ -6,7 +6,7 @@ import (
 )
 
 //export sunani_key_event
-func KeyEvent(key uint32, action uint32) {
+func keyEvent(key uint32, action uint32) {
 	k := lib.Key(key)
 	a := lib.Action(action)
 

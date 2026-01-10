@@ -23,13 +23,13 @@ var anchorX float32
 var anchorY float32
 
 //export sunani_system_resize
-func resize(w, h float32) {
+func systemResize(w, h float32) {
 	width = w
 	height = h
 }
 
 //export sunani_system_frame
-func frame() {
+func systemFrame() {
 	clock++
 
 	canvasDraw()
@@ -93,9 +93,9 @@ func canvasDraw() {
 }
 
 func fbDraw() {
-	Clear(0, 0, 0, 0)
+	fbClear(0, 0, 0, 0)
 	hello := fmt.Sprintf("Hello, Sunani! %d", clock)
-	DrawText(16, 32, hello)
+	drawText(16, 32, hello)
 
 	fb.Paint()
 }

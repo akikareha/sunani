@@ -74,8 +74,7 @@ func (m *Mouse) Init(window *glfw.Window) {
 
 	window.SetScrollCallback(func(
 		w *glfw.Window,
-		xoff float64,
-		yoff float64,
+		xoff, yoff float64,
 	) {
 		_, err := m.wheel.Call(
 			ctx,

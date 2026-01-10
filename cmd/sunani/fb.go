@@ -47,7 +47,7 @@ func (fb *FB) Init(window *glfw.Window) {
 	}
 }
 
-func (fb *FB) Params(ptr uint32, width int, height int) {
+func (fb *FB) Params(ptr uint32, width, height int) {
 	fb.ptr = ptr
 	fb.width = width
 	fb.height = height

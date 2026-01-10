@@ -12,7 +12,6 @@ import (
 
 	"github.com/tetratelabs/wazero"
 	"github.com/tetratelabs/wazero/api"
-	//"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 )
 
 var (
@@ -52,9 +51,6 @@ func main() {
 	r := wazero.NewRuntime(ctx)
 	defer r.Close(ctx)
 
-	// for Go(wasip1) runtime
-	//wasi_snapshot_preview1.MustInstantiate(ctx, r)
-
 	system := NewSystem()
 	console := NewConsole()
 	canvas := NewCanvas()
@@ -62,7 +58,7 @@ func main() {
 	key := NewKey()
 	mouse := NewMouse()
 
-	// Host module "canvas": expose Clear/SetColor/Line/Rect
+	// Host module "canvas": expose Clear/Color/Line/Rect
 	_, err := r.NewHostModuleBuilder("sunani").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
@@ -94,19 +90,23 @@ func main() {
 		}).Export("canvas.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a float32) {
-			canvas.SetColor(r, g, b, a)
+			canvas.Color(r, g, b, a)
 		}).Export("canvas.color").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x1, y1, x2, y2 float32) {
+		WithFunc(func(
+			ctx context.Context,
+			x1, y1 float32,
+			x2, y2 float32,
+		) {
 			canvas.Line(x1, y1, x2, y2)
 		}).Export("canvas.line").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y, w, h float32) {
-			canvas.Rect(x, y, w, h, false)
+		WithFunc(func(ctx context.Context, x, y float32, w, h float32) {
+			canvas.Rect(x, y, w, h)
 		}).Export("canvas.rect").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y, w, h float32) {
-			canvas.Rect(x, y, w, h, true)
+		WithFunc(func(ctx context.Context, x, y float32, w, h float32) {
+			canvas.FillRect(x, y, w, h)
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, x, y float32) {
@@ -125,7 +125,11 @@ func main() {
 			canvas.FillPolygon()
 		}).Export("canvas.fill_polygon").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, ptr uint32, width, height uint32) {
+		WithFunc(func(
+			ctx context.Context,
+			ptr uint32,
+			width, height uint32,
+		) {
 			fb.Params(ptr, int(width), int(height))
 		}).Export("fb.params").
 		NewFunctionBuilder().
@@ -141,8 +145,12 @@ func main() {
 	wasmBytes := mustRead(wasmPath)
 
 	// Don't call _start automatically.
-	// draw() must be called from each frame.
-	mod, err = r.InstantiateWithConfig(ctx, wasmBytes, wazero.NewModuleConfig(). /*.WithArgs(wasmArgs...)*/ WithStartFunctions())
+	// system.frame must be called from each frame.
+	mod, err = r.InstantiateWithConfig(
+		ctx,
+		wasmBytes,
+		wazero.NewModuleConfig().WithStartFunctions(),
+	)
 	if err != nil {
 		log.Fatalln("instantiate guest:", err)
 	}
