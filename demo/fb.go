@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	atlasWidth = 128
+	atlasWidth  = 128
 	atlasHeight = 128
-	glyphWidth = 8
+	glyphWidth  = 8
 	glyphHeight = 8
 
 	// frame buffer
-	fbWidth = 256
+	fbWidth  = 256
 	fbHeight = 256
 )
 

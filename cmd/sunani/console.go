@@ -2,20 +2,18 @@ package main
 
 import (
 	"bufio"
-	"log"
 	"os"
 
 	"github.com/tetratelabs/wazero/api"
 )
 
 type Console struct {
-	ptr    uint32
-	length int
-
-	paramsSet bool
-
 	init api.Function
 	get  api.Function
+
+	ptr       uint32
+	length    int
+	paramsSet bool
 }
 
 func NewConsole() *Console {
@@ -36,50 +34,68 @@ func (con *Console) Init() {
 		return
 	}
 
-	_, err := con.init.Call(ctx)
-	if err != nil {
-		log.Fatalln("console init call failed:", err)
+	if con.init != nil {
+		_, err := con.init.Call(ctx)
+		if err != nil {
+			die("sunani_console_init call failed:", err)
+		}
 	}
 }
 
 func (con *Console) Params(ptr uint32, length int) {
+	if !con.IsEnabled() {
+		errlog("sunani console.params was called, but Console API is not enabled.\nExport snunani_console_init to enable this API.")
+		return
+	}
+
+	if con.get == nil {
+		errlog("sunani console.params was called, but console input is not enabled.\nExport snunani_console_get to enable this function.")
+		return
+	}
+
 	con.ptr = ptr
 	con.length = length
-
 	con.paramsSet = true
 
 	scanner := bufio.NewScanner(os.Stdin)
 	go func() {
 		for scanner.Scan() {
-			line := scanner.Text()
+			bytes := scanner.Bytes()
+
+			if len(bytes) > con.length {
+				errlog("Console input buffer overflowed")
+				bytes = bytes[:con.length]
+			}
 
 			mem := mod.Memory()
-			ok := mem.Write(con.ptr, []byte(line))
+			ok := mem.Write(con.ptr, bytes)
 			if !ok {
-				panic("mem.Write failed")
+				errlog("mem.Write failed")
+				break
 			}
-			_, err := con.get.Call(ctx, uint64(con.ptr), uint64(len(line)))
+			_, err := con.get.Call(ctx, uint64(con.ptr), uint64(len(bytes)))
 			if err != nil {
-				log.Fatalln("console init call failed:", err)
+				die("sunani_console_get call failed:", err)
 			}
 		}
 		if err := scanner.Err(); err != nil {
-			// TODO handle error
+			die("Failed to scan line:", err)
 		}
 	}()
 }
 
 func (con *Console) Put(ptr uint32, length uint32) {
 	if !con.IsEnabled() {
+		errlog("sunani console.put was called, but Console API is not enabled.\nExport snunani_console_init to enable this API.")
 		return
 	}
 
 	mem := mod.Memory()
 	buf, ok := mem.Read(ptr, length)
 	if !ok {
+		errlog("mem.Read failed")
 		return
 	}
-	s := string(buf)
 
-	os.Stdout.WriteString(s)
+	os.Stdout.Write(buf)
 }

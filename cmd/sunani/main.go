@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"runtime"
 
@@ -17,7 +16,6 @@ import (
 var (
 	ctx = context.Background()
 	mod api.Module
-	mem api.Memory
 )
 
 func init() {
@@ -28,7 +26,7 @@ func init() {
 func mustRead(path string) []byte {
 	b, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalln(err)
+		die(err)
 	}
 	return b
 }
@@ -134,12 +132,11 @@ func main() {
 		}).Export("fb.params").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
-			fb.Begin()
-			fb.Draw()
+			fb.Paint()
 		}).Export("fb.paint").
 		Instantiate(ctx)
 	if err != nil {
-		log.Fatalln("instantiate host sunani module:", err)
+		die("instantiate host sunani module:", err)
 	}
 
 	wasmBytes := mustRead(wasmPath)
@@ -152,7 +149,7 @@ func main() {
 		wazero.NewModuleConfig().WithStartFunctions(),
 	)
 	if err != nil {
-		log.Fatalln("instantiate guest:", err)
+		die("instantiate guest:", err)
 	}
 
 	system.Preinit()
@@ -167,7 +164,7 @@ func main() {
 	if canvas.IsEnabled() || fb.IsEnabled() {
 		// --- GLFW/GL init ---
 		if err := glfw.Init(); err != nil {
-			log.Fatalln("glfw init failed:", err)
+			die("glfw init failed:", err)
 		}
 		defer glfw.Terminate()
 
@@ -175,12 +172,12 @@ func main() {
 		glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
 		if err := gl.Init(); err != nil {
-			log.Fatalln("gl init failed:", err)
+			die("gl init failed:", err)
 		}
 
 		window, err = glfw.CreateWindow(512, 512, "Sunani", nil, nil)
 		if err != nil {
-			log.Fatalln(err)
+			die(err)
 		}
 		window.MakeContextCurrent()
 
@@ -189,13 +186,6 @@ func main() {
 		fb.Init(window)
 		key.Init(window)
 		mouse.Init(window)
-	}
-
-	if fb.IsEnabled() {
-		mem = mod.ExportedMemory("memory")
-		if mem == nil {
-			log.Fatal("wasm exported memory not found")
-		}
 	}
 
 	if window != nil {
@@ -214,9 +204,6 @@ func main() {
 		// --- main loop ---
 		for !window.ShouldClose() {
 			system.Frame()
-
-			fb.Begin()
-			fb.Draw()
 
 			window.SwapBuffers()
 			glfw.PollEvents()

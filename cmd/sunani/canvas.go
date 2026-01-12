@@ -1,20 +1,18 @@
 package main
 
 import (
-	"log"
-
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tetratelabs/wazero/api"
 )
 
 type Canvas struct {
+	init api.Function
+
 	window *glfw.Window
 
 	r, g, b, a float32
 	points     []float32
-
-	init api.Function
 }
 
 func NewCanvas() *Canvas {
@@ -33,18 +31,26 @@ func (c *Canvas) Init(window *glfw.Window) {
 	if !c.IsEnabled() {
 		return
 	}
-
+	if window == nil {
+		panic("window is nil")
+	}
 	c.window = window
 
-	_, err := c.init.Call(ctx)
-	if err != nil {
-		log.Fatalln("canvas init call failed:", err)
+	if c.init != nil {
+		_, err := c.init.Call(ctx)
+		if err != nil {
+			die("sunani_canvas_init call failed:", err)
+		}
 	}
 }
 
 func (c *Canvas) Begin() {
 	if !c.IsEnabled() {
+		errlog("sunani canvas.begin was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
+	}
+	if c.window == nil {
+		panic("window is nil")
 	}
 
 	fw, fh := c.window.GetFramebufferSize()
@@ -63,16 +69,40 @@ func (c *Canvas) Begin() {
 }
 
 func (c *Canvas) Clear(r, g, b, a float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.clear was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	gl.ClearColor(r, g, b, a)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
 func (c *Canvas) Color(r, g, b, a float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.color was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	c.r, c.g, c.b, c.a = r, g, b, a
 	gl.Color4f(r, g, b, a)
 }
 
 func (c *Canvas) Line(x1, y1 float32, x2, y2 float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.line was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	gl.Color4f(c.r, c.g, c.b, c.a)
 	gl.Begin(gl.LINES)
 	gl.Vertex2f(x1, y1)
@@ -81,6 +111,14 @@ func (c *Canvas) Line(x1, y1 float32, x2, y2 float32) {
 }
 
 func (c *Canvas) Rect(x, y float32, w, h float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.rect was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	gl.Color4f(c.r, c.g, c.b, c.a)
 	gl.Begin(gl.LINE_LOOP)
 	gl.Vertex2f(x, y)
@@ -91,6 +129,14 @@ func (c *Canvas) Rect(x, y float32, w, h float32) {
 }
 
 func (c *Canvas) FillRect(x, y float32, w, h float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.fill_rect was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	gl.Color4f(c.r, c.g, c.b, c.a)
 	gl.Begin(gl.QUADS)
 	gl.Vertex2f(x, y)
@@ -211,17 +257,49 @@ func (c *Canvas) fillPolygon(points []float32) {
 }
 
 func (c *Canvas) Path(x, y float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.path was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	c.points = []float32{x, y}
 }
 
 func (c *Canvas) Vertex(x, y float32) {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.vertex was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	c.points = append(c.points, x, y)
 }
 
 func (c *Canvas) Polygon() {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.polygon was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	c.polygon(c.points)
 }
 
 func (c *Canvas) FillPolygon() {
+	if !c.IsEnabled() {
+		errlog("sunani canvas.fill_polygon was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
+		return
+	}
+	if c.window == nil {
+		panic("window is nil")
+	}
+
 	c.fillPolygon(c.points)
 }

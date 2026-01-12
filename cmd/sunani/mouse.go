@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -9,12 +8,12 @@ import (
 )
 
 type Mouse struct {
-	window *glfw.Window
-
 	init   api.Function
 	motion api.Function
 	button api.Function
 	wheel  api.Function
+
+	window *glfw.Window
 }
 
 func NewMouse() *Mouse {
@@ -36,53 +35,68 @@ func (m *Mouse) Init(window *glfw.Window) {
 	if !m.IsEnabled() {
 		return
 	}
-
+	if window == nil {
+		panic("window is nil")
+	}
 	m.window = window
 
-	window.SetCursorPosCallback(func(
-		w *glfw.Window,
-		x, y float64,
-	) {
-		_, err := m.motion.Call(
-			ctx,
-			uint64(math.Float32bits(float32(x))),
-			uint64(math.Float32bits(float32(y))),
-		)
+	if m.init != nil {
+		_, err := m.init.Call(ctx)
 		if err != nil {
-			log.Fatalln("mouse motion call failed:", err)
+			die("sunani_mouse_init call failed:", err)
 		}
-	})
+	}
 
-	window.SetMouseButtonCallback(func(
-		w *glfw.Window,
-		button glfw.MouseButton,
-		action glfw.Action,
-		mods glfw.ModifierKey,
-	) {
-		b := mapGLFWMouseButton(button)
-		a := mapGLFWAction(action)
+	if m.motion != nil {
+		window.SetCursorPosCallback(func(
+			w *glfw.Window,
+			x, y float64,
+		) {
+			_, err := m.motion.Call(
+				ctx,
+				uint64(math.Float32bits(float32(x))),
+				uint64(math.Float32bits(float32(y))),
+			)
+			if err != nil {
+				die("sunani_mouse_motion call failed:", err)
+			}
+		})
+	}
 
-		_, err := m.button.Call(
-			ctx,
-			uint64(b),
-			uint64(a),
-		)
-		if err != nil {
-			log.Fatalln("mouse button call failed:", err)
-		}
-	})
+	if m.button != nil {
+		window.SetMouseButtonCallback(func(
+			w *glfw.Window,
+			button glfw.MouseButton,
+			action glfw.Action,
+			mods glfw.ModifierKey,
+		) {
+			b := mapGLFWMouseButton(button)
+			a := mapGLFWAction(action)
 
-	window.SetScrollCallback(func(
-		w *glfw.Window,
-		xoff, yoff float64,
-	) {
-		_, err := m.wheel.Call(
-			ctx,
-			uint64(math.Float32bits(float32(xoff))),
-			uint64(math.Float32bits(float32(yoff))),
-		)
-		if err != nil {
-			log.Fatalln("mouse wheel call failed:", err)
-		}
-	})
+			_, err := m.button.Call(
+				ctx,
+				uint64(b),
+				uint64(a),
+			)
+			if err != nil {
+				die("sunani_mouse_button call failed:", err)
+			}
+		})
+	}
+
+	if m.wheel != nil {
+		window.SetScrollCallback(func(
+			w *glfw.Window,
+			xoff, yoff float64,
+		) {
+			_, err := m.wheel.Call(
+				ctx,
+				uint64(math.Float32bits(float32(xoff))),
+				uint64(math.Float32bits(float32(yoff))),
+			)
+			if err != nil {
+				die("sunani_mouse_wheel call failed:", err)
+			}
+		})
+	}
 }

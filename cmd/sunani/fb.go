@@ -1,25 +1,24 @@
 package main
 
 import (
-	"log"
-
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tetratelabs/wazero/api"
 )
 
+var mem api.Memory
+
 type FB struct {
+	init api.Function
+
 	window *glfw.Window
 
-	ptr    uint32
-	width  int
-	height int
-
+	ptr       uint32
+	width     int
+	height    int
 	paramsSet bool
 
 	tex uint32
-
-	init api.Function
 }
 
 func NewFB() *FB {
@@ -38,20 +37,36 @@ func (fb *FB) Init(window *glfw.Window) {
 	if !fb.IsEnabled() {
 		return
 	}
-
+	if window == nil {
+		panic("window is nil")
+	}
 	fb.window = window
 
-	_, err := fb.init.Call(ctx)
-	if err != nil {
-		log.Fatalln("fb init call failed:", err)
+	mem = mod.ExportedMemory("memory")
+	if mem == nil {
+		die("wasm exported memory not found")
+	}
+
+	if fb.init != nil {
+		_, err := fb.init.Call(ctx)
+		if err != nil {
+			die("sunani_fb_init call failed:", err)
+		}
 	}
 }
 
 func (fb *FB) Params(ptr uint32, width, height int) {
+	if !fb.IsEnabled() {
+		errlog("sunani fb.params was called, but Framebuffer API is not enabled.\nExport snunani_fb_init to enable this API.")
+		return
+	}
+	if fb.window == nil {
+		panic("window is nil")
+	}
+
 	fb.ptr = ptr
 	fb.width = width
 	fb.height = height
-
 	fb.paramsSet = true
 
 	gl.GenTextures(1, &fb.tex)
@@ -70,12 +85,17 @@ func (fb *FB) Params(ptr uint32, width, height int) {
 	)
 }
 
-func (fb *FB) Begin() {
+func (fb *FB) Paint() {
 	if !fb.IsEnabled() {
+		errlog("sunani fb.paint was called, but Framebuffer API is not enabled.\nExport snunani_fb_init to enable this API.")
 		return
 	}
 	if !fb.paramsSet {
+		errlog("sunani fb.paint was called, but framebuffer parameters are not set yet.\nCall snunani_fb_params to enable this function.")
 		return
+	}
+	if fb.window == nil {
+		panic("window is nil")
 	}
 
 	gl.MatrixMode(gl.PROJECTION)
@@ -97,20 +117,12 @@ func (fb *FB) Begin() {
 	oy := (fh - height) / 2
 
 	gl.Viewport(int32(ox), int32(oy), int32(width), int32(height))
-}
-
-func (fb *FB) Draw() {
-	if !fb.IsEnabled() {
-		return
-	}
-	if !fb.paramsSet {
-		return
-	}
 
 	size := fb.width * fb.height * 4
 	pix, ok := mem.Read(fb.ptr, uint32(size))
 	if !ok {
-		panic("mem.Read failed")
+		errlog("mem.Read failed")
+		return
 	}
 
 	gl.BindTexture(gl.TEXTURE_2D, fb.tex)
