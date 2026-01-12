@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sunani</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <h1>Sunani</h1>
+
+  <p>
+    <strong>Sunani</strong> is a minimal virtual computing environment built around
+    <strong>WebAssembly</strong>.
+    It is designed as a small, portable, and experimental platform for interactive programs.
+  </p>
+
+  <p>
+    The same WebAssembly module can run on multiple hosts.
+    Currently, Sunani provides host implementations for
+    <strong>Go (native)</strong> and the <strong>Web (JavaScript + Canvas)</strong>.
+  </p>
+
+  <h2>Design Philosophy</h2>
+  <p>
+    Sunani intentionally exposes only a very small host API.
+    The host is responsible for windowing, input, and basic drawing,
+    while almost all application logic lives inside WebAssembly.
+  </p>
+
+  <p>
+    This approach keeps the environment simple and predictable,
+    and encourages building higher-level abstractions on the WebAssembly side
+    rather than in the host.
+  </p>
+
+  <h2>Host API Overview</h2>
+  <p>
+    The Sunani Host provides minimal APIs for:
+  </p>
+  <ul>
+    <li>Drawing basic shapes on a canvas</li>
+    <li>Framebuffer-based pixel output</li>
+    <li>Keyboard and mouse input events</li>
+    <li>Basic system lifecycle events</li>
+  </ul>
+
+  <p>
+    These APIs are designed to be small enough to be implemented consistently
+    across different platforms.
+  </p>
+
+  <h2>Demos</h2>
+  <p>
+    The following demos showcase Sunani running almost entirely inside WebAssembly.
+    Rendering, input handling, and application logic are all driven from the WASM side.
+  </p>
+  <ul>
+    <li><a href="./">Demo</a></li>
+  </ul>
+
+  <h2>Use Cases</h2>
+  <ul>
+    <li>Experimental virtual machines</li>
+    <li>Minimal graphical applications</li>
+    <li>Creative coding and visual experiments</li>
+    <li>Research and learning projects around WebAssembly</li>
+  </ul>
+
+  <h2>Source Code</h2>
+  <p>
+    Sunani is open source and developed as a personal research and hobby project.
+  </p>
+  <p>
+    <a href="https://github.com/akikareha/sunani">
+      Sunani on GitHub
+    </a>
+  </p>
+</body>
+</html>
