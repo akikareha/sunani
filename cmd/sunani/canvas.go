@@ -11,8 +11,8 @@ type Canvas struct {
 
 	window *glfw.Window
 
-	r, g, b, a float32
-	points     []float32
+	r, g, b, a uint32
+	points     []uint32
 }
 
 func NewCanvas() *Canvas {
@@ -68,7 +68,7 @@ func (c *Canvas) Begin() {
 	gl.Viewport(0, 0, int32(fw), int32(fh))
 }
 
-func (c *Canvas) Clear(r, g, b, a float32) {
+func (c *Canvas) Clear(r, g, b, a uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.clear was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -77,11 +77,16 @@ func (c *Canvas) Clear(r, g, b, a float32) {
 		panic("window is nil")
 	}
 
-	gl.ClearColor(r, g, b, a)
+	gl.ClearColor(
+		float32(r)/255,
+		float32(g)/255,
+		float32(b)/255,
+		float32(a)/255,
+	)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
-func (c *Canvas) Color(r, g, b, a float32) {
+func (c *Canvas) Color(r, g, b, a uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.color was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -91,10 +96,10 @@ func (c *Canvas) Color(r, g, b, a float32) {
 	}
 
 	c.r, c.g, c.b, c.a = r, g, b, a
-	gl.Color4f(r, g, b, a)
+	gl.Color4ub(uint8(r), uint8(g), uint8(b), uint8(a))
 }
 
-func (c *Canvas) Line(x1, y1 float32, x2, y2 float32) {
+func (c *Canvas) Line(x1, y1 uint32, x2, y2 uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.line was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -103,14 +108,14 @@ func (c *Canvas) Line(x1, y1 float32, x2, y2 float32) {
 		panic("window is nil")
 	}
 
-	gl.Color4f(c.r, c.g, c.b, c.a)
+	gl.Color4ub(uint8(c.r), uint8(c.g), uint8(c.b), uint8(c.a))
 	gl.Begin(gl.LINES)
-	gl.Vertex2f(x1, y1)
-	gl.Vertex2f(x2, y2)
+	gl.Vertex2i(int32(x1), int32(y1))
+	gl.Vertex2i(int32(x2), int32(y2))
 	gl.End()
 }
 
-func (c *Canvas) Rect(x, y float32, w, h float32) {
+func (c *Canvas) Rect(x, y uint32, w, h uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.rect was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -119,16 +124,16 @@ func (c *Canvas) Rect(x, y float32, w, h float32) {
 		panic("window is nil")
 	}
 
-	gl.Color4f(c.r, c.g, c.b, c.a)
+	gl.Color4ub(uint8(c.r), uint8(c.g), uint8(c.b), uint8(c.a))
 	gl.Begin(gl.LINE_LOOP)
-	gl.Vertex2f(x, y)
-	gl.Vertex2f(x+w, y)
-	gl.Vertex2f(x+w, y+h)
-	gl.Vertex2f(x, y+h)
+	gl.Vertex2i(int32(x), int32(y))
+	gl.Vertex2i(int32(x+w), int32(y))
+	gl.Vertex2i(int32(x+w), int32(y+h))
+	gl.Vertex2i(int32(x), int32(y+h))
 	gl.End()
 }
 
-func (c *Canvas) FillRect(x, y float32, w, h float32) {
+func (c *Canvas) FillRect(x, y uint32, w, h uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.fill_rect was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -137,16 +142,16 @@ func (c *Canvas) FillRect(x, y float32, w, h float32) {
 		panic("window is nil")
 	}
 
-	gl.Color4f(c.r, c.g, c.b, c.a)
+	gl.Color4ub(uint8(c.r), uint8(c.g), uint8(c.b), uint8(c.a))
 	gl.Begin(gl.QUADS)
-	gl.Vertex2f(x, y)
-	gl.Vertex2f(x+w, y)
-	gl.Vertex2f(x+w, y+h)
-	gl.Vertex2f(x, y+h)
+	gl.Vertex2i(int32(x), int32(y))
+	gl.Vertex2i(int32(x+w), int32(y))
+	gl.Vertex2i(int32(x+w), int32(y+h))
+	gl.Vertex2i(int32(x), int32(y+h))
 	gl.End()
 }
 
-func (c *Canvas) polygon(points []float32) {
+func (c *Canvas) polygon(points []uint32) {
 	n := len(points) / 2
 	if n < 2 {
 		return
@@ -166,12 +171,12 @@ func (c *Canvas) polygon(points []float32) {
 	)
 }
 
-func cross(ax, ay, bx, by, cx, cy float32) float32 {
-	return (bx-ax)*(cy-ay) - (by-ay)*(cx-ax)
+func cross(ax, ay, bx, by, cx, cy uint32) int32 {
+	return int32((bx-ax)*(cy-ay) - (by-ay)*(cx-ax))
 }
 
-func pointInTriangle(px, py float32,
-	ax, ay, bx, by, cx, cy float32) bool {
+func pointInTriangle(px, py uint32,
+	ax, ay, bx, by, cx, cy uint32) bool {
 
 	c1 := cross(px, py, ax, ay, bx, by)
 	c2 := cross(px, py, bx, by, cx, cy)
@@ -181,9 +186,9 @@ func pointInTriangle(px, py float32,
 		(c1 <= 0 && c2 <= 0 && c3 <= 0)
 }
 
-func triangulatePolygon(points []float32) []float32 {
-	tris := []float32{}
-	verts := append([]float32{}, points...)
+func triangulatePolygon(points []uint32) []uint32 {
+	tris := []uint32{}
+	verts := append([]uint32{}, points...)
 
 	for len(verts) >= 6 {
 		n := len(verts) / 2
@@ -235,16 +240,16 @@ func triangulatePolygon(points []float32) []float32 {
 	return tris
 }
 
-func (c *Canvas) triangle(x1, y1, x2, y2, x3, y3 float32) {
-	gl.Color4f(c.r, c.g, c.b, c.a)
+func (c *Canvas) triangle(x1, y1, x2, y2, x3, y3 uint32) {
+	gl.Color4ub(uint8(c.r), uint8(c.g), uint8(c.b), uint8(c.a))
 	gl.Begin(gl.TRIANGLES)
-	gl.Vertex2f(x1, y1)
-	gl.Vertex2f(x2, y2)
-	gl.Vertex2f(x3, y3)
+	gl.Vertex2i(int32(x1), int32(y1))
+	gl.Vertex2i(int32(x2), int32(y2))
+	gl.Vertex2i(int32(x3), int32(y3))
 	gl.End()
 }
 
-func (c *Canvas) fillPolygon(points []float32) {
+func (c *Canvas) fillPolygon(points []uint32) {
 	tris := triangulatePolygon(points)
 
 	for i := 0; i < len(tris); i += 6 {
@@ -256,7 +261,7 @@ func (c *Canvas) fillPolygon(points []float32) {
 	}
 }
 
-func (c *Canvas) Path(x, y float32) {
+func (c *Canvas) Path(x, y uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.path was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -265,10 +270,10 @@ func (c *Canvas) Path(x, y float32) {
 		panic("window is nil")
 	}
 
-	c.points = []float32{x, y}
+	c.points = []uint32{x, y}
 }
 
-func (c *Canvas) Vertex(x, y float32) {
+func (c *Canvas) Vertex(x, y uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.vertex was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return

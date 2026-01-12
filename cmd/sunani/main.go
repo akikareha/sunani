@@ -83,35 +83,35 @@ func main() {
 			canvas.Begin()
 		}).Export("canvas.begin").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, r, g, b, a float32) {
+		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
 			canvas.Clear(r, g, b, a)
 		}).Export("canvas.clear").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, r, g, b, a float32) {
+		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
 			canvas.Color(r, g, b, a)
 		}).Export("canvas.color").
 		NewFunctionBuilder().
 		WithFunc(func(
 			ctx context.Context,
-			x1, y1 float32,
-			x2, y2 float32,
+			x1, y1 uint32,
+			x2, y2 uint32,
 		) {
 			canvas.Line(x1, y1, x2, y2)
 		}).Export("canvas.line").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y float32, w, h float32) {
+		WithFunc(func(ctx context.Context, x, y uint32, w, h uint32) {
 			canvas.Rect(x, y, w, h)
 		}).Export("canvas.rect").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y float32, w, h float32) {
+		WithFunc(func(ctx context.Context, x, y uint32, w, h uint32) {
 			canvas.FillRect(x, y, w, h)
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y float32) {
+		WithFunc(func(ctx context.Context, x, y uint32) {
 			canvas.Path(x, y)
 		}).Export("canvas.path").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y float32) {
+		WithFunc(func(ctx context.Context, x, y uint32) {
 			canvas.Vertex(x, y)
 		}).Export("canvas.vertex").
 		NewFunctionBuilder().

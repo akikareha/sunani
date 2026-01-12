@@ -1,8 +1,6 @@
 package main
 
 import (
-	"math"
-
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tetratelabs/wazero/api"
 )
@@ -31,11 +29,11 @@ func (sys *System) IsEnabled() bool {
 	return sys.init != nil
 }
 
-func (sys *System) doResize(width, height float32) {
+func (sys *System) doResize(width, height uint32) {
 	_, err := sys.resize.Call(
 		ctx,
-		uint64(math.Float32bits(width)),
-		uint64(math.Float32bits(height)),
+		uint64(width),
+		uint64(height),
 	)
 	if err != nil {
 		die("sunani_system_resize call failed:", err)
@@ -63,11 +61,11 @@ func (sys *System) Init(window *glfw.Window) {
 			w *glfw.Window,
 			width, height int,
 		) {
-			sys.doResize(float32(width), float32(height))
+			sys.doResize(uint32(width), uint32(height))
 		})
 
 		fbw, fbh := window.GetFramebufferSize()
-		sys.doResize(float32(fbw), float32(fbh))
+		sys.doResize(uint32(fbw), uint32(fbh))
 	}
 }
 

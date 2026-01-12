@@ -163,12 +163,12 @@ const importObject = {
     "canvas.clear": (r, g, b, a) => {
       ctx2d.save();
       ctx2d.setTransform(1, 0, 0, 1, 0, 0);
-      ctx2d.fillStyle = `rgba(${(r*255)|0},${(g*255)|0},${(b*255)|0},${a})`;
+      ctx2d.fillStyle = `rgba(${r},${g},${b},${a/255})`;
       ctx2d.fillRect(0, 0, canvas.width, canvas.height);
       ctx2d.restore();
     },
     "canvas.color": (r, g, b, a) => {
-      currentColor = `rgba(${(r*255)|0},${(g*255)|0},${(b*255)|0},${a})`;
+      currentColor = `rgba(${r},${g},${b},${a/255})`;
       ctx2d.strokeStyle = currentColor;
       ctx2d.fillStyle = currentColor;
     },
@@ -343,8 +343,8 @@ canvas.addEventListener("contextmenu", (e) => {
 canvas.addEventListener("wheel", (e) => {
   e.preventDefault();
   // GLFW-like
-  const xoff = e.deltaX / 128;
-  const yoff = -e.deltaY / 128;
+  let xoff = Math.trunc(e.deltaX / 100);
+  let yoff = -Math.trunc(e.deltaY / 100);
   call("sunani_mouse_wheel", xoff, yoff);
 }, { passive: false });
 

@@ -5,7 +5,7 @@ import (
 )
 
 //export sunani_mouse_motion
-func mouseMotion(x, y float32) {
+func mouseMotion(x, y uint32) {
 	mouseX = x
 	mouseY = y
 }
@@ -30,7 +30,7 @@ func mouseButton(button uint32, action uint32) {
 }
 
 //export sunani_mouse_wheel
-func mouseWheel(xoff, yoff float32) {
+func mouseWheel(xoff, yoff uint32) {
 	mouseSize += yoff
 	if mouseSize < 1 {
 		mouseSize = 1

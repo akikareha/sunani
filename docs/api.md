@@ -38,7 +38,7 @@ This function is called at least once when app is launched.
 
 ```
 //export sunani_system_resize
-func systemResize(w, h float32)
+func systemResize(w, h uint32)
 ```
 
 * w, h: Canvas width and height in pixels.
@@ -182,7 +182,7 @@ canvas.Begin()
 Clears canvas by filling with specified color.
 
 ```
-canvas.Clear(r, g, b, a float32)
+canvas.Clear(r, g, b, a uint32)
 ```
 
 * r, g, b, a: Color.
@@ -192,7 +192,7 @@ canvas.Clear(r, g, b, a float32)
 Sets drawing color.
 
 ```
-canvas.Color(r, g, b, a float32)
+canvas.Color(r, g, b, a uint32)
 ```
 
 * r, g, b, a: Color.
@@ -202,7 +202,7 @@ canvas.Color(r, g, b, a float32)
 Draws line.
 
 ```
-canvas.Line(x1, y1 float32, x2, y2 float32)
+canvas.Line(x1, y1 uint32, x2, y2 uint32)
 ```
 
 * x1, y1: Start position.
@@ -213,7 +213,7 @@ canvas.Line(x1, y1 float32, x2, y2 float32)
 Draws rect.
 
 ```
-canvas.Rect(x, y float32, w, h float32)
+canvas.Rect(x, y uint32, w, h uint32)
 ```
 
 * x, y: Upper left corner position.
@@ -224,7 +224,7 @@ canvas.Rect(x, y float32, w, h float32)
 Draws filled rect.
 
 ```
-canvas.FillRect(x, y float32, w, h float32)
+canvas.FillRect(x, y uint32, w, h uint32)
 ```
 
 * x, y: Upper left corner position.
@@ -235,7 +235,7 @@ canvas.FillRect(x, y float32, w, h float32)
 Starts drawing polygon.
 
 ```
-canvas.Path(x, y float32)
+canvas.Path(x, y uint32)
 ```
 
 * x, y: Starting vertex.
@@ -245,7 +245,7 @@ canvas.Path(x, y float32)
 Adds vertex to drawing polygon.
 
 ```
-canvas.Vertex(x, y float32)
+canvas.Vertex(x, y uint32)
 ```
 
 * x, y: Vertex.
@@ -361,7 +361,7 @@ This function is called when mouse cursor moved.
 
 ```
 //export sunani_mouse_motion
-func mouseMotion(x, y float32)
+func mouseMotion(x, y uint32)
 ```
 
 * x, y: Mouse cursor position on canvas in pixels
@@ -384,7 +384,7 @@ This function is called when mouse wheel is moved.
 
 ```
 //export sunani_mouse_wheel
-func mouseWheel(xoff float32, yoff float32)
+func mouseWheel(xoff uint32, yoff uint32)
 ```
 
 * xoff, yoff: Scroll amounts.

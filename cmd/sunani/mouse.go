@@ -1,8 +1,6 @@
 package main
 
 import (
-	"math"
-
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/tetratelabs/wazero/api"
 )
@@ -54,8 +52,8 @@ func (m *Mouse) Init(window *glfw.Window) {
 		) {
 			_, err := m.motion.Call(
 				ctx,
-				uint64(math.Float32bits(float32(x))),
-				uint64(math.Float32bits(float32(y))),
+				uint64(x),
+				uint64(y),
 			)
 			if err != nil {
 				die("sunani_mouse_motion call failed:", err)
@@ -91,8 +89,8 @@ func (m *Mouse) Init(window *glfw.Window) {
 		) {
 			_, err := m.wheel.Call(
 				ctx,
-				uint64(math.Float32bits(float32(xoff))),
-				uint64(math.Float32bits(float32(yoff))),
+				uint64(xoff),
+				uint64(yoff),
 			)
 			if err != nil {
 				die("sunani_mouse_wheel call failed:", err)
