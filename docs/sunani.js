@@ -174,12 +174,12 @@ const importObject = {
     },
     "canvas.line": (x1, y1, x2, y2) => {
       ctx2d.beginPath();
-      ctx2d.moveTo(x1, y1);
-      ctx2d.lineTo(x2, y2);
+      ctx2d.moveTo(x1 + 0.5, y1 + 0.5);
+      ctx2d.lineTo(x2 + 0.5, y2 + 0.5);
       ctx2d.stroke();
     },
     "canvas.rect": (x, y, w, h) => {
-      ctx2d.strokeRect(x, y, w, h);
+      ctx2d.strokeRect(x + 0.5, y + 0.5, w, h);
     },
     "canvas.fill_rect": (x, y, w, h) => {
       ctx2d.fillRect(x, y, w, h);

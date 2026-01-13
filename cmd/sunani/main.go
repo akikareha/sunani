@@ -175,6 +175,7 @@ func main() {
 			die("gl init failed:", err)
 		}
 
+		glfw.WindowHint(glfw.Samples, 4)
 		window, err = glfw.CreateWindow(512, 512, "Sunani", nil, nil)
 		if err != nil {
 			die(err)
