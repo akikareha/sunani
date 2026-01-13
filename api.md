@@ -235,10 +235,8 @@ canvas.FillRect(x, y uint32, w, h uint32)
 Starts drawing polygon.
 
 ```
-canvas.Path(x, y uint32)
+canvas.Path()
 ```
-
-* x, y: Starting vertex.
 
 ### vertex
 

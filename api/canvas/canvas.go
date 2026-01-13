@@ -19,7 +19,7 @@ func Rect(x, y uint32, w, h uint32)
 func FillRect(x, y uint32, w, h uint32)
 
 //go:wasmimport sunani canvas.path
-func Path(x, y uint32)
+func Path()
 
 //go:wasmimport sunani canvas.vertex
 func Vertex(x, y uint32)

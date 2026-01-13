@@ -94,6 +94,8 @@ const ctx2d = canvas.getContext("2d", { alpha: true });
 const fbOffscreen = document.createElement("canvas");
 const fbOffCtx = fbOffscreen.getContext("2d", { alpha: true });
 
+let points = [];
+
 // HiDPI resize
 const resize = () => {
   const dpr = window.devicePixelRatio || 1;
@@ -184,18 +186,34 @@ const importObject = {
     "canvas.fill_rect": (x, y, w, h) => {
       ctx2d.fillRect(x, y, w, h);
     },
-    "canvas.path": (x, y) => {
-      ctx2d.beginPath();
-      ctx2d.moveTo(x, y);
+    "canvas.path": () => {
+      points = [];
     },
     "canvas.vertex": (x, y) => {
-      ctx2d.lineTo(x, y);
+      points.push(x);
+      points.push(y);
     },
     "canvas.polygon": () => {
+      if (points.length < 2) {
+        return;
+      }
+      ctx2d.beginPath();
+      ctx2d.moveTo(points[0] + 0.5, points[1] + 0.5);
+      for (let i = 2; i < points.length; i += 2) {
+        ctx2d.lineTo(points[i] + 0.5, points[i + 1] + 0.5);
+      }
       ctx2d.closePath();
       ctx2d.stroke();
     },
     "canvas.fill_polygon": () => {
+      if (points.length < 2) {
+        return;
+      }
+      ctx2d.beginPath();
+      ctx2d.moveTo(points[0], points[1]);
+      for (let i = 2; i < points.length; i += 2) {
+        ctx2d.lineTo(points[i], points[i + 1]);
+      }
       ctx2d.closePath();
       ctx2d.fill();
     },

@@ -107,8 +107,8 @@ func main() {
 			canvas.FillRect(x, y, w, h)
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y uint32) {
-			canvas.Path(x, y)
+		WithFunc(func(ctx context.Context) {
+			canvas.Path()
 		}).Export("canvas.path").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, x, y uint32) {

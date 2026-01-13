@@ -261,7 +261,7 @@ func (c *Canvas) fillPolygon(points []uint32) {
 	}
 }
 
-func (c *Canvas) Path(x, y uint32) {
+func (c *Canvas) Path() {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.path was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
 		return
@@ -270,7 +270,7 @@ func (c *Canvas) Path(x, y uint32) {
 		panic("window is nil")
 	}
 
-	c.points = []uint32{x, y}
+	c.points = []uint32{}
 }
 
 func (c *Canvas) Vertex(x, y uint32) {
