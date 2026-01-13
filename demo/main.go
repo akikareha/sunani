@@ -7,6 +7,7 @@ import (
 	"github.com/akikareha/sunani/api/canvas"
 	"github.com/akikareha/sunani/api/console"
 	"github.com/akikareha/sunani/api/fb"
+	"github.com/akikareha/sunani/base/font"
 )
 
 var width, height uint32
@@ -90,6 +91,19 @@ func canvasDraw() {
 	canvas.FillPolygon()
 
 	mouseBlink++
+
+	canvas.Color(255, 255, 255, 255)
+	for j := 2; j <= 7; j++ {
+		for i := 0; i <= 15; i++ {
+			font.DrawMinRune(
+				16+uint32(i)*mouseSize,
+				128+uint32(j)*mouseSize*2,
+				mouseSize,
+				mouseSize*2,
+				rune(j*16+i),
+			)
+		}
+	}
 }
 
 func fbDraw() {

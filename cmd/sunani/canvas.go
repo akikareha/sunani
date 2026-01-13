@@ -110,8 +110,8 @@ func (c *Canvas) Line(x1, y1 uint32, x2, y2 uint32) {
 
 	gl.Color4ub(uint8(c.r), uint8(c.g), uint8(c.b), uint8(c.a))
 	gl.Begin(gl.LINES)
-	gl.Vertex2i(int32(x1), int32(y1))
-	gl.Vertex2i(int32(x2), int32(y2))
+	gl.Vertex2f(float32(x1)+0.5, float32(y1)+0.5)
+	gl.Vertex2f(float32(x2)+0.5, float32(y2)+0.5)
 	gl.End()
 }
 
@@ -126,10 +126,10 @@ func (c *Canvas) Rect(x, y uint32, w, h uint32) {
 
 	gl.Color4ub(uint8(c.r), uint8(c.g), uint8(c.b), uint8(c.a))
 	gl.Begin(gl.LINE_LOOP)
-	gl.Vertex2i(int32(x), int32(y))
-	gl.Vertex2i(int32(x+w), int32(y))
-	gl.Vertex2i(int32(x+w), int32(y+h))
-	gl.Vertex2i(int32(x), int32(y+h))
+	gl.Vertex2f(float32(x)+0.5, float32(y)+0.5)
+	gl.Vertex2f(float32(x+w)+0.5, float32(y)+0.5)
+	gl.Vertex2f(float32(x+w)+0.5, float32(y+h)+0.5)
+	gl.Vertex2f(float32(x)+0.5, float32(y+h)+0.5)
 	gl.End()
 }
 
