@@ -23,6 +23,8 @@ var anchorEnabled bool
 var anchorX uint32
 var anchorY uint32
 
+var fontType = 0
+
 //export sunani_system_resize
 func systemResize(w, h uint32) {
 	width = w
@@ -96,13 +98,23 @@ func canvasDraw() {
 	canvas.Color(255, 255, 255, 255)
 	for j := 2; j <= 7; j++ {
 		for i := 0; i <= 15; i++ {
-			font.DrawMinRune(
-				16+uint32(i)*mouseSize,
-				128+uint32(j)*mouseSize*2,
-				mouseSize,
-				mouseSize*2,
-				rune(j*16+i),
-			)
+			if fontType == 0 {
+				font.DrawRune(
+					16+uint32(i)*mouseSize,
+					128+uint32(j)*mouseSize*2,
+					mouseSize,
+					mouseSize*2,
+					rune(j*16+i),
+				)
+			} else if fontType == 1 {
+				font.DrawMinimalRune(
+					16+uint32(i)*mouseSize,
+					128+uint32(j)*mouseSize*2,
+					mouseSize,
+					mouseSize*2,
+					rune(j*16+i),
+				)
+			}
 		}
 	}
 }
@@ -111,6 +123,8 @@ func fbDraw() {
 	fbClear(0, 0, 0, 0)
 	hello := fmt.Sprintf("Hello, Sunani! %d", clock)
 	drawText(16, 32, hello)
+	size := fmt.Sprintf("Size = %d", mouseSize)
+	drawText(16, 48, size)
 
 	fb.Paint()
 }

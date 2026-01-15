@@ -4,19 +4,19 @@ import (
 	"github.com/akikareha/sunani/api/canvas"
 )
 
-func DrawMinRune(x, y uint32, width, height uint32, r rune) {
+func DrawMinimalRune(x, y uint32, width, height uint32, r rune) {
 	if r < 32 || r > 127 {
 		return
 	}
-	drawMinGlyph(x, y, width, height, minGlyphs[r-32])
+	drawMinimalGlyph(x, y, width, height, minimalGlyphs[r-32])
 }
 
 const (
-	gridWidth  = 4
-	gridHeight = 8
+	minimalGridWidth  = 4
+	minimalGridHeight = 8
 )
 
-func drawMinGlyph(x, y uint32, width, height uint32, glyph []uint8) {
+func drawMinimalGlyph(x, y uint32, width, height uint32, glyph []uint8) {
 	if len(glyph) < 1 {
 		return
 	}
@@ -48,10 +48,10 @@ func drawMinGlyph(x, y uint32, width, height uint32, glyph []uint8) {
 			y2 := uint32(glyph[i])
 			i++
 			canvas.Line(
-				x+x1*width/gridWidth,
-				y+y1*height/gridHeight,
-				x+x2*width/gridWidth,
-				y+y2*height/gridHeight,
+				x+x1*width/minimalGridWidth,
+				y+y1*height/minimalGridHeight,
+				x+x2*width/minimalGridWidth,
+				y+y2*height/minimalGridHeight,
 			)
 			x1 = x2
 			y1 = y2
@@ -59,7 +59,7 @@ func drawMinGlyph(x, y uint32, width, height uint32, glyph []uint8) {
 	}
 }
 
-var minGlyphs = [][]uint8{
+var minimalGlyphs = [][]uint8{
 	// SPACE
 	[]uint8{0},
 	// !

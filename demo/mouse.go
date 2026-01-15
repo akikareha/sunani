@@ -26,6 +26,13 @@ func mouseButton(button uint32, action uint32) {
 		if a == lib.ActionPress {
 			anchorEnabled = false
 		}
+	case lib.MouseMiddle:
+		if a == lib.ActionPress {
+			fontType++
+			if fontType > 1 {
+				fontType = 0
+			}
+		}
 	}
 }
 
