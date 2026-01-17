@@ -80,6 +80,14 @@ func main() {
 		}).Export("console.put").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
+			console.Wait()
+		}).Export("console.wait").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			console.Leave()
+		}).Export("console.leave").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
 			canvas.Begin()
 		}).Export("canvas.begin").
 		NewFunctionBuilder().

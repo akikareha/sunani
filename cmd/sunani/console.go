@@ -14,6 +14,8 @@ type Console struct {
 	ptr       uint32
 	length    int
 	paramsSet bool
+
+	done chan struct{}
 }
 
 func NewConsole() *Console {
@@ -98,4 +100,13 @@ func (con *Console) Put(ptr uint32, length uint32) {
 	}
 
 	os.Stdout.Write(buf)
+}
+
+func (con *Console) Wait() {
+	con.done = make(chan struct{})
+	<-con.done
+}
+
+func (con *Console) Leave() {
+	close(con.done)
 }

@@ -147,6 +147,22 @@ console.Put(ptr uint32, length uint32)
 * ptr: Memory address of string to put.
 * length: Length of string to put in bytes.
 
+### wait
+
+Waits until leave is called.
+
+```
+console.Wait()
+```
+
+### leave
+
+Leaves from wait.
+
+```
+console.Leave()
+```
+
 ## Canvas API exports
 
 init

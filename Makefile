@@ -1,13 +1,13 @@
-.PHONY: all build clean fmt
+.PHONY: all build docs clean fmt
 
-all: build web
+all: build docs
 
 build: resources/fonts/ascii8x8.go
 	go build -o sunani ./cmd/sunani
 
-web: build/demo.wasm
+docs: build/demo.wasm build/hello.wasm build/echo.wasm
 	cp web/* docs
-	cp build/demo.wasm docs
+	cp build/*.wasm docs
 
 build/demo.wasm: app-go/demo/*.go
 	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative -o build/demo.wasm ./app-go/demo
@@ -18,8 +18,14 @@ build/demo.wasm: app-go/demo/*.go
 ./png2rgba: tools/png2rgba/*.go
 	go build -o png2rgba ./tools/png2rgba
 
+build/hello.wasm: app-go/hello/*.go
+	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative -o build/hello.wasm ./app-go/hello
+
+build/echo.wasm: app-go/echo/*.go
+	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative -o build/echo.wasm ./app-go/echo
+
 clean:
-	rm -f sunani png2rgba build/demo.wasm
+	rm -f sunani png2rgba build/*.wasm
 
 fmt:
 	go fmt ./...
