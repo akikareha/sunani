@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/api/system"
+	"github.com/akikareha/sunani/app-go/api/system"
 	"github.com/akikareha/sunani/lib"
 )
 

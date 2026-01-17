@@ -1,7 +1,7 @@
 package font
 
 import (
-	"github.com/akikareha/sunani/api/canvas"
+	"github.com/akikareha/sunani/app-go/api/canvas"
 )
 
 func DrawRune(x, y uint32, width, height uint32, r rune) {

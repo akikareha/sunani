@@ -3,9 +3,9 @@ package main
 import (
 	"unsafe"
 
-	"github.com/akikareha/sunani/api/console"
-	"github.com/akikareha/sunani/api/fb"
-	"github.com/akikareha/sunani/api/system"
+	"github.com/akikareha/sunani/app-go/api/console"
+	"github.com/akikareha/sunani/app-go/api/fb"
+	"github.com/akikareha/sunani/app-go/api/system"
 )
 
 const title = "Demo"

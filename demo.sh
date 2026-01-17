@@ -1,2 +1,2 @@
 #!/bin/sh
-./sunani ./demo.wasm
+./sunani build/demo.wasm
