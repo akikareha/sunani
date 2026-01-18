@@ -157,6 +157,10 @@ const importObject = {
       con.textContent += s;
       con.scrollTop = con.scrollHeight;
     },
+    "console.wait": () => {
+    },
+    "console.leave": () => {
+    },
 
     // ---- canvas ----
     "canvas.begin": () => {
