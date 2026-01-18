@@ -5,7 +5,7 @@ all: build docs
 build: resources/fonts/ascii8x8.go
 	go build -o sunani ./cmd/sunani
 
-docs: build/demo.wasm build/hello.wasm build/echo.wasm build/hello-canvas.wasm build/hello-fb.wasm
+docs: build/demo.wasm build/hello.wasm build/echo.wasm build/hello-canvas.wasm build/hello-fb.wasm build/key.wasm
 	cp web/* docs
 	cp build/*.wasm docs
 
@@ -30,8 +30,14 @@ build/hello-canvas.wasm: app-go/hello-canvas/*.go
 build/hello-fb.wasm: app-go/hello-fb/*.go
 	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative -o build/hello-fb.wasm ./app-go/hello-fb
 
+build/key.wasm: app-go/key/*.go
+	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative -o build/key.wasm ./app-go/key
+
 clean:
 	rm -f sunani png2rgba build/*.wasm
 
 fmt:
 	go fmt ./...
+
+key: sunani build/key.wasm
+	./sunani build/key.wasm
