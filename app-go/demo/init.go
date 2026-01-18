@@ -5,21 +5,21 @@ import (
 
 	"github.com/akikareha/sunani/app-go/api/console"
 	"github.com/akikareha/sunani/app-go/api/fb"
-	"github.com/akikareha/sunani/app-go/api/system"
+	"github.com/akikareha/sunani/app-go/api/runtime"
 )
 
 const title = "Demo"
 const hello = "Hello, World!\n"
 
-//export sunani_system_init
-func systemInit() {
+//export sunani_runtime_init
+func runtimeInit() {
 	b := []byte(title)
-	system.Title(
+	runtime.Title(
 		uint32(uintptr(unsafe.Pointer(&b[0]))),
 		uint32(len(title)),
 	)
 
-	system.Cursor(0)
+	runtime.Cursor(0)
 }
 
 //export sunani_console_init

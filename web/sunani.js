@@ -122,11 +122,11 @@ let fbImageData = null;
 
 const importObject = {
   sunani: {
-    // ---- system ----
-    "system.halt": () => {
+    // ---- runtime ----
+    "runtime.halt": () => {
       running = false;
     },
-    "system.title": (ptr, length) => {
+    "runtime.title": (ptr, length) => {
       const mem = wasm.exports.memory;
       const bytes = new Uint8Array(mem.buffer, ptr, length);
       let title = new TextDecoder("utf-8").decode(bytes);
@@ -137,12 +137,19 @@ const importObject = {
       }
       document.title = title;
     },
-    "system.cursor": (enabled) => {
+    "runtime.cursor": (enabled) => {
       if (enabled === 0) {
         canvas.style.cursor = "none";
       } else {
         canvas.style.cursor = "";
       }
+    },
+    "runtime.clear": (r, g, b, a) => {
+      ctx2d.save();
+      ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+      ctx2d.fillStyle = `rgba(${r},${g},${b},${a/255})`;
+      ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+      ctx2d.restore();
     },
 
     // ---- console ----
@@ -165,13 +172,6 @@ const importObject = {
     // ---- canvas ----
     "canvas.begin": () => {
       // do nothing currently
-    },
-    "canvas.clear": (r, g, b, a) => {
-      ctx2d.save();
-      ctx2d.setTransform(1, 0, 0, 1, 0, 0);
-      ctx2d.fillStyle = `rgba(${r},${g},${b},${a/255})`;
-      ctx2d.fillRect(0, 0, canvas.width, canvas.height);
-      ctx2d.restore();
     },
     "canvas.color": (r, g, b, a) => {
       currentColor = `rgba(${r},${g},${b},${a/255})`;
@@ -287,7 +287,7 @@ const call = (name, ...args) => {
 };
 
 // init exports (call if exists)
-call("sunani_system_init");
+call("sunani_runtime_init");
 call("sunani_console_init");
 call("sunani_canvas_init");
 call("sunani_fb_init");
@@ -304,7 +304,7 @@ function notifyResize() {
   canvas.width  = width;
   canvas.height = height;
 
-  call("sunani_system_resize", width, height);
+  call("sunani_runtime_resize", width, height);
 }
 
 const ro = new ResizeObserver(() => {
@@ -378,7 +378,7 @@ notifyResize();
 function frame() {
   if (!running) return;
   resize();
-  call("sunani_system_frame");
+  call("sunani_runtime_frame");
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

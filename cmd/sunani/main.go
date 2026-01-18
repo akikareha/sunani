@@ -49,27 +49,30 @@ func main() {
 	r := wazero.NewRuntime(ctx)
 	defer r.Close(ctx)
 
-	system := NewSystem()
+	runtime := NewRuntime()
 	console := NewConsole()
 	canvas := NewCanvas()
 	fb := NewFB()
 	key := NewKey()
 	mouse := NewMouse()
 
-	// Host module "canvas": expose Clear/Color/Line/Rect
 	_, err := r.NewHostModuleBuilder("sunani").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
-			system.Halt()
-		}).Export("system.halt").
+			runtime.Halt()
+		}).Export("runtime.halt").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
-			system.Title(ptr, length)
-		}).Export("system.title").
+			runtime.Title(ptr, length)
+		}).Export("runtime.title").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, enabled uint32) {
-			system.Cursor(enabled)
-		}).Export("system.cursor").
+			runtime.Cursor(enabled)
+		}).Export("runtime.cursor").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
+			runtime.Clear(r, g, b, a)
+		}).Export("runtime.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
 			console.Params(ptr, int(length))
@@ -90,10 +93,6 @@ func main() {
 		WithFunc(func(ctx context.Context) {
 			canvas.Begin()
 		}).Export("canvas.begin").
-		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
-			canvas.Clear(r, g, b, a)
-		}).Export("canvas.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
 			canvas.Color(r, g, b, a)
@@ -150,7 +149,7 @@ func main() {
 	wasmBytes := mustRead(wasmPath)
 
 	// Don't call _start automatically.
-	// system.frame must be called from each frame.
+	// runtime.frame must be called from each frame.
 	mod, err = r.InstantiateWithConfig(
 		ctx,
 		wasmBytes,
@@ -160,7 +159,7 @@ func main() {
 		die("instantiate guest:", err)
 	}
 
-	system.Preinit()
+	runtime.Preinit()
 	console.Preinit()
 	canvas.Preinit()
 	fb.Preinit()
@@ -190,7 +189,7 @@ func main() {
 		}
 		window.MakeContextCurrent()
 
-		system.Init(window)
+		runtime.Init(window)
 		canvas.Init(window)
 		fb.Init(window)
 		key.Init(window)
@@ -212,7 +211,7 @@ func main() {
 
 		// --- main loop ---
 		for !window.ShouldClose() {
-			system.Frame()
+			runtime.Frame()
 
 			window.SwapBuffers()
 			glfw.PollEvents()

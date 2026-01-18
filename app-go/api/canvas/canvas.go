@@ -3,9 +3,6 @@ package canvas
 //go:wasmimport sunani canvas.begin
 func Begin()
 
-//go:wasmimport sunani canvas.clear
-func Clear(r, g, b, a uint32)
-
 //go:wasmimport sunani canvas.color
 func Color(r, g, b, a uint32)
 

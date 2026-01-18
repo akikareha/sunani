@@ -7,6 +7,7 @@ import (
 	"github.com/akikareha/sunani/app-go/api/canvas"
 	"github.com/akikareha/sunani/app-go/api/console"
 	"github.com/akikareha/sunani/app-go/api/fb"
+	"github.com/akikareha/sunani/app-go/api/runtime"
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
@@ -25,14 +26,14 @@ var anchorY uint32
 
 var fontType = 0
 
-//export sunani_system_resize
-func systemResize(w, h uint32) {
+//export sunani_runtime_resize
+func runtimeResize(w, h uint32) {
 	width = w
 	height = h
 }
 
-//export sunani_system_frame
-func systemFrame() {
+//export sunani_runtime_frame
+func runtimeFrame() {
 	clock++
 
 	canvasDraw()
@@ -54,8 +55,9 @@ func consoleGet(ptr uint32, length uint32) {
 }
 
 func canvasDraw() {
+	runtime.Clear(16, 16, 24, 255)
+
 	canvas.Begin()
-	canvas.Clear(16, 16, 24, 255)
 
 	canvas.Color(127, 127, 127, 255)
 	canvas.Rect(8, 8, width-16, height-16)

@@ -68,24 +68,6 @@ func (c *Canvas) Begin() {
 	gl.Viewport(0, 0, int32(fw), int32(fh))
 }
 
-func (c *Canvas) Clear(r, g, b, a uint32) {
-	if !c.IsEnabled() {
-		errlog("sunani canvas.clear was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
-		return
-	}
-	if c.window == nil {
-		panic("window is nil")
-	}
-
-	gl.ClearColor(
-		float32(r)/255,
-		float32(g)/255,
-		float32(b)/255,
-		float32(a)/255,
-	)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-}
-
 func (c *Canvas) Color(r, g, b, a uint32) {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.color was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")

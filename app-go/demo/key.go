@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/app-go/api/system"
+	"github.com/akikareha/sunani/app-go/api/runtime"
 	"github.com/akikareha/sunani/lib"
 )
 
@@ -11,6 +11,6 @@ func keyEvent(key uint32, action uint32) {
 	a := lib.Action(action)
 
 	if k == lib.KeyEscape && a == lib.ActionPress {
-		system.Halt()
+		runtime.Halt()
 	}
 }
