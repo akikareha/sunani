@@ -1,6 +1,6 @@
 # Sunani API
 
-* System API
+* Runtime API
     - exports: init resize frame
     - imports: halt title cursor
 * Console API
@@ -17,18 +17,18 @@
 * Mouse API
     - exports: init motion button wheel
 
-## System API exports
+## Runtime API exports
 
 init resize frame
 
 ### init
 
-If this functions is exported, System API is enabled.
-This function is called from host when System API is ready.
+If this functions is exported, Runtime API is enabled.
+This function is called from host when Runtime API is ready.
 
 ```
-//export sunani_system_init
-func systemInit()
+//export sunani_runtime_init
+func runtimeInit()
 ```
 
 ### resize
@@ -37,8 +37,8 @@ This function is called when host window or tab is resized.
 This function is called at least once when app is launched.
 
 ```
-//export sunani_system_resize
-func systemResize(w, h uint32)
+//export sunani_runtime_resize
+func runtimeResize(w, h uint32)
 ```
 
 * w, h: Canvas width and height in pixels.
@@ -48,16 +48,16 @@ func systemResize(w, h uint32)
 This function is called every event loop frame.
 
 ```
-//export sunani_system_frame
-func systemFrame()
+//export sunani_runtime_frame
+func runtimeFrame()
 ```
 
-## System API imports
+## Runtime API imports
 
 halt title cursor
 
 ```
-import "github.com/akikareha/sunani/api/system"
+import "github.com/akikareha/sunani/api/runtime"
 ```
 
 ### halt
@@ -65,7 +65,7 @@ import "github.com/akikareha/sunani/api/system"
 Halts execution of app and close window if possible.
 
 ```
-system.Halt()
+runtime.Halt()
 ```
 
 ### title
@@ -73,7 +73,7 @@ system.Halt()
 Sets title string of window or tab.
 
 ```
-system.Title(ptr uint32, length uint32)
+runtime.Title(ptr uint32, length uint32)
 ```
 
 * ptr: Memory address of title string.
@@ -84,7 +84,7 @@ system.Title(ptr uint32, length uint32)
 Sets visibility of mouse cursor.
 
 ```
-system.Cursor(enabled uint32)
+runtime.Cursor(enabled uint32)
 ```
 
 * enabled:
