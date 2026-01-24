@@ -11,6 +11,7 @@ import (
 
 	"github.com/tetratelabs/wazero"
 	"github.com/tetratelabs/wazero/api"
+	"github.com/tetratelabs/wazero/imports/wasi_snapshot_preview1"
 )
 
 var (
@@ -35,19 +36,20 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Fprintf(
 			os.Stderr,
-			//"usage: %s program.wasm [args...]\n",
-			"usage: %s program.wasm\n",
+			"usage: %s program.wasm [args...]\n",
 			os.Args[0],
 		)
 		os.Exit(1)
 	}
 
 	wasmPath := os.Args[1]
-	//wasmArgs := os.Args[1:] // argv for WASI
+	wasmArgs := os.Args[1:] // argv for WASI
 
 	// --- wazero init ---
 	r := wazero.NewRuntime(ctx)
 	defer r.Close(ctx)
+
+	wasi_snapshot_preview1.MustInstantiate(ctx, r)
 
 	runtime := NewRuntime()
 	console := NewConsole()
@@ -148,13 +150,15 @@ func main() {
 
 	wasmBytes := mustRead(wasmPath)
 
+	config := wazero.NewModuleConfig().
+		WithArgs(wasmArgs...).
+		WithStdout(os.Stdout).
+		WithStderr(os.Stderr).
+		WithStdin(os.Stdin)
+
 	// Don't call _start automatically.
 	// runtime.frame must be called from each frame.
-	mod, err = r.InstantiateWithConfig(
-		ctx,
-		wasmBytes,
-		wazero.NewModuleConfig().WithStartFunctions(),
-	)
+	mod, err = r.InstantiateWithConfig(ctx, wasmBytes, config)
 	if err != nil {
 		die("instantiate guest:", err)
 	}

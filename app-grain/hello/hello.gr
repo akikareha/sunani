@@ -1,0 +1,24 @@
+module Hello
+
+from "bytes" include Bytes
+
+from "runtime/unsafe/wasmi32" include WasmI32
+use WasmI32.{ (+), load, fromGrain }
+
+@externalName("console.put")
+foreign wasm consolePut: (WasmI32, WasmI32) => Void from "sunani"
+
+@externalName("sunani_console_init")
+@unsafe
+let init = () => {
+  let bytes = Bytes.fromString("Hello, World!\n")
+
+  let base = fromGrain(bytes)
+  let len = load(base, 4n)
+  let ptr = base + 8n
+
+  consolePut(ptr, len)
+
+  let _ = 0
+  return
+}

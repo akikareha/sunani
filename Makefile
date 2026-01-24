@@ -5,11 +5,12 @@ all: prepare build docs
 prepare:
 	mkdir -p build/app-go
 	mkdir -p build/app-wat
+	mkdir -p build/app-grain
 
 build: resources/fonts/ascii8x8.go
 	go build -o sunani ./cmd/sunani
 
-docs: app-go app-wat
+docs: app-go app-wat app-grain
 	rm -r docs/*
 	cp -r web/* docs
 	cp -r build/* docs
@@ -64,6 +65,16 @@ app-wat: build/app-wat/hello.wasm
 
 build/app-wat/hello.wasm: app-wat/hello/*.wat
 	wat2wasm -o build/app-wat/hello.wasm app-wat/hello/hello.wat
+
+#
+# app-grain
+#
+
+app-grain: build/app-grain/hello.wasm
+
+build/app-grain/hello.wasm: app-grain/hello/*.gr
+	grain compile app-grain/hello/hello.gr --no-wasm-tail-call \
+	-o build/app-grain/hello.wasm
 
 #
 #
