@@ -31,7 +31,8 @@ app-go: build/app-go/demo.wasm \
         build/app-go/echo.wasm \
         build/app-go/hello-canvas.wasm \
         build/app-go/hello-fb.wasm \
-        build/app-go/key.wasm
+        build/app-go/key.wasm \
+        build/app-go/system.wasm
 
 build/app-go/demo.wasm: app-go/demo/*.go
 	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
@@ -56,6 +57,10 @@ build/app-go/hello-fb.wasm: app-go/hello-fb/*.go
 build/app-go/key.wasm: app-go/key/*.go
 	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/key.wasm ./app-go/key
+
+build/app-go/system.wasm: app-go/system/*.go
+	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	-o build/app-go/system.wasm ./app-go/system
 
 #
 # app-wat
@@ -91,5 +96,5 @@ fmt:
 #
 #
 
-dev: sunani build/app-go/key.wasm
-	./sunani build/app-go/key.wasm
+dev: sunani build/app-go/system.wasm
+	./sunani build/app-go/system.wasm
