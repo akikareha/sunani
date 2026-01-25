@@ -155,17 +155,11 @@ func mouseInit() {}
 
 var mouseX int32
 var mouseY int32
-var mousePrevX int32
-var mousePrevY int32
 
 //export sunani_mouse_motion
 func mouseMotion(x, y int32) {
-	mousePrevX = mouseX
-	mousePrevY = mouseY
-
 	mouseX = x
 	mouseY = y
-
 }
 
 var mouseLeft bool
@@ -211,21 +205,35 @@ func mouseWheel(xoff, yoff int32) {
 // System
 //
 
+var mouseSignX int32 = 1
+var mouseSignY int32 = 1
+
 func showMouse() {
-	canvas.Color(255, 0, 0, 128)
+	if mouseX < 64 {
+		mouseSignX = 1
+	} else if mouseX >= width - 64 {
+		mouseSignX = -1
+	}
+	if mouseY < 64 {
+		mouseSignY = 1
+	} else if mouseY >= height - 64 {
+		mouseSignY = -1
+	}
+
+	canvas.Color(0, 0, 255, 128)
 	canvas.Path()
-	canvas.Vertex(mousePrevX, mousePrevY)
-	canvas.Vertex(mousePrevX+48, mousePrevY+24)
-	canvas.Vertex(mousePrevX+24, mousePrevY+24)
-	canvas.Vertex(mousePrevX+24, mousePrevY+48)
+	canvas.Vertex(mouseX, mouseY)
+	canvas.Vertex(mouseX+48*mouseSignX, mouseY+24*mouseSignY)
+	canvas.Vertex(mouseX+24*mouseSignX, mouseY+24*mouseSignY)
+	canvas.Vertex(mouseX+24*mouseSignX, mouseY+48*mouseSignY)
 	canvas.Polygon()
 
 	canvas.Color(255, 255, 0, 128)
 	canvas.Path()
 	canvas.Vertex(mouseX, mouseY)
-	canvas.Vertex(mouseX+48, mouseY+24)
-	canvas.Vertex(mouseX+24, mouseY+24)
-	canvas.Vertex(mouseX+24, mouseY+48)
+	canvas.Vertex(mouseX+48*mouseSignX, mouseY+24*mouseSignY)
+	canvas.Vertex(mouseX+24*mouseSignX, mouseY+24*mouseSignY)
+	canvas.Vertex(mouseX+24*mouseSignX, mouseY+48*mouseSignY)
 	canvas.FillPolygon()
 }
 

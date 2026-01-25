@@ -279,6 +279,30 @@ func (c *Canvas) Polygon() {
 	c.polygon(c.points)
 }
 
+func area(points []int) int64 {
+	n := len(points) / 2
+	if n < 2 {
+		return 0
+	}
+	var sum int64
+	for i := 0; i < n - 1; i++ {
+		sum += int64(points[i*2]) * int64(points[i*2+3]) -
+			int64(points[i*2+2]) * int64(points[i*2+1])
+	}
+	sum += int64(points[(n-1)*2]) * int64(points[1]) -
+		int64(points[0]) * int64(points[(n-1)*2+1])
+	return sum
+}
+
+func reverse(points []int) []int {
+	rp := []int{}
+	n := len(points) / 2
+	for i := n-1; i >= 0; i-- {
+		rp = append(rp, points[i*2], points[i*2+1])
+	}
+	return rp
+}
+
 func (c *Canvas) FillPolygon() {
 	if !c.IsEnabled() {
 		errlog("sunani canvas.fill_polygon was called, but Canvas API is not enabled.\nExport snunani_canvas_init to enable this API.")
@@ -288,5 +312,12 @@ func (c *Canvas) FillPolygon() {
 		panic("window is nil")
 	}
 
-	c.fillPolygon(c.points)
+	points := c.points
+	a := area(points)
+	if a == 0 {
+		return
+	} else if a < 0 {
+		points = reverse(points)
+	}
+	c.fillPolygon(points)
 }
