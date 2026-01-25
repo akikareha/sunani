@@ -120,10 +120,10 @@ func runtimeFrame() {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		canvas.FillRect(
-			uint32(ox+k.X*pitch/kb.GridWidth+pitch/8),
-			uint32(oy+k.Y*pitch/kb.GridHeight+pitch/8),
-			uint32(k.Width*pitch/kb.GridWidth-pitch/4),
-			uint32(k.Height*pitch/kb.GridHeight-pitch/4),
+			int32(ox+k.X*pitch/kb.GridWidth+pitch/8),
+			int32(oy+k.Y*pitch/kb.GridHeight+pitch/8),
+			int32(k.Width*pitch/kb.GridWidth-pitch/4),
+			int32(k.Height*pitch/kb.GridHeight-pitch/4),
 		)
 	}
 
@@ -137,10 +137,10 @@ func runtimeFrame() {
 		dy := (pitch*k.Height/kb.GridHeight - height) / 2
 		for j, r := range k.Label {
 			font.DrawRune(
-				uint32(ox+k.X*pitch/kb.GridWidth+pitch*j*k.Width/kb.GridWidth/n/2+dx),
-				uint32(oy+k.Y*pitch/kb.GridHeight+dy),
-				uint32(width),
-				uint32(height),
+				int32(ox+k.X*pitch/kb.GridWidth+pitch*j*k.Width/kb.GridWidth/n/2+dx),
+				int32(oy+k.Y*pitch/kb.GridHeight+dy),
+				int32(width),
+				int32(height),
 				r,
 			)
 		}

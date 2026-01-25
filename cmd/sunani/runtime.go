@@ -30,7 +30,7 @@ func (rt *Runtime) IsEnabled() bool {
 	return rt.init != nil
 }
 
-func (rt *Runtime) doResize(width, height uint32) {
+func (rt *Runtime) doResize(width, height int) {
 	_, err := rt.resize.Call(
 		ctx,
 		uint64(width),
@@ -62,11 +62,11 @@ func (rt *Runtime) Init(window *glfw.Window) {
 			w *glfw.Window,
 			width, height int,
 		) {
-			rt.doResize(uint32(width), uint32(height))
+			rt.doResize(width, height)
 		})
 
 		fbw, fbh := window.GetFramebufferSize()
-		rt.doResize(uint32(fbw), uint32(fbh))
+		rt.doResize(fbw, fbh)
 	}
 }
 
@@ -106,7 +106,7 @@ func (rt *Runtime) Title(ptr uint32, length uint32) {
 	rt.window.SetTitle(title)
 }
 
-func (rt *Runtime) Cursor(enabled uint32) {
+func (rt *Runtime) Cursor(enabled bool) {
 	if !rt.IsEnabled() {
 		errlog("sunani runtime.halt was called, but Runtime API is not enabled.\nExport snunani_runtime_init to enable this API.")
 		return
@@ -115,10 +115,10 @@ func (rt *Runtime) Cursor(enabled uint32) {
 		panic("window is nil")
 	}
 
-	if enabled == 0 {
-		rt.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
-	} else {
+	if enabled {
 		rt.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
+	} else {
+		rt.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
 	}
 }
 
@@ -138,7 +138,7 @@ func (rt *Runtime) Frame() {
 	}
 }
 
-func (rt *Runtime) Clear(r, g, b, a uint32) {
+func (rt *Runtime) Clear(r, g, b, a int) {
 	if !rt.IsEnabled() {
 		errlog("sunani runtime.clear was called, but Runtime API is not enabled.\nExport snunani_runtime_init to enable this API.")
 		return

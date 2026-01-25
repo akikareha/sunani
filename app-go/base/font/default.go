@@ -4,7 +4,7 @@ import (
 	"github.com/akikareha/sunani/app-go/api/canvas"
 )
 
-func DrawRune(x, y uint32, width, height uint32, r rune) {
+func DrawRune(x, y int32, width, height int32, r rune) {
 	if r < 32 || r > 127 {
 		return
 	}
@@ -16,7 +16,7 @@ const (
 	gridHeight = 16
 )
 
-func drawGlyph(x, y uint32, width, height uint32, glyph []uint8) {
+func drawGlyph(x, y int32, width, height int32, glyph []uint8) {
 	if len(glyph) < 1 {
 		return
 	}
@@ -35,17 +35,17 @@ func drawGlyph(x, y uint32, width, height uint32, glyph []uint8) {
 		if i+1 >= len(glyph) {
 			return
 		}
-		x1 := uint32(glyph[i])
+		x1 := int32(glyph[i])
 		i++
-		y1 := uint32(glyph[i])
+		y1 := int32(glyph[i])
 		i++
 		for j := 1; j < segments; j++ {
 			if i+1 >= len(glyph) {
 				return
 			}
-			x2 := uint32(glyph[i])
+			x2 := int32(glyph[i])
 			i++
-			y2 := uint32(glyph[i])
+			y2 := int32(glyph[i])
 			i++
 			canvas.Line(
 				x+x1*width/gridWidth,

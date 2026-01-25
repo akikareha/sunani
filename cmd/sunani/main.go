@@ -74,15 +74,15 @@ func main() {
 		}).Export("runtime.title").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, enabled uint32) {
-			runtime.Cursor(enabled)
+			runtime.Cursor(enabled != 0)
 		}).Export("runtime.cursor").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
-			runtime.Clear(r, g, b, a)
+			runtime.Clear(int(r), int(g), int(b), int(a))
 		}).Export("runtime.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
-			console.Params(ptr, int(length))
+			console.Params(ptr, length)
 		}).Export("console.params").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
@@ -102,31 +102,31 @@ func main() {
 		}).Export("canvas.begin").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
-			canvas.Color(r, g, b, a)
+			canvas.Color(int(r), int(g), int(b), int(a))
 		}).Export("canvas.color").
 		NewFunctionBuilder().
 		WithFunc(func(
 			ctx context.Context,
-			x1, y1 uint32,
-			x2, y2 uint32,
+			x1, y1 int32,
+			x2, y2 int32,
 		) {
-			canvas.Line(x1, y1, x2, y2)
+			canvas.Line(int(x1), int(y1), int(x2), int(y2))
 		}).Export("canvas.line").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y uint32, w, h uint32) {
-			canvas.Rect(x, y, w, h)
+		WithFunc(func(ctx context.Context, x, y int32, w, h int32) {
+			canvas.Rect(int(x), int(y), int(w), int(h))
 		}).Export("canvas.rect").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y uint32, w, h uint32) {
-			canvas.FillRect(x, y, w, h)
+		WithFunc(func(ctx context.Context, x, y int32, w, h int32) {
+			canvas.FillRect(int(x), int(y), int(w), int(h))
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			canvas.Path()
 		}).Export("canvas.path").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, x, y uint32) {
-			canvas.Vertex(x, y)
+		WithFunc(func(ctx context.Context, x, y int32) {
+			canvas.Vertex(int(x), int(y))
 		}).Export("canvas.vertex").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
@@ -140,7 +140,7 @@ func main() {
 		WithFunc(func(
 			ctx context.Context,
 			ptr uint32,
-			width, height uint32,
+			width, height int32,
 		) {
 			fb.Params(ptr, int(width), int(height))
 		}).Export("fb.params").

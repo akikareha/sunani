@@ -56,7 +56,7 @@ This function is called at least once when app is launched.
 
 ```
 //export sunani_runtime_resize
-func runtimeResize(w, h uint32)
+func runtimeResize(w, h int32)
 ```
 
 * w, h: Canvas width and height in pixels.
@@ -236,7 +236,7 @@ canvas.Color(r, g, b, a uint32)
 Draws line.
 
 ```
-canvas.Line(x1, y1 uint32, x2, y2 uint32)
+canvas.Line(x1, y1 int32, x2, y2 int32)
 ```
 
 * x1, y1: Start position.
@@ -247,7 +247,7 @@ canvas.Line(x1, y1 uint32, x2, y2 uint32)
 Draws rect.
 
 ```
-canvas.Rect(x, y uint32, w, h uint32)
+canvas.Rect(x, y int32, w, h int32)
 ```
 
 * x, y: Upper left corner position.
@@ -258,7 +258,7 @@ canvas.Rect(x, y uint32, w, h uint32)
 Draws filled rect.
 
 ```
-canvas.FillRect(x, y uint32, w, h uint32)
+canvas.FillRect(x, y int32, w, h int32)
 ```
 
 * x, y: Upper left corner position.
@@ -277,7 +277,7 @@ canvas.Path()
 Adds vertex to drawing polygon.
 
 ```
-canvas.Vertex(x, y uint32)
+canvas.Vertex(x, y int32)
 ```
 
 * x, y: Vertex.
@@ -325,7 +325,7 @@ import "github.com/akikareha/sunani/api/fb"
 Sets framebuffer.
 
 ```
-fb.Params(ptr uint32, width, height uint32)
+fb.Params(ptr uint32, width, height int32)
 ```
 
 * ptr: Memory address of framebuffer.
@@ -393,7 +393,7 @@ This function is called when mouse cursor moved.
 
 ```
 //export sunani_mouse_motion
-func mouseMotion(x, y uint32)
+func mouseMotion(x, y int32)
 ```
 
 * x, y: Mouse cursor position on canvas in pixels
@@ -416,7 +416,7 @@ This function is called when mouse wheel is moved.
 
 ```
 //export sunani_mouse_wheel
-func mouseWheel(xoff uint32, yoff uint32)
+func mouseWheel(xoff, yoff int32)
 ```
 
 * xoff, yoff: Scroll amounts.

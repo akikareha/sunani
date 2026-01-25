@@ -36,10 +36,10 @@ func runtimeInit() {
 	runtime.Cursor(0)
 }
 
-var width, height uint32
+var width, height int32
 
 //export sunani_runtime_resize
-func runtimeResize(w, h uint32) {
+func runtimeResize(w, h int32) {
 	width = w
 	height = h
 }
@@ -49,7 +49,7 @@ var now int64
 var prev int64
 var fps float64
 
-func min(a, b uint32) uint32 {
+func min(a, b int32) int32 {
 	if a < b {
 		return a
 	}
@@ -60,7 +60,7 @@ func min(a, b uint32) uint32 {
 func runtimeFrame() {
 	clock++
 	now = std.Now()
-	if clock % 16 == 0 {
+	if clock%16 == 0 {
 		elapsed := now - prev
 		fps = 16 * 1000 / float64(elapsed)
 		prev = now
@@ -125,8 +125,8 @@ func canvasInit() {}
 // Framebuffer
 //
 
-const fbWidth uint32 = 256
-const fbHeight uint32 = 256
+const fbWidth int32 = 256
+const fbHeight int32 = 256
 
 var framebuffer = make([]byte, fbWidth*fbHeight*4)
 
@@ -153,13 +153,19 @@ func keyInit() {}
 //export sunani_mouse_init
 func mouseInit() {}
 
-var mouseX uint32
-var mouseY uint32
+var mouseX int32
+var mouseY int32
+var mousePrevX int32
+var mousePrevY int32
 
 //export sunani_mouse_motion
-func mouseMotion(x, y uint32) {
+func mouseMotion(x, y int32) {
+	mousePrevX = mouseX
+	mousePrevY = mouseY
+
 	mouseX = x
 	mouseY = y
+
 }
 
 var mouseLeft bool
@@ -193,10 +199,10 @@ func mouseButton(button uint32, action uint32) {
 	}
 }
 
-var wheelX, wheelY uint32
+var wheelX, wheelY int32
 
 //export sunani_mouse_wheel
-func mouseWheel(xoff, yoff uint32) {
+func mouseWheel(xoff, yoff int32) {
 	wheelX += xoff
 	wheelY += yoff
 }
@@ -206,6 +212,14 @@ func mouseWheel(xoff, yoff uint32) {
 //
 
 func showMouse() {
+	canvas.Color(255, 0, 0, 128)
+	canvas.Path()
+	canvas.Vertex(mousePrevX, mousePrevY)
+	canvas.Vertex(mousePrevX+48, mousePrevY+24)
+	canvas.Vertex(mousePrevX+24, mousePrevY+24)
+	canvas.Vertex(mousePrevX+24, mousePrevY+48)
+	canvas.Polygon()
+
 	canvas.Color(255, 255, 0, 128)
 	canvas.Path()
 	canvas.Vertex(mouseX, mouseY)
@@ -215,10 +229,10 @@ func showMouse() {
 	canvas.FillPolygon()
 }
 
-func Print(x, y, sx, sy uint32, s string) {
+func Print(x, y, sx, sy int32, s string) {
 	i := 0
 	for _, r := range s {
-		font.DrawRune(x+uint32(i)*sx, y, sx, sy, r)
+		font.DrawRune(x+int32(i)*sx, y, sx, sy, r)
 		i++
 	}
 }

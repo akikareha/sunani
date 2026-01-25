@@ -10,16 +10,16 @@ type Key struct {
 	Code  lib.Key
 	Label string
 	// grid units
-	X      uint32
-	Y      uint32
-	Width  uint32
-	Height uint32
+	X      int32
+	Y      int32
+	Width  int32
+	Height int32
 }
 
 type Keyboard struct {
 	Keys       []Key
-	GridWidth  uint32
-	GridHeight uint32
+	GridWidth  int32
+	GridHeight int32
 }
 
 var RK61Keys = []Key{
@@ -97,17 +97,17 @@ var RK61 = Keyboard{
 	GridHeight: 12,
 }
 
-func ShowKeyboard(ox, oy uint32, pitch uint32) {
+func ShowKeyboard(ox, oy int32, pitch int32) {
 	kb := RK61
 
 	canvas.Color(64, 64, 64, 18)
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		canvas.FillRect(
-			uint32(ox+k.X*pitch/kb.GridWidth+pitch/8),
-			uint32(oy+k.Y*pitch/kb.GridHeight+pitch/8),
-			uint32(k.Width*pitch/kb.GridWidth-pitch/4),
-			uint32(k.Height*pitch/kb.GridHeight-pitch/4),
+			ox+k.X*pitch/kb.GridWidth+pitch/8,
+			oy+k.Y*pitch/kb.GridHeight+pitch/8,
+			k.Width*pitch/kb.GridWidth-pitch/4,
+			k.Height*pitch/kb.GridHeight-pitch/4,
 		)
 	}
 
@@ -115,16 +115,16 @@ func ShowKeyboard(ox, oy uint32, pitch uint32) {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		n := len(k.Label)
-		width := pitch * k.Width / kb.GridWidth / uint32(n) / 2
+		width := pitch * k.Width / kb.GridWidth / int32(n) / 2
 		height := pitch * k.Height / kb.GridHeight / 2
-		dx := (pitch*k.Width/kb.GridWidth - width*uint32(n)) / 2
+		dx := (pitch*k.Width/kb.GridWidth - width*int32(n)) / 2
 		dy := (pitch*k.Height/kb.GridHeight - height) / 2
 		for j, r := range k.Label {
 			font.DrawRune(
-				uint32(ox+k.X*pitch/kb.GridWidth+pitch*uint32(j)*k.Width/kb.GridWidth/uint32(n)/2+dx),
-				uint32(oy+k.Y*pitch/kb.GridHeight+dy),
-				uint32(width),
-				uint32(height),
+				ox+k.X*pitch/kb.GridWidth+pitch*int32(j)*k.Width/kb.GridWidth/int32(n)/2+dx,
+				oy+k.Y*pitch/kb.GridHeight+dy,
+				width,
+				height,
 				r,
 			)
 		}

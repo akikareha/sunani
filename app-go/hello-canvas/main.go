@@ -25,7 +25,7 @@ func runtimeFrame() {
 	i := 0
 	for _, r := range hello {
 		font.DrawRune(
-			uint32(i)*size,
+			int32(i)*size,
 			0,
 			size,
 			size*2,

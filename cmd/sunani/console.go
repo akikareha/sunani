@@ -12,7 +12,7 @@ type Console struct {
 	get  api.Function
 
 	ptr       uint32
-	length    int
+	length    uint32
 	paramsSet bool
 
 	done chan struct{}
@@ -44,7 +44,7 @@ func (con *Console) Init() {
 	}
 }
 
-func (con *Console) Params(ptr uint32, length int) {
+func (con *Console) Params(ptr uint32, length uint32) {
 	if !con.IsEnabled() {
 		errlog("sunani console.params was called, but Console API is not enabled.\nExport snunani_console_init to enable this API.")
 		return
@@ -64,7 +64,7 @@ func (con *Console) Params(ptr uint32, length int) {
 		for scanner.Scan() {
 			bytes := scanner.Bytes()
 
-			if len(bytes) > con.length {
+			if len(bytes) > int(con.length) {
 				errlog("Console input buffer overflowed")
 				bytes = bytes[:con.length]
 			}

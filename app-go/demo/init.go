@@ -43,8 +43,8 @@ func canvasInit() {}
 func fbInit() {
 	fb.Params(
 		uint32(uintptr(unsafe.Pointer(&framebuffer[0]))),
-		uint32(fbWidth),
-		uint32(fbHeight),
+		int32(fbWidth),
+		int32(fbHeight),
 	)
 }
 

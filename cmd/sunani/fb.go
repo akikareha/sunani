@@ -109,9 +109,9 @@ func (fb *FB) Paint() {
 	gl.Enable(gl.TEXTURE_2D)
 
 	fw, fh := fb.window.GetFramebufferSize()
-	scale := min(fw/fb.width, fh/fb.height)
-	width := fb.width * scale
-	height := fb.height * scale
+	scale := min(fw/int(fb.width), fh/int(fb.height))
+	width := int(fb.width) * scale
+	height := int(fb.height) * scale
 
 	ox := (fw - width) / 2
 	oy := (fh - height) / 2
@@ -119,6 +119,9 @@ func (fb *FB) Paint() {
 	gl.Viewport(int32(ox), int32(oy), int32(width), int32(height))
 
 	size := fb.width * fb.height * 4
+	if size < 0 {
+		size = -size
+	}
 	pix, ok := mem.Read(fb.ptr, uint32(size))
 	if !ok {
 		errlog("mem.Read failed")

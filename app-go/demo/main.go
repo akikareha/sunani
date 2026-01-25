@@ -11,23 +11,23 @@ import (
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
-var width, height uint32
+var width, height int32
 
 var clock uint64
 
-var mouseX uint32
-var mouseY uint32
+var mouseX int32
+var mouseY int32
 var mouseBlink int
-var mouseSize uint32 = 16
+var mouseSize int32 = 16
 
 var anchorEnabled bool
-var anchorX uint32
-var anchorY uint32
+var anchorX int32
+var anchorY int32
 
 var fontType = 0
 
 //export sunani_runtime_resize
-func runtimeResize(w, h uint32) {
+func runtimeResize(w, h int32) {
 	width = w
 	height = h
 }
@@ -102,16 +102,16 @@ func canvasDraw() {
 		for i := 0; i <= 15; i++ {
 			if fontType == 0 {
 				font.DrawRune(
-					16+uint32(i)*mouseSize,
-					128+uint32(j)*mouseSize*2,
+					16+int32(i)*mouseSize,
+					128+int32(j)*mouseSize*2,
 					mouseSize,
 					mouseSize*2,
 					rune(j*16+i),
 				)
 			} else if fontType == 1 {
 				font.DrawMinimalRune(
-					16+uint32(i)*mouseSize,
-					128+uint32(j)*mouseSize*2,
+					16+int32(i)*mouseSize,
+					128+int32(j)*mouseSize*2,
 					mouseSize,
 					mouseSize*2,
 					rune(j*16+i),
