@@ -122,6 +122,10 @@ let fbImageData = null;
 
 const importObject = {
   sunani: {
+    // ---- std ----
+    "std.now": () => {
+      return BigInt(Date.now());
+    },
     // ---- runtime ----
     "runtime.halt": () => {
       running = false;

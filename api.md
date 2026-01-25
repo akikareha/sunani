@@ -1,5 +1,7 @@
 # Sunani API
 
+* Standard API
+    - imports: now
 * Runtime API
     - exports: init resize frame
     - imports: halt title cursor
@@ -16,6 +18,22 @@
     - exports: init event
 * Mouse API
     - exports: init motion button wheel
+
+## Standard API imports
+
+now
+
+```
+import "github.com/akikareha/sunani/api/std"
+```
+
+### now
+
+Returns current UNIX time in ms.
+
+```
+std.Now() i64
+```
 
 ## Runtime API exports
 

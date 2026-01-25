@@ -8,6 +8,7 @@ import (
 	"github.com/akikareha/sunani/app-go/api/console"
 	"github.com/akikareha/sunani/app-go/api/fb"
 	"github.com/akikareha/sunani/app-go/api/runtime"
+	"github.com/akikareha/sunani/app-go/api/std"
 	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/app-go/base/key"
 	"github.com/akikareha/sunani/lib"
@@ -44,6 +45,9 @@ func runtimeResize(w, h uint32) {
 }
 
 var clock uint64
+var now int64
+var prev int64
+var fps float64
 
 func min(a, b uint32) uint32 {
 	if a < b {
@@ -55,6 +59,12 @@ func min(a, b uint32) uint32 {
 //export sunani_runtime_frame
 func runtimeFrame() {
 	clock++
+	now = std.Now()
+	if clock % 16 == 0 {
+		elapsed := now - prev
+		fps = 16 * 1000 / float64(elapsed)
+		prev = now
+	}
 
 	runtime.Clear(0, 0, 0, 255)
 	canvas.Begin()
@@ -213,21 +223,15 @@ func Print(x, y, sx, sy uint32, s string) {
 	}
 }
 
+func btoi(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
+}
+
 func showInfo() {
 	canvas.Color(255, 255, 255, 128)
-	Print(0, 0, 8, 16, fmt.Sprintf("Size: %d x %d", width, height))
-	Print(0, 16, 8, 16, fmt.Sprintf("Clock: %d", clock))
-	Print(0, 32, 8, 16, fmt.Sprintf("Mouse: %d, %d", mouseX, mouseY))
-	buttons := ""
-	if mouseLeft {
-		buttons += " Left"
-	}
-	if mouseMiddle {
-		buttons += " Middle"
-	}
-	if mouseRight {
-		buttons += " Right"
-	}
-	Print(0, 48, 8, 16, fmt.Sprintf("Button:%s", buttons))
-	Print(0, 64, 8, 16, fmt.Sprintf("Wheel: %d, %d", wheelX, wheelY))
+	Print(0, 0, 8, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseMiddle), btoi(mouseRight), wheelX, wheelY))
+	Print(0, 16, 8, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%3.2f", now, clock, fps))
 }

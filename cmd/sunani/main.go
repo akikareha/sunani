@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -59,6 +60,10 @@ func main() {
 	mouse := NewMouse()
 
 	_, err := r.NewHostModuleBuilder("sunani").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) int64 {
+			return time.Now().UnixMilli()
+		}).Export("std.now").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			runtime.Halt()
