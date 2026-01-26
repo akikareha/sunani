@@ -57,4 +57,7 @@ const (
 	KeyDown
 	KeyLeft
 	KeyRight
+
+	// Count
+	KeyCount
 )

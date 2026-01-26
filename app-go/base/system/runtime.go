@@ -7,6 +7,7 @@ import (
 	"github.com/akikareha/sunani/app-go/api/runtime"
 	"github.com/akikareha/sunani/app-go/api/std"
 	"github.com/akikareha/sunani/app-go/base/key"
+	"github.com/akikareha/sunani/lib"
 )
 
 var runtimeInitialized bool
@@ -98,6 +99,8 @@ func SetBg(r, g, b, a int) {
 	bgR, bgG, bgB, bgA = r, g, b, a
 }
 
+var virtualKey lib.Key = lib.KeyUnknown
+
 //export sunani_runtime_frame
 func runtimeFrame() {
 	clock++
@@ -114,7 +117,10 @@ func runtimeFrame() {
 	pitch := min(width/15, height/5)
 	ox := (width - pitch*15) / 2
 	oy := height - pitch*5
-	key.Default.Draw(int(ox), int(oy), int(pitch))
+	virtualKey = key.Default.Draw(
+		int(ox), int(oy), int(pitch), keyTable,
+		int(mouseX), int(mouseY),
+	)
 
 	showConsole(int(ox), int(oy), int(pitch)/4, int(pitch)/2)
 

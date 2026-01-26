@@ -1,5 +1,7 @@
 # Sunani API
 
+* Initialization API
+    - exports: init start
 * Standard API
     - imports: now
 * Runtime API
@@ -18,6 +20,28 @@
     - exports: init event
 * Mouse API
     - exports: init motion button wheel
+
+## Initialization API exports
+
+init start
+
+### init
+
+Called from host before host is initialized.
+
+```
+//export sunani_init
+func init()
+```
+
+### start
+
+Called from host after host is initialized.
+
+```
+//export sunani_start
+func start()
+```
 
 ## Standard API imports
 

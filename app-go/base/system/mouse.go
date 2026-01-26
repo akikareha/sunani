@@ -1,6 +1,7 @@
 package system
 
 import (
+	"github.com/akikareha/sunani/app-go/base/key"
 	"github.com/akikareha/sunani/lib"
 )
 
@@ -53,6 +54,10 @@ func mouseButton(button uint32, action uint32) {
 	case lib.MouseLeft:
 		if a == lib.ActionPress {
 			mouseLeft = true
+
+			if virtualKey != lib.KeyUnknown {
+				addConsoleLine(key.Char(virtualKey))
+			}
 		} else if a == lib.ActionRelease {
 			mouseLeft = false
 		}

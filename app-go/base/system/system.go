@@ -42,13 +42,6 @@ func fbInit() {
 }
 
 //
-// Keyboard
-//
-
-//export sunani_key_init
-func keyInit() {}
-
-//
 // Start
 //
 

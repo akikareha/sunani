@@ -22,21 +22,45 @@ type Keyboard struct {
 	GridHeight int8
 }
 
-func (kb *Keyboard) Draw(ox, oy int, pitch int) {
-	canvas.Color(64, 64, 64, 18)
+func (kb *Keyboard) Draw(ox, oy int, pitch int, states []bool, mouseX, mouseY int) lib.Key {
+	found := lib.KeyUnknown
+
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
+		if states[k.Code] {
+			canvas.Color(128, 128, 128, 128)
+		} else {
+			canvas.Color(64, 64, 64, 64)
+		}
 		canvas.FillRect(
 			int32(ox+int(k.X)*pitch/int(kb.GridWidth)+pitch/8),
 			int32(oy+int(k.Y)*pitch/int(kb.GridHeight)+pitch/8),
 			int32(int(k.Width)*pitch/int(kb.GridWidth)-pitch/4),
 			int32(int(k.Height)*pitch/int(kb.GridHeight)-pitch/4),
 		)
+		if mouseX >= ox+int(k.X)*pitch/int(kb.GridWidth) &&
+			mouseX < ox+int(k.X)*pitch/int(kb.GridWidth)+int(k.Width)*pitch/int(kb.GridWidth) &&
+			mouseY >= oy+int(k.Y)*pitch/int(kb.GridHeight) &&
+			mouseY < oy+int(k.Y)*pitch/int(kb.GridHeight)+int(k.Height)*pitch/int(kb.GridHeight) {
+			canvas.Color(128, 128, 0, 128)
+			canvas.Rect(
+				int32(ox+int(k.X)*pitch/int(kb.GridWidth)),
+				int32(oy+int(k.Y)*pitch/int(kb.GridHeight)),
+				int32(int(k.Width)*pitch/int(kb.GridWidth)),
+				int32(int(k.Height)*pitch/int(kb.GridHeight)),
+			)
+
+			found = k.Code
+		}
 	}
 
-	canvas.Color(255, 255, 255, 128)
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
+		if states[k.Code] {
+			canvas.Color(0, 0, 0, 255)
+		} else {
+			canvas.Color(255, 255, 255, 128)
+		}
 		n := len(k.Label)
 		width := pitch * int(k.Width) / int(kb.GridWidth) / n / 2
 		height := pitch * int(k.Height) / int(kb.GridHeight) / 2
@@ -50,4 +74,6 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int) {
 			k.Label,
 		)
 	}
+
+	return found
 }
