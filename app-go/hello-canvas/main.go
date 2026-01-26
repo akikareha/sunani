@@ -24,11 +24,11 @@ func runtimeFrame() {
 	canvas.Color(255, 255, 255, 255)
 	i := 0
 	for _, r := range hello {
-		font.DrawRune(
-			int32(i)*size,
+		font.Default.Draw(
+			i*int(size),
 			0,
-			size,
-			size*2,
+			int(size),
+			int(size)*2,
 			r,
 		)
 		i++

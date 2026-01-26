@@ -1,37 +1,16 @@
-package main
+package key
 
 import (
-	"github.com/akikareha/sunani/app-go/api/canvas"
-	"github.com/akikareha/sunani/app-go/api/runtime"
-	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/lib"
 )
 
-const size = 16
-
-//export sunani_runtime_init
-func runtimeInit() {}
-
-//export sunani_canvas_init
-func canvasInit() {}
-
-type Key struct {
-	Code  lib.Key
-	Label string
-	// grid units
-	X      int
-	Y      int
-	Width  int
-	Height int
+var Default = Keyboard{
+	Keys:       defaultKeys,
+	GridWidth:  12,
+	GridHeight: 12,
 }
 
-type Keyboard struct {
-	Keys       []Key
-	GridWidth  int
-	GridHeight int
-}
-
-var RK61Keys = []Key{
+var defaultKeys = []Key{
 	// row 1
 	{lib.KeyEscape, "Esc", 0, 0, 12, 12},
 	{lib.Key1, "1", 12, 0, 12, 12},
@@ -98,51 +77,4 @@ var RK61Keys = []Key{
 	{lib.KeyUnknown, "Menu", 134, 48, 15, 12},
 	{lib.KeyUnknown, "Ctrl", 149, 48, 15, 12},
 	{lib.KeyUnknown, "Fn", 164, 48, 16, 12},
-}
-
-var RK61 = Keyboard{
-	Keys:       RK61Keys,
-	GridWidth:  12,
-	GridHeight: 12,
-}
-
-//export sunani_runtime_frame
-func runtimeFrame() {
-	runtime.Clear(0, 0, 0, 255)
-
-	canvas.Begin()
-
-	kb := RK61
-	ox, oy := 0, 0
-	pitch := 32
-
-	canvas.Color(64, 64, 64, 255)
-	for i := 0; i < len(kb.Keys); i++ {
-		k := kb.Keys[i]
-		canvas.FillRect(
-			int32(ox+k.X*pitch/kb.GridWidth+pitch/8),
-			int32(oy+k.Y*pitch/kb.GridHeight+pitch/8),
-			int32(k.Width*pitch/kb.GridWidth-pitch/4),
-			int32(k.Height*pitch/kb.GridHeight-pitch/4),
-		)
-	}
-
-	canvas.Color(255, 255, 255, 255)
-	for i := 0; i < len(kb.Keys); i++ {
-		k := kb.Keys[i]
-		n := len(k.Label)
-		width := pitch * k.Width / kb.GridWidth / n / 2
-		height := pitch * k.Height / kb.GridHeight / 2
-		dx := (pitch*k.Width/kb.GridWidth - width*n) / 2
-		dy := (pitch*k.Height/kb.GridHeight - height) / 2
-		for j, r := range k.Label {
-			font.Default.Draw(
-				ox+k.X*pitch/kb.GridWidth+pitch*j*k.Width/kb.GridWidth/n/2+dx,
-				oy+k.Y*pitch/kb.GridHeight+dy,
-				width,
-				height,
-				r,
-			)
-		}
-	}
 }

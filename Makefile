@@ -58,7 +58,7 @@ build/app-go/key.wasm: app-go/key/*.go
 	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/key.wasm ./app-go/key
 
-build/app-go/system.wasm: app-go/system/*.go
+build/app-go/system.wasm: app-go/system/*.go app-go/base/system/*.go
 	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/system.wasm ./app-go/system
 

@@ -101,19 +101,19 @@ func canvasDraw() {
 	for j := 2; j <= 7; j++ {
 		for i := 0; i <= 15; i++ {
 			if fontType == 0 {
-				font.DrawRune(
-					16+int32(i)*mouseSize,
-					128+int32(j)*mouseSize*2,
-					mouseSize,
-					mouseSize*2,
+				font.Default.Draw(
+					16+i*int(mouseSize),
+					128+j*int(mouseSize)*2,
+					int(mouseSize),
+					int(mouseSize)*2,
 					rune(j*16+i),
 				)
 			} else if fontType == 1 {
-				font.DrawMinimalRune(
-					16+int32(i)*mouseSize,
-					128+int32(j)*mouseSize*2,
-					mouseSize,
-					mouseSize*2,
+				font.Minimal.Draw(
+					16+i*int(mouseSize),
+					128+j*int(mouseSize)*2,
+					int(mouseSize),
+					int(mouseSize)*2,
 					rune(j*16+i),
 				)
 			}

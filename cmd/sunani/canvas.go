@@ -285,19 +285,19 @@ func area(points []int) int64 {
 		return 0
 	}
 	var sum int64
-	for i := 0; i < n - 1; i++ {
-		sum += int64(points[i*2]) * int64(points[i*2+3]) -
-			int64(points[i*2+2]) * int64(points[i*2+1])
+	for i := 0; i < n-1; i++ {
+		sum += int64(points[i*2])*int64(points[i*2+3]) -
+			int64(points[i*2+2])*int64(points[i*2+1])
 	}
-	sum += int64(points[(n-1)*2]) * int64(points[1]) -
-		int64(points[0]) * int64(points[(n-1)*2+1])
+	sum += int64(points[(n-1)*2])*int64(points[1]) -
+		int64(points[0])*int64(points[(n-1)*2+1])
 	return sum
 }
 
 func reverse(points []int) []int {
 	rp := []int{}
 	n := len(points) / 2
-	for i := n-1; i >= 0; i-- {
+	for i := n - 1; i >= 0; i-- {
 		rp = append(rp, points[i*2], points[i*2+1])
 	}
 	return rp

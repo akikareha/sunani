@@ -175,6 +175,11 @@ func main() {
 	key.Preinit()
 	mouse.Preinit()
 
+	init := mod.ExportedFunction("sunani_init")
+	if init != nil {
+		init.Call(ctx)
+	}
+
 	console.Init()
 	var window *glfw.Window
 	if canvas.IsEnabled() || fb.IsEnabled() {
@@ -203,6 +208,11 @@ func main() {
 		fb.Init(window)
 		key.Init(window)
 		mouse.Init(window)
+	}
+
+	start := mod.ExportedFunction("sunani_start")
+	if start != nil {
+		start.Call(ctx)
 	}
 
 	if window != nil {

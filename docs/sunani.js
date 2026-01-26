@@ -291,6 +291,7 @@ const call = (name, ...args) => {
 };
 
 // init exports (call if exists)
+call("sunani_init");
 call("sunani_runtime_init");
 call("sunani_console_init");
 call("sunani_canvas_init");
@@ -327,6 +328,9 @@ input.addEventListener("keydown", (e) => {
 
     refreshMem();
     memU8.set(bytes, consolePtr);
+
+    con.textContent += line + "\n";
+    con.scrollTop = con.scrollHeight;
 
     call("sunani_console_get", consolePtr, bytes.length);
   }
@@ -377,6 +381,8 @@ canvas.addEventListener("wheel", (e) => {
 // init
 notifyResize();
 
+call("sunani_start");
+
 // ==== main loop ====
 
 function frame() {
@@ -386,3 +392,4 @@ function frame() {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+

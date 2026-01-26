@@ -10,104 +10,27 @@ type Key struct {
 	Code  lib.Key
 	Label string
 	// grid units
-	X      int32
-	Y      int32
-	Width  int32
-	Height int32
+	X      int16
+	Y      int16
+	Width  int16
+	Height int16
 }
 
 type Keyboard struct {
 	Keys       []Key
-	GridWidth  int32
-	GridHeight int32
+	GridWidth  int8
+	GridHeight int8
 }
 
-var RK61Keys = []Key{
-	// row 1
-	{lib.KeyEscape, "Esc", 0, 0, 12, 12},
-	{lib.Key1, "1", 12, 0, 12, 12},
-	{lib.Key2, "2", 24, 0, 12, 12},
-	{lib.Key3, "3", 36, 0, 12, 12},
-	{lib.Key4, "4", 48, 0, 12, 12},
-	{lib.Key5, "5", 60, 0, 12, 12},
-	{lib.Key6, "6", 72, 0, 12, 12},
-	{lib.Key7, "7", 84, 0, 12, 12},
-	{lib.Key8, "8", 96, 0, 12, 12},
-	{lib.Key9, "9", 108, 0, 12, 12},
-	{lib.Key0, "0", 120, 0, 12, 12},
-	{lib.KeyUnknown, "-", 132, 0, 12, 12},
-	{lib.KeyUnknown, "=", 144, 0, 12, 12},
-	{lib.KeyBackspace, "BS", 156, 0, 24, 12},
-	// row 2
-	{lib.KeyTab, "Tab", 0, 12, 18, 12},
-	{lib.KeyQ, "Q", 18, 12, 12, 12},
-	{lib.KeyW, "W", 30, 12, 12, 12},
-	{lib.KeyE, "E", 42, 12, 12, 12},
-	{lib.KeyR, "R", 54, 12, 12, 12},
-	{lib.KeyT, "T", 66, 12, 12, 12},
-	{lib.KeyY, "Y", 78, 12, 12, 12},
-	{lib.KeyU, "U", 90, 12, 12, 12},
-	{lib.KeyI, "I", 102, 12, 12, 12},
-	{lib.KeyO, "O", 114, 12, 12, 12},
-	{lib.KeyP, "P", 126, 12, 12, 12},
-	{lib.KeyUnknown, "[", 138, 12, 12, 12},
-	{lib.KeyUnknown, "]", 150, 12, 12, 12},
-	{lib.KeyUnknown, "\\", 162, 12, 18, 12},
-	// row 3
-	{lib.KeyUnknown, "Caps", 0, 24, 22, 12},
-	{lib.KeyA, "A", 22, 24, 12, 12},
-	{lib.KeyS, "S", 34, 24, 12, 12},
-	{lib.KeyD, "D", 46, 24, 12, 12},
-	{lib.KeyF, "F", 58, 24, 12, 12},
-	{lib.KeyG, "G", 70, 24, 12, 12},
-	{lib.KeyH, "H", 82, 24, 12, 12},
-	{lib.KeyJ, "J", 94, 24, 12, 12},
-	{lib.KeyK, "K", 106, 24, 12, 12},
-	{lib.KeyL, "L", 118, 24, 12, 12},
-	{lib.KeyUnknown, ";", 130, 24, 12, 12},
-	{lib.KeyUnknown, "'", 142, 24, 12, 12},
-	{lib.KeyEnter, "Enter", 154, 24, 26, 12},
-	// row 4
-	{lib.KeyUnknown, "Shift", 0, 36, 28, 12},
-	{lib.KeyZ, "Z", 28, 36, 12, 12},
-	{lib.KeyX, "X", 40, 36, 12, 12},
-	{lib.KeyC, "C", 52, 36, 12, 12},
-	{lib.KeyV, "V", 64, 36, 12, 12},
-	{lib.KeyB, "B", 76, 36, 12, 12},
-	{lib.KeyN, "N", 88, 36, 12, 12},
-	{lib.KeyM, "M", 100, 36, 12, 12},
-	{lib.KeyUnknown, ",", 112, 36, 12, 12},
-	{lib.KeyUnknown, ".", 124, 36, 12, 12},
-	{lib.KeyUnknown, "/", 136, 36, 12, 12},
-	{lib.KeyUnknown, "Shift", 148, 36, 32, 12},
-	// row 5
-	{lib.KeyUnknown, "Ctrl", 0, 48, 15, 12},
-	{lib.KeyUnknown, "OS", 15, 48, 15, 12},
-	{lib.KeyUnknown, "Alt", 30, 48, 15, 12},
-	{lib.KeySpace, "Space", 45, 48, 74, 12},
-	{lib.KeyUnknown, "Alt", 119, 48, 15, 12},
-	{lib.KeyUnknown, "Menu", 134, 48, 15, 12},
-	{lib.KeyUnknown, "Ctrl", 149, 48, 15, 12},
-	{lib.KeyUnknown, "Fn", 164, 48, 16, 12},
-}
-
-var RK61 = Keyboard{
-	Keys:       RK61Keys,
-	GridWidth:  12,
-	GridHeight: 12,
-}
-
-func ShowKeyboard(ox, oy int32, pitch int32) {
-	kb := RK61
-
+func (kb *Keyboard) Draw(ox, oy int, pitch int) {
 	canvas.Color(64, 64, 64, 18)
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		canvas.FillRect(
-			ox+k.X*pitch/kb.GridWidth+pitch/8,
-			oy+k.Y*pitch/kb.GridHeight+pitch/8,
-			k.Width*pitch/kb.GridWidth-pitch/4,
-			k.Height*pitch/kb.GridHeight-pitch/4,
+			int32(ox+int(k.X)*pitch/int(kb.GridWidth)+pitch/8),
+			int32(oy+int(k.Y)*pitch/int(kb.GridHeight)+pitch/8),
+			int32(int(k.Width)*pitch/int(kb.GridWidth)-pitch/4),
+			int32(int(k.Height)*pitch/int(kb.GridHeight)-pitch/4),
 		)
 	}
 
@@ -115,18 +38,16 @@ func ShowKeyboard(ox, oy int32, pitch int32) {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		n := len(k.Label)
-		width := pitch * k.Width / kb.GridWidth / int32(n) / 2
-		height := pitch * k.Height / kb.GridHeight / 2
-		dx := (pitch*k.Width/kb.GridWidth - width*int32(n)) / 2
-		dy := (pitch*k.Height/kb.GridHeight - height) / 2
-		for j, r := range k.Label {
-			font.DrawRune(
-				ox+k.X*pitch/kb.GridWidth+pitch*int32(j)*k.Width/kb.GridWidth/int32(n)/2+dx,
-				oy+k.Y*pitch/kb.GridHeight+dy,
-				width,
-				height,
-				r,
-			)
-		}
+		width := pitch * int(k.Width) / int(kb.GridWidth) / n / 2
+		height := pitch * int(k.Height) / int(kb.GridHeight) / 2
+		dx := (pitch*int(k.Width)/int(kb.GridWidth) - width*n) / 2
+		dy := (pitch*int(k.Height)/int(kb.GridHeight) - height) / 2
+		font.Default.DrawString(
+			ox+int(k.X)*pitch/int(kb.GridWidth)+dx,
+			oy+int(k.Y)*pitch/int(kb.GridHeight)+dy,
+			width,
+			height,
+			k.Label,
+		)
 	}
 }
