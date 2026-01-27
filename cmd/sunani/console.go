@@ -92,6 +92,9 @@ func (con *Console) Put(ptr uint32, length uint32) {
 		return
 	}
 
+	if length < 1 {
+		return
+	}
 	mem := mod.Memory()
 	buf, ok := mem.Read(ptr, length)
 	if !ok {

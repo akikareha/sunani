@@ -131,6 +131,10 @@ const importObject = {
       running = false;
     },
     "runtime.title": (ptr, length) => {
+      if (length < 1) {
+        document.title = "Sunani";
+        return;
+      }
       const mem = wasm.exports.memory;
       const bytes = new Uint8Array(mem.buffer, ptr, length);
       let title = new TextDecoder("utf-8").decode(bytes);
@@ -162,6 +166,9 @@ const importObject = {
       consoleLength = length >>> 0;
     },
     "console.put": (ptr, length) => {
+      if (length < 1) {
+        return;
+      }
       const mem = wasm.exports.memory;
       const bytes = new Uint8Array(mem.buffer, ptr, length);
       let s = new TextDecoder("utf-8").decode(bytes);
@@ -240,7 +247,13 @@ const importObject = {
 
       refreshMem();
 
-      const len = fbW * fbH * 4;
+      let len = fbW * fbH * 4;
+      if (len < 0) {
+        len = -len;
+      }
+      if (len < 1) {
+        return;
+      }
       const src = memU8.subarray(fbPtr, fbPtr + len);
       fbImageData.data.set(src);
 

@@ -122,6 +122,9 @@ func (fb *FB) Paint() {
 	if size < 0 {
 		size = -size
 	}
+	if size < 1 {
+		return
+	}
 	pix, ok := mem.Read(fb.ptr, uint32(size))
 	if !ok {
 		errlog("mem.Read failed")

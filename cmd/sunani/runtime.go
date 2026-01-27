@@ -91,6 +91,10 @@ func (rt *Runtime) Title(ptr uint32, length uint32) {
 		panic("window is nil")
 	}
 
+	if length < 1 {
+		rt.window.SetTitle(appTitle)
+		return
+	}
 	mem := mod.Memory()
 	buf, ok := mem.Read(ptr, length)
 	if !ok {
