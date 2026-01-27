@@ -1,13 +1,10 @@
 package font
 
-var Minimal = Font{
-	GridWidth:  4,
-	GridHeight: 8,
-	Glyphs:     minimalGlyphs,
-	Offset:     32,
-}
+var Minimal = New([]Glyphs{MinimalASCII})
 
-var minimalGlyphs = [][]int8{
+var MinimalASCII = NewGlyphs(' ', 4, 8, minimalASCII)
+
+var minimalASCII = [][]int8{
 	// SPACE
 	[]int8{0},
 	// !

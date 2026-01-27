@@ -52,6 +52,8 @@ func main() {
 		fmt.Fprintf(&buf, "0x%02x,", atlas[i])
 		if i%16 == 15 {
 			buf.WriteString("\n")
+		} else {
+			buf.WriteString(" ")
 		}
 	}
 	if len(atlas)%16 != 0 {

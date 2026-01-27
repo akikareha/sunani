@@ -4,42 +4,59 @@ import (
 	"github.com/akikareha/sunani/app-go/api/canvas"
 )
 
-type Font struct {
-	GridWidth  int8
-	GridHeight int8
-	Glyphs     [][]int8
-	Offset     rune
+type Glyphs struct {
+	start  rune
+	width  int8
+	height int8
+	data   [][]int8
 }
 
-func (f *Font) Draw(x, y int, width, height int, r rune) {
-	if r < f.Offset || r > f.Offset+rune(len(f.Glyphs)) {
+func NewGlyphs(start rune, width, height int8, data [][]int8) Glyphs {
+	return Glyphs{
+		start:  start,
+		width:  width,
+		height: height,
+		data:   data,
+	}
+}
+
+func (g *Glyphs) Has(r rune) bool {
+	return r >= g.start && r < g.start+rune(len(g.data))
+}
+
+func (g *Glyphs) Draw(x, y int, width, height int, r rune) {
+	if !g.Has(r) {
 		return
 	}
-	glyph := f.Glyphs[r-f.Offset]
+	glyph := g.data[r-g.start]
 
 	if len(glyph) < 1 {
+		// invalid glyph
 		return
 	}
 	i := 0
 	polylines := int(glyph[i])
 	i++
-	for k := 0; k < polylines; k++ {
+	for n := 0; n < polylines; n++ {
 		if i >= len(glyph) {
+			// invalid glyph
 			return
 		}
-		segments := int(glyph[i])
+		vertices := int(glyph[i])
 		i++
-		if segments < 1 {
+		if vertices < 1 {
+			// invalid glyph
 			continue
 		}
-		if i+1 >= len(glyph) {
+		if i+vertices*2 > len(glyph) {
+			// invalid glyph
 			return
 		}
 		x1 := int(glyph[i])
 		i++
 		y1 := int(glyph[i])
 		i++
-		for j := 1; j < segments; j++ {
+		for m := 1; m < vertices; m++ {
 			if i+1 >= len(glyph) {
 				return
 			}
@@ -48,10 +65,10 @@ func (f *Font) Draw(x, y int, width, height int, r rune) {
 			y2 := int(glyph[i])
 			i++
 			canvas.Line(
-				int32(x+x1*width/int(f.GridWidth)),
-				int32(y+y1*height/int(f.GridHeight)),
-				int32(x+x2*width/int(f.GridWidth)),
-				int32(y+y2*height/int(f.GridHeight)),
+				int32(x+x1*width/int(g.width)),
+				int32(y+y1*height/int(g.height)),
+				int32(x+x2*width/int(g.width)),
+				int32(y+y2*height/int(g.height)),
 			)
 			x1 = x2
 			y1 = y2
@@ -59,10 +76,33 @@ func (f *Font) Draw(x, y int, width, height int, r rune) {
 	}
 }
 
-func (f *Font) DrawString(x, y int, sx, sy int, s string) {
-	i := 0
-	for _, r := range s {
-		f.Draw(x+i*sx, y, sx, sy, r)
-		i++
+func (g *Glyphs) DrawString(x, y int, width, height int, s string) {
+	for i, r := range s {
+		g.Draw(x+i*width, y, width, height, r)
+	}
+}
+
+type Font struct {
+	glyphs []Glyphs
+}
+
+func New(glyphs []Glyphs) Font {
+	return Font{
+		glyphs: glyphs,
+	}
+}
+
+func (f *Font) Draw(x, y int, width, height int, r rune) {
+	for _, g := range f.glyphs {
+		if g.Has(r) {
+			g.Draw(x, y, width, height, r)
+			return
+		}
+	}
+}
+
+func (f *Font) DrawString(x, y int, width, height int, s string) {
+	for i, r := range s {
+		f.Draw(x+i*width, y, width, height, r)
 	}
 }

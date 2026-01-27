@@ -1,13 +1,10 @@
 package font
 
-var Default = Font{
-	GridWidth:  8,
-	GridHeight: 16,
-	Glyphs:     defaultGlyphs,
-	Offset:     32,
-}
+var Default = New([]Glyphs{DefaultASCII})
 
-var defaultGlyphs = [][]int8{
+var DefaultASCII = NewGlyphs(' ', 8, 16, defaultASCII)
+
+var defaultASCII = [][]int8{
 	// SPACE
 	[]int8{0},
 	// !
