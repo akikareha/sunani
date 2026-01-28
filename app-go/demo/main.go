@@ -24,8 +24,6 @@ var anchorEnabled bool
 var anchorX int32
 var anchorY int32
 
-var fontType = 0
-
 //export sunani_runtime_resize
 func runtimeResize(w, h int32) {
 	width = w
@@ -100,23 +98,13 @@ func canvasDraw() {
 	canvas.Color(255, 255, 255, 255)
 	for j := 2; j <= 7; j++ {
 		for i := 0; i <= 15; i++ {
-			if fontType == 0 {
-				font.Default.Draw(
-					16+i*int(mouseSize),
-					128+j*int(mouseSize)*2,
-					int(mouseSize),
-					int(mouseSize)*2,
-					rune(j*16+i),
-				)
-			} else if fontType == 1 {
-				font.Minimal.Draw(
-					16+i*int(mouseSize),
-					128+j*int(mouseSize)*2,
-					int(mouseSize),
-					int(mouseSize)*2,
-					rune(j*16+i),
-				)
-			}
+			font.Default.Draw(
+				16+i*int(mouseSize),
+				128+j*int(mouseSize)*2,
+				int(mouseSize),
+				int(mouseSize)*2,
+				rune(j*16+i),
+			)
 		}
 	}
 }

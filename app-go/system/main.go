@@ -5,6 +5,6 @@ import (
 )
 
 //export sunani_init
-func init() {
+func sunaniInit() {
 	system.Run()
 }
