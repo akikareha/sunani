@@ -122,7 +122,7 @@ func runtimeFrame() {
 		int(mouseX), int(mouseY),
 	)
 
-	showConsole(int(ox), int(oy), int(pitch)/4, int(pitch)/2)
+	showConsole(int(ox), int(oy), int(pitch)/2, int(pitch)/2)
 
 	showMouse()
 	showInfo()

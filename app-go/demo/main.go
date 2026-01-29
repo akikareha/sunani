@@ -18,7 +18,7 @@ var clock uint64
 var mouseX int32
 var mouseY int32
 var mouseBlink int
-var mouseSize int32 = 16
+var mouseSize int32 = 32
 
 var anchorEnabled bool
 var anchorX int32
@@ -98,11 +98,11 @@ func canvasDraw() {
 	canvas.Color(255, 255, 255, 255)
 	for j := 2; j <= 7; j++ {
 		for i := 0; i <= 15; i++ {
-			font.Default.Draw(
+			font.ASCII.Draw(
 				16+i*int(mouseSize),
 				128+j*int(mouseSize)*2,
 				int(mouseSize),
-				int(mouseSize)*2,
+				int(mouseSize),
 				rune(j*16+i),
 			)
 		}

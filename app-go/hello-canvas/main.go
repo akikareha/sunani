@@ -6,8 +6,9 @@ import (
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
-const hello = "Hello, World!\n"
-const size = 16
+const x, y = 8, 8
+const w, h = 32, 32
+const message = "Hello, World!\n"
 
 //export sunani_runtime_init
 func runtimeInit() {}
@@ -18,19 +19,7 @@ func canvasInit() {}
 //export sunani_runtime_frame
 func runtimeFrame() {
 	runtime.Clear(0, 0, 0, 255)
-
 	canvas.Begin()
-
 	canvas.Color(255, 255, 255, 255)
-	i := 0
-	for _, r := range hello {
-		font.Default.Draw(
-			i*int(size),
-			0,
-			int(size),
-			int(size)*2,
-			r,
-		)
-		i++
-	}
+	font.ASCII.DrawString(x, y, w, h, message)
 }

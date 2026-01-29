@@ -62,11 +62,11 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int, states []bool, mouseX, mouseY in
 			canvas.Color(255, 255, 255, 128)
 		}
 		n := len(k.Label)
-		width := pitch * int(k.Width) / int(kb.GridWidth) / n / 2
+		width := pitch * int(k.Width) / int(kb.GridWidth) / n
 		height := pitch * int(k.Height) / int(kb.GridHeight) / 2
-		dx := (pitch*int(k.Width)/int(kb.GridWidth) - width*n) / 2
+		dx := (pitch*int(k.Width)/int(kb.GridWidth) - width*n/2) / 2
 		dy := (pitch*int(k.Height)/int(kb.GridHeight) - height) / 2
-		font.Default.DrawString(
+		font.ASCII.DrawString(
 			ox+int(k.X)*pitch/int(kb.GridWidth)+dx,
 			oy+int(k.Y)*pitch/int(kb.GridHeight)+dy,
 			width,

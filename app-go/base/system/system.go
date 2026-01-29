@@ -103,8 +103,8 @@ func btoi(b bool) int {
 
 func showInfo() {
 	canvas.Color(255, 255, 255, 128)
-	font.Default.DrawString(0, 0, 8, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseMiddle), btoi(mouseRight), wheelX, wheelY))
-	font.Default.DrawString(0, 16, 8, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%3.2f", now, clock, fps))
+	font.ASCII.DrawString(0, 0, 16, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseMiddle), btoi(mouseRight), wheelX, wheelY))
+	font.ASCII.DrawString(0, 16, 16, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%3.2f", now, clock, fps))
 }
 
 var consoleLines []string = []string{""}
@@ -113,7 +113,7 @@ func showConsole(ox, oy int, sx, sy int) {
 	canvas.Color(255, 255, 255, 128)
 	n := len(consoleLines)
 	for i := 0; i < n; i++ {
-		font.Default.DrawString(ox, oy+(-n+i)*sy, sx, sy, consoleLines[i])
+		font.ASCII.DrawString(ox, oy+(-n+i)*sy, sx, sy, consoleLines[i])
 	}
 }
 

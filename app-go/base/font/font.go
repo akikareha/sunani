@@ -1,54 +1,70 @@
 package font
 
-type Font struct {
-	glyphs []Glyphs
-	kutens []KutenGlyphs
+type Glyphs map[rune]Glyph
+
+type Advance struct{
+	start rune
+	end rune
+	ga int8
+	gw int8
 }
 
-func New(glyphs []Glyphs, kutens []KutenGlyphs) Font {
+func (a Advance) Contains(r rune) bool {
+	return r >= a.start && r <= a.end
+}
+
+func (a Advance) Amount(w int) int {
+	return w * int(a.ga) / int(a.gw)
+}
+
+type Font struct{
+	glyphs   []Glyphs
+	advances []Advance
+}
+
+func New(glyphs []Glyphs, advances []Advance) Font {
 	return Font{
 		glyphs: glyphs,
-		kutens: kutens,
+		advances: advances,
 	}
 }
 
-func (f *Font) IsWide(r rune) bool {
-	for _, g := range f.glyphs {
-		if g.Has(r) {
-			return g.IsWide()
+func (f *Font) Advance(w int, r rune) int {
+	for _, glyphs := range f.glyphs {
+		g := glyphs[r]
+		if g != nil {
+			return g.Advance(w)
 		}
 	}
-	return false
+	for _, advance := range f.advances {
+		if advance.Contains(r) {
+			return advance.Amount(w)
+		}
+	}
+	return w
 }
 
-func (f *Font) Draw(x, y int, width, height int, r rune) {
-	for _, g := range f.glyphs {
-		if g.Has(r) {
-			g.Draw(x, y, width, height, r)
+func (f *Font) Draw(x, y int, w, h int, r rune) {
+	for _, glyphs := range f.glyphs {
+		g := glyphs[r]
+		if g != nil {
+			g.Draw(x, y, w, h)
 			return
 		}
 	}
 }
 
-func (f *Font) DrawString(x, y int, width, height int, s string) {
+func (f *Font) DrawString(x, y int, w, h int, s string) {
 	for _, r := range s {
-		f.Draw(x, y, width, height, r)
-		if f.IsWide(r) {
-			x += width * 2
-		} else {
-			x += width
-		}
+		f.Draw(x, y, w, h, r)
+		x += f.Advance(w, r)
 	}
 }
 
-func (f *Font) StringWidth(width int, s string) int {
+func (f *Font) StringWidth(w int, s string) int {
 	sum := 0
 	for _, r := range s {
-		if f.IsWide(r) {
-			sum += width * 2
-		} else {
-			sum += width
-		}
+		sum += f.Advance(w, r)
 	}
 	return sum
 }

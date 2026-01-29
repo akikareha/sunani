@@ -131,18 +131,16 @@ func runtimeFrame() {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		n := len(k.Label)
-		width := pitch * k.Width / kb.GridWidth / n / 2
+		width := pitch * k.Width / kb.GridWidth / n
 		height := pitch * k.Height / kb.GridHeight / 2
-		dx := (pitch*k.Width/kb.GridWidth - width*n) / 2
+		dx := (pitch*k.Width/kb.GridWidth - width*n/2) / 2
 		dy := (pitch*k.Height/kb.GridHeight - height) / 2
-		for j, r := range k.Label {
-			font.Default.Draw(
-				ox+k.X*pitch/kb.GridWidth+pitch*j*k.Width/kb.GridWidth/n/2+dx,
-				oy+k.Y*pitch/kb.GridHeight+dy,
-				width,
-				height,
-				r,
-			)
-		}
+		font.ASCII.DrawString(
+			ox+k.X*pitch/kb.GridWidth+dx,
+			oy+k.Y*pitch/kb.GridHeight+dy,
+			width,
+			height,
+			k.Label,
+		)
 	}
 }
