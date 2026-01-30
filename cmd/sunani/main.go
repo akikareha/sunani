@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	"time"
 
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -52,8 +51,9 @@ func main() {
 
 	wasi_snapshot_preview1.MustInstantiate(ctx, r)
 
-	runtime := NewRuntime()
+	std := NewStd()
 	console := NewConsole()
+	screen := NewScreen()
 	canvas := NewCanvas()
 	fb := NewFB()
 	key := NewKey()
@@ -62,24 +62,8 @@ func main() {
 	_, err := r.NewHostModuleBuilder("sunani").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) int64 {
-			return time.Now().UnixMilli()
+			return std.Now()
 		}).Export("std.now").
-		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context) {
-			runtime.Halt()
-		}).Export("runtime.halt").
-		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
-			runtime.Title(ptr, length)
-		}).Export("runtime.title").
-		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, enabled uint32) {
-			runtime.Cursor(enabled != 0)
-		}).Export("runtime.cursor").
-		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
-			runtime.Clear(int(r), int(g), int(b), int(a))
-		}).Export("runtime.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
 			console.Params(ptr, length)
@@ -96,6 +80,22 @@ func main() {
 		WithFunc(func(ctx context.Context) {
 			console.Leave()
 		}).Export("console.leave").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context) {
+			screen.Halt()
+		}).Export("screen.halt").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, ptr uint32, length uint32) {
+			screen.Title(ptr, length)
+		}).Export("screen.title").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, visible uint32) {
+			screen.Cursor(visible != 0)
+		}).Export("screen.cursor").
+		NewFunctionBuilder().
+		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
+			screen.Clear(int(r), int(g), int(b), int(a))
+		}).Export("screen.clear").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
 			canvas.Begin()
@@ -162,14 +162,15 @@ func main() {
 		WithStdin(os.Stdin)
 
 	// Don't call _start automatically.
-	// runtime.frame must be called from each frame.
+	// screen.frame must be called from each frame.
 	mod, err = r.InstantiateWithConfig(ctx, wasmBytes, config)
 	if err != nil {
 		die("instantiate guest:", err)
 	}
 
-	runtime.Preinit()
+	std.Preinit()
 	console.Preinit()
+	screen.Preinit()
 	canvas.Preinit()
 	fb.Preinit()
 	key.Preinit()
@@ -180,6 +181,7 @@ func main() {
 		init.Call(ctx)
 	}
 
+	std.Init()
 	console.Init()
 	var window *glfw.Window
 	if canvas.IsEnabled() || fb.IsEnabled() {
@@ -203,7 +205,7 @@ func main() {
 		}
 		window.MakeContextCurrent()
 
-		runtime.Init(window)
+		screen.Init(window)
 		canvas.Init(window)
 		fb.Init(window)
 		key.Init(window)
@@ -230,7 +232,7 @@ func main() {
 
 		// --- main loop ---
 		for !window.ShouldClose() {
-			runtime.Frame()
+			screen.Frame()
 
 			window.SwapBuffers()
 			glfw.PollEvents()

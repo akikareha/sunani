@@ -13,12 +13,13 @@ type FB struct {
 
 	window *glfw.Window
 
-	ptr       uint32
-	width     int
-	height    int
-	paramsSet bool
+	ptr    uint32
+	width  int
+	height int
 
 	tex uint32
+
+	prepared bool
 }
 
 func NewFB() *FB {
@@ -67,8 +68,10 @@ func (fb *FB) Params(ptr uint32, width, height int) {
 	fb.ptr = ptr
 	fb.width = width
 	fb.height = height
-	fb.paramsSet = true
 
+	if fb.prepared {
+		gl.DeleteTextures(1, &fb.tex)
+	}
 	gl.GenTextures(1, &fb.tex)
 	gl.BindTexture(gl.TEXTURE_2D, fb.tex)
 
@@ -83,6 +86,8 @@ func (fb *FB) Params(ptr uint32, width, height int) {
 		gl.UNSIGNED_BYTE,
 		nil,
 	)
+
+	fb.prepared = true
 }
 
 func (fb *FB) Paint() {
@@ -90,8 +95,7 @@ func (fb *FB) Paint() {
 		errlog("sunani fb.paint was called, but Framebuffer API is not enabled.\nExport snunani_fb_init to enable this API.")
 		return
 	}
-	if !fb.paramsSet {
-		errlog("sunani fb.paint was called, but framebuffer parameters are not set yet.\nCall snunani_fb_params to enable this function.")
+	if !fb.prepared {
 		return
 	}
 	if fb.window == nil {

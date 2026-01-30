@@ -3,6 +3,9 @@ package system
 import (
 	"fmt"
 	"strings"
+
+	"github.com/akikareha/sunani/app-go/base/console"
+	"github.com/akikareha/sunani/app-go/base/screen"
 )
 
 func repl(line string) bool {
@@ -13,8 +16,8 @@ func repl(line string) bool {
 	cmd := args[0]
 
 	if cmd == "quit" || cmd == "q" {
-		Print("Bye!\n")
-		Halt()
+		console.Print("Bye!\n")
+		screen.Halt()
 		return false
 	}
 	if cmd == "bg" {
@@ -22,18 +25,18 @@ func repl(line string) bool {
 		} else {
 			arg := args[1]
 			if arg == "red" {
-				SetBg(255, 0, 0, 255)
+				screen.SetBg(255, 0, 0, 255)
 			} else if arg == "green" {
-				SetBg(0, 255, 0, 255)
+				screen.SetBg(0, 255, 0, 255)
 			} else if arg == "blue" {
-				SetBg(0, 0, 255, 255)
+				screen.SetBg(0, 0, 255, 255)
 			} else if arg == "black" {
-				SetBg(0, 0, 0, 255)
+				screen.SetBg(0, 0, 0, 255)
 			}
 		}
 		return true
 	}
 	reply := fmt.Sprintf("Unknown command: %s\n", line)
-	Print(reply)
+	console.Print(reply)
 	return true
 }

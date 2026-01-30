@@ -5,21 +5,21 @@ import (
 
 	"github.com/akikareha/sunani/app-go/api/console"
 	"github.com/akikareha/sunani/app-go/api/fb"
-	"github.com/akikareha/sunani/app-go/api/runtime"
+	"github.com/akikareha/sunani/app-go/api/screen"
 )
 
 const title = "Demo"
 const hello = "Hello, World!\n"
 
-//export sunani_runtime_init
-func runtimeInit() {
+//export sunani_screen_init
+func screenInit() {
 	b := []byte(title)
-	runtime.Title(
+	screen.Title(
 		uint32(uintptr(unsafe.Pointer(&b[0]))),
 		uint32(len(title)),
 	)
 
-	runtime.Cursor(0)
+	screen.Cursor(0)
 }
 
 //export sunani_console_init
@@ -35,9 +35,6 @@ func consoleInit() {
 		uint32(len(hello)),
 	)
 }
-
-//export sunani_canvas_init
-func canvasInit() {}
 
 //export sunani_fb_init
 func fbInit() {

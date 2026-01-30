@@ -4,7 +4,7 @@ import (
 	"unsafe"
 
 	"github.com/akikareha/sunani/app-go/api/fb"
-	"github.com/akikareha/sunani/app-go/api/runtime"
+	"github.com/akikareha/sunani/app-go/api/screen"
 	"github.com/akikareha/sunani/resources/fonts"
 )
 
@@ -91,8 +91,8 @@ func drawGlyph(dstX, dstY int, ch byte) {
 	}
 }
 
-//export sunani_runtime_init
-func runtimeInit() {}
+//export sunani_screen_init
+func screenInit() {}
 
 //export sunani_fb_init
 func fbInit() {
@@ -103,9 +103,9 @@ func fbInit() {
 	)
 }
 
-//export sunani_runtime_frame
-func runtimeFrame() {
-	runtime.Clear(0, 0, 0, 255)
+//export sunani_screen_frame
+func screenFrame() {
+	screen.Clear(0, 0, 0, 255)
 	fbClear(0, 0, 0, 0)
 	drawText(0, 0, hello)
 	fb.Paint()

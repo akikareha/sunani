@@ -2,11 +2,20 @@ package font
 
 type Glyphs map[rune]Glyph
 
-type Advance struct{
+type Advance struct {
 	start rune
-	end rune
-	ga int8
-	gw int8
+	end   rune
+	ga    int8
+	gw    int8
+}
+
+func NewAdvance(start rune, end rune, ga int8, gw int8) Advance {
+	return Advance{
+		start: start,
+		end:   end,
+		ga:    ga,
+		gw:    gw,
+	}
 }
 
 func (a Advance) Contains(r rune) bool {
@@ -17,14 +26,14 @@ func (a Advance) Amount(w int) int {
 	return w * int(a.ga) / int(a.gw)
 }
 
-type Font struct{
+type Font struct {
 	glyphs   []Glyphs
 	advances []Advance
 }
 
 func New(glyphs []Glyphs, advances []Advance) Font {
 	return Font{
-		glyphs: glyphs,
+		glyphs:   glyphs,
 		advances: advances,
 	}
 }

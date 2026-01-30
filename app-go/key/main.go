@@ -1,19 +1,16 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/app-go/api/canvas"
-	"github.com/akikareha/sunani/app-go/api/runtime"
+	"github.com/akikareha/sunani/app-go/api/screen"
+	"github.com/akikareha/sunani/app-go/base/canvas"
 	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/lib"
 )
 
 const size = 16
 
-//export sunani_runtime_init
-func runtimeInit() {}
-
-//export sunani_canvas_init
-func canvasInit() {}
+//export sunani_screen_init
+func screenInit() {}
 
 type Key struct {
 	Code  lib.Key
@@ -106,9 +103,9 @@ var RK61 = Keyboard{
 	GridHeight: 12,
 }
 
-//export sunani_runtime_frame
-func runtimeFrame() {
-	runtime.Clear(0, 0, 0, 255)
+//export sunani_screen_frame
+func screenFrame() {
+	screen.Clear(0, 0, 0, 255)
 
 	canvas.Begin()
 
@@ -120,10 +117,10 @@ func runtimeFrame() {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		canvas.FillRect(
-			int32(ox+k.X*pitch/kb.GridWidth+pitch/8),
-			int32(oy+k.Y*pitch/kb.GridHeight+pitch/8),
-			int32(k.Width*pitch/kb.GridWidth-pitch/4),
-			int32(k.Height*pitch/kb.GridHeight-pitch/4),
+			ox+k.X*pitch/kb.GridWidth+pitch/8,
+			oy+k.Y*pitch/kb.GridHeight+pitch/8,
+			k.Width*pitch/kb.GridWidth-pitch/4,
+			k.Height*pitch/kb.GridHeight-pitch/4,
 		)
 	}
 

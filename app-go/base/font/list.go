@@ -1,10 +1,14 @@
 package font
 
+var ASCIIAdvance = NewAdvance(0, 127, 8, 16)
+
 var ASCII = New(
 	[]Glyphs{
 		ASCIIGlyphs,
 	},
-	[]Advance{},
+	[]Advance{
+		ASCIIAdvance,
+	},
 )
 
 var Kana = New(
@@ -12,7 +16,9 @@ var Kana = New(
 		ASCIIGlyphs,
 		KanaGlyphs,
 	},
-	[]Advance{},
+	[]Advance{
+		ASCIIAdvance,
+	},
 )
 
 var Kanji = New(
@@ -21,5 +27,7 @@ var Kanji = New(
 		KanaGlyphs,
 		KanjiGlyphs,
 	},
-	[]Advance{},
+	[]Advance{
+		ASCIIAdvance,
+	},
 )

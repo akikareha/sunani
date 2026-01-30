@@ -1,7 +1,7 @@
 package font
 
 import (
-	"github.com/akikareha/sunani/app-go/api/canvas"
+	"github.com/akikareha/sunani/app-go/base/canvas"
 )
 
 // 0: grid width
@@ -59,10 +59,10 @@ func (g Glyph) Draw(x, y int, w, h int) {
 			y2 := int(g[i])
 			i++
 			canvas.Line(
-				int32(x+x1*w/gw),
-				int32(y+y1*h/gh),
-				int32(x+x2*w/gw),
-				int32(y+y2*h/gh),
+				x+x1*w/gw,
+				y+y1*h/gh,
+				x+x2*w/gw,
+				y+y2*h/gh,
 			)
 			x1 = x2
 			y1 = y2

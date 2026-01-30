@@ -4,34 +4,34 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/akikareha/sunani/app-go/api/canvas"
 	"github.com/akikareha/sunani/app-go/api/console"
 	"github.com/akikareha/sunani/app-go/api/fb"
-	"github.com/akikareha/sunani/app-go/api/runtime"
+	"github.com/akikareha/sunani/app-go/api/screen"
+	"github.com/akikareha/sunani/app-go/base/canvas"
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
-var width, height int32
+var width, height int
 
 var clock uint64
 
-var mouseX int32
-var mouseY int32
+var mouseX int
+var mouseY int
 var mouseBlink int
-var mouseSize int32 = 32
+var mouseSize int = 32
 
 var anchorEnabled bool
-var anchorX int32
-var anchorY int32
+var anchorX int
+var anchorY int
 
-//export sunani_runtime_resize
-func runtimeResize(w, h int32) {
-	width = w
-	height = h
+//export sunani_screen_resize
+func screenResize(w, h int32) {
+	width = int(w)
+	height = int(h)
 }
 
-//export sunani_runtime_frame
-func runtimeFrame() {
+//export sunani_screen_frame
+func screenFrame() {
 	clock++
 
 	canvasDraw()
@@ -53,7 +53,7 @@ func consoleGet(ptr uint32, length uint32) {
 }
 
 func canvasDraw() {
-	runtime.Clear(16, 16, 24, 255)
+	screen.Clear(16, 16, 24, 255)
 
 	canvas.Begin()
 

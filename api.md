@@ -4,15 +4,15 @@
     - exports: init start
 * Standard API
     - imports: now
-* Runtime API
-    - exports: init resize frame
-    - imports: halt title cursor
 * Console API
     - exports: init get
     - imports: params put
+* Screen API
+    - exports: init resize frame
+    - imports: halt title cursor clear
 * Canvas API
     - exports: init
-    - imports: begin clear color line rect fill_rect path vertex polygon fill_polygon
+    - imports: begin color line rect fill_rect path vertex polygon fill_polygon
 * Framebuffer API
     - exports: fb_init
     - imports: params paint
@@ -43,6 +43,20 @@ Called from host after host is initialized.
 func start()
 ```
 
+## Standard API exports
+
+init
+
+### init
+
+If this functions is exported, Standard API is enabled.
+This function is called from host when Standard API is ready.
+
+```
+//export sunani_std_init
+func stdInit()
+```
+
 ## Standard API imports
 
 now
@@ -56,82 +70,8 @@ import "github.com/akikareha/sunani/api/std"
 Returns current UNIX time in ms.
 
 ```
-std.Now() i64
+std.Now() int64
 ```
-
-## Runtime API exports
-
-init resize frame
-
-### init
-
-If this functions is exported, Runtime API is enabled.
-This function is called from host when Runtime API is ready.
-
-```
-//export sunani_runtime_init
-func runtimeInit()
-```
-
-### resize
-
-This function is called when host window or tab is resized.
-This function is called at least once when app is launched.
-
-```
-//export sunani_runtime_resize
-func runtimeResize(w, h int32)
-```
-
-* w, h: Canvas width and height in pixels.
-
-### frame
-
-This function is called every event loop frame.
-
-```
-//export sunani_runtime_frame
-func runtimeFrame()
-```
-
-## Runtime API imports
-
-halt title cursor
-
-```
-import "github.com/akikareha/sunani/api/runtime"
-```
-
-### halt
-
-Halts execution of app and close window if possible.
-
-```
-runtime.Halt()
-```
-
-### title
-
-Sets title string of window or tab.
-
-```
-runtime.Title(ptr uint32, length uint32)
-```
-
-* ptr: Memory address of title string.
-* length: Length of title string in bytes.
-
-### cursor
-
-Sets visibility of mouse cursor.
-
-```
-runtime.Cursor(enabled uint32)
-```
-
-* enabled:
-    - 0: Mouse cursor is hidden.
-    - Other than 0: Mouse cursor is shown.
 
 ## Console API exports
 
@@ -205,6 +145,90 @@ Leaves from wait.
 console.Leave()
 ```
 
+## Screen API exports
+
+init resize frame
+
+### init
+
+If this functions is exported, Screen API is enabled.
+This function is called from host when Screen API is ready.
+
+```
+//export sunani_screen_init
+func screenInit()
+```
+
+### resize
+
+This function is called when host window or tab is resized.
+This function is called at least once when app is launched.
+
+```
+//export sunani_screen_resize
+func screenResize(w, h int32)
+```
+
+* w, h: Canvas width and height in pixels.
+
+### frame
+
+This function is called every event loop frame.
+
+```
+//export sunani_screen_frame
+func screenFrame()
+```
+
+## Screen API imports
+
+halt title cursor clear
+
+```
+import "github.com/akikareha/sunani/api/screen"
+```
+
+### halt
+
+Halts execution of app and close window if possible.
+
+```
+screen.Halt()
+```
+
+### title
+
+Sets title string of window or tab.
+
+```
+screen.Title(ptr uint32, length uint32)
+```
+
+* ptr: Memory address of title string.
+* length: Length of title string in bytes.
+
+### cursor
+
+Sets visibility of mouse cursor.
+
+```
+screen.Cursor(visible uint32)
+```
+
+* visible:
+    - 0: Mouse cursor is invisible.
+    - Other than 0: Mouse cursor is visible.
+
+### clear
+
+Clears screen by filling with specified color.
+
+```
+screen.Clear(r, g, b, a uint32)
+```
+
+* r, g, b, a: Color.
+
 ## Canvas API exports
 
 init
@@ -221,7 +245,7 @@ This function is called from host when Canvas API is ready.
 
 ## Canvas API imports
 
-begin clear color line rect fill_rect path vertex polygon fill_polygon
+begin color line rect fill_rect path vertex polygon fill_polygon
 
 ```
 import "github.com/akikareha/sunani/api/canvas"
@@ -234,16 +258,6 @@ Prepares for starting drawing on canvas.
 ```
 canvas.Begin()
 ```
-
-### clear
-
-Clears canvas by filling with specified color.
-
-```
-canvas.Clear(r, g, b, a uint32)
-```
-
-* r, g, b, a: Color.
 
 ### color
 

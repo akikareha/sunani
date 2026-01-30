@@ -126,39 +126,6 @@ const importObject = {
     "std.now": () => {
       return BigInt(Date.now());
     },
-    // ---- runtime ----
-    "runtime.halt": () => {
-      running = false;
-    },
-    "runtime.title": (ptr, length) => {
-      if (length < 1) {
-        document.title = "Sunani";
-        return;
-      }
-      const mem = wasm.exports.memory;
-      const bytes = new Uint8Array(mem.buffer, ptr, length);
-      let title = new TextDecoder("utf-8").decode(bytes);
-      if (title === "") {
-        title = "Sunani"
-      } else {
-        title += " - Sunani"
-      }
-      document.title = title;
-    },
-    "runtime.cursor": (enabled) => {
-      if (enabled === 0) {
-        canvas.style.cursor = "none";
-      } else {
-        canvas.style.cursor = "";
-      }
-    },
-    "runtime.clear": (r, g, b, a) => {
-      ctx2d.save();
-      ctx2d.setTransform(1, 0, 0, 1, 0, 0);
-      ctx2d.fillStyle = `rgba(${r},${g},${b},${a/255})`;
-      ctx2d.fillRect(0, 0, canvas.width, canvas.height);
-      ctx2d.restore();
-    },
 
     // ---- console ----
     "console.params": (ptr, length) => {
@@ -178,6 +145,35 @@ const importObject = {
     "console.wait": () => {
     },
     "console.leave": () => {
+    },
+
+    // ---- screen ----
+    "screen.halt": () => {
+      running = false;
+    },
+    "screen.title": (ptr, length) => {
+      if (length < 1) {
+        document.title = "";
+        return;
+      }
+      const mem = wasm.exports.memory;
+      const bytes = new Uint8Array(mem.buffer, ptr, length);
+      let title = new TextDecoder("utf-8").decode(bytes);
+      document.title = title;
+    },
+    "screen.cursor": (visible) => {
+      if (visible === 0) {
+        canvas.style.cursor = "none";
+      } else {
+        canvas.style.cursor = "";
+      }
+    },
+    "screen.clear": (r, g, b, a) => {
+      ctx2d.save();
+      ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+      ctx2d.fillStyle = `rgba(${r},${g},${b},${a/255})`;
+      ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+      ctx2d.restore();
     },
 
     // ---- canvas ----
@@ -305,8 +301,9 @@ const call = (name, ...args) => {
 
 // init exports (call if exists)
 call("sunani_init");
-call("sunani_runtime_init");
+call("sunani_std_init");
 call("sunani_console_init");
+call("sunani_screen_init");
 call("sunani_canvas_init");
 call("sunani_fb_init");
 call("sunani_key_init");
@@ -322,7 +319,7 @@ function notifyResize() {
   canvas.width  = width;
   canvas.height = height;
 
-  call("sunani_runtime_resize", width, height);
+  call("sunani_screen_resize", width, height);
 }
 
 const ro = new ResizeObserver(() => {
@@ -401,7 +398,7 @@ call("sunani_start");
 function frame() {
   if (!running) return;
   resize();
-  call("sunani_runtime_frame");
+  call("sunani_screen_frame");
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

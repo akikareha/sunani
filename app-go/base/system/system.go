@@ -3,42 +3,47 @@ package system
 import (
 	"fmt"
 	"strings"
-	"unsafe"
 
-	"github.com/akikareha/sunani/app-go/api/canvas"
-	"github.com/akikareha/sunani/app-go/api/fb"
+	"github.com/akikareha/sunani/app-go/base/canvas"
+	"github.com/akikareha/sunani/app-go/base/console"
 	"github.com/akikareha/sunani/app-go/base/font"
+	"github.com/akikareha/sunani/app-go/base/kb"
+	"github.com/akikareha/sunani/app-go/base/key"
+	"github.com/akikareha/sunani/app-go/base/mouse"
+	"github.com/akikareha/sunani/app-go/base/screen"
+	"github.com/akikareha/sunani/lib"
 )
 
-func Run() {
-	// do nothing
+func systemPrint(s string) {
+	console.Print(s)
+	addConsoleLine(s)
 }
 
-const dummyString = "Dummy"
+func consoleHandler(line string) {
+	addConsoleLine(line + "\n")
+	repl(line)
+	systemPrint(prompt)
+}
 
-//
-// Canvas
-//
+func keyHandler(key lib.Key, action lib.Action) {
+	if action == lib.ActionPress {
+		addConsoleLine(kb.Char(key))
+	}
+}
 
-//export sunani_canvas_init
-func canvasInit() {}
+func mouseButtonHandler(button lib.Mouse, action lib.Action) {
+	if button == lib.MouseLeft && action == lib.ActionPress {
+		if virtualKey != lib.KeyUnknown {
+			addConsoleLine(kb.Char(virtualKey))
+		}
+	}
+}
 
-//
-// Framebuffer
-//
-
-const fbWidth int32 = 256
-const fbHeight int32 = 256
-
-var framebuffer = make([]byte, fbWidth*fbHeight*4)
-
-//export sunani_fb_init
-func fbInit() {
-	fb.Params(
-		uint32(uintptr(unsafe.Pointer(&framebuffer[0]))),
-		fbWidth,
-		fbHeight,
-	)
+func Init() {
+	console.AddHandler(consoleHandler)
+	screen.AddFrameHandler(frameHandler)
+	key.AddHandler(keyHandler)
+	mouse.AddButtonHandler(mouseButtonHandler)
 }
 
 //
@@ -56,16 +61,22 @@ func start() {
 	if startCallback != nil {
 		startCallback()
 	}
+
+	systemPrint(greeting)
+	systemPrint(prompt)
 }
 
 //
 // System
 //
 
-var mouseSignX int32 = 1
-var mouseSignY int32 = 1
+var mouseSignX int = 1
+var mouseSignY int = 1
 
 func showMouse() {
+	width, height := screen.GetSize()
+	mouseX, mouseY := mouse.GetPosition()
+
 	if mouseX < 64 {
 		mouseSignX = 1
 	} else if mouseX >= width-64 {
@@ -102,9 +113,17 @@ func btoi(b bool) int {
 }
 
 func showInfo() {
+	now := screen.Now()
+	width, height := screen.GetSize()
+	clock := screen.Clock()
+	fps := screen.FPS()
+	mouseX, mouseY := mouse.GetPosition()
+	mouseLeft, mouseRight, mouseMiddle := mouse.GetButtons()
+	wheelX, wheelY := mouse.GetWheel()
+
 	canvas.Color(255, 255, 255, 128)
-	font.ASCII.DrawString(0, 0, 16, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseMiddle), btoi(mouseRight), wheelX, wheelY))
-	font.ASCII.DrawString(0, 16, 16, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%3.2f", now, clock, fps))
+	font.ASCII.DrawString(0, 0, 16, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseRight), btoi(mouseMiddle), wheelX, wheelY))
+	font.ASCII.DrawString(0, 16, 16, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%d", now, clock, fps))
 }
 
 var consoleLines []string = []string{""}

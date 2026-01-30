@@ -1,4 +1,4 @@
-package key
+package kb
 
 import (
 	"github.com/akikareha/sunani/lib"

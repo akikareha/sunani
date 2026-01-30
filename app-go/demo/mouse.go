@@ -6,8 +6,8 @@ import (
 
 //export sunani_mouse_motion
 func mouseMotion(x, y int32) {
-	mouseX = x
-	mouseY = y
+	mouseX = int(x)
+	mouseY = int(y)
 }
 
 //export sunani_mouse_button
@@ -31,7 +31,7 @@ func mouseButton(button uint32, action uint32) {
 
 //export sunani_mouse_wheel
 func mouseWheel(xoff, yoff int32) {
-	mouseSize += yoff
+	mouseSize += int(yoff)
 	if mouseSize < 1 {
 		mouseSize = 1
 	} else if mouseSize > 128 {
