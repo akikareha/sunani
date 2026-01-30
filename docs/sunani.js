@@ -177,9 +177,6 @@ const importObject = {
     },
 
     // ---- canvas ----
-    "canvas.begin": () => {
-      // do nothing currently
-    },
     "canvas.color": (r, g, b, a) => {
       currentColor = `rgba(${r},${g},${b},${a/255})`;
       ctx2d.strokeStyle = currentColor;
@@ -275,6 +272,11 @@ const importObject = {
         0, 0, fbW, fbH,
         ox, oy, dw, dh
       );
+
+      // for compatibility
+      currentColor = "rgba(255,255,255,1)";
+      ctx2d.strokeStyle = currentColor;
+      ctx2d.fillStyle = currentColor;
     },
   }
 };

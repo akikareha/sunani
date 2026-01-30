@@ -7,10 +7,6 @@ import (
 //export sunani_canvas_init
 func canvasInit() {}
 
-func Begin() {
-	c.Begin()
-}
-
 func Color(r, g, b, a int) {
 	c.Color(uint32(r), uint32(g), uint32(b), uint32(a))
 }

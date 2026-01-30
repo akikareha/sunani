@@ -4,7 +4,6 @@ import (
 	"unsafe"
 
 	fbuf "github.com/akikareha/sunani/app-go/api/fb"
-	"github.com/akikareha/sunani/app-go/base/canvas"
 )
 
 var initialized bool
@@ -47,7 +46,6 @@ func fbInit() {
 
 func Paint() {
 	fbuf.Paint()
-	canvas.Begin()
 }
 
 var fgR, fgG, fgB, fgA int

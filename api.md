@@ -12,7 +12,7 @@
     - imports: halt title cursor clear
 * Canvas API
     - exports: init
-    - imports: begin color line rect fill_rect path vertex polygon fill_polygon
+    - imports: color line rect fill_rect path vertex polygon fill_polygon
 * Framebuffer API
     - exports: fb_init
     - imports: params paint
@@ -245,18 +245,10 @@ This function is called from host when Canvas API is ready.
 
 ## Canvas API imports
 
-begin color line rect fill_rect path vertex polygon fill_polygon
+color line rect fill_rect path vertex polygon fill_polygon
 
 ```
 import "github.com/akikareha/sunani/api/canvas"
-```
-
-### begin
-
-Prepares for starting drawing on canvas.
-
-```
-canvas.Begin()
 ```
 
 ### color

@@ -90,7 +90,7 @@ func (fb *FB) Params(ptr uint32, width, height int) {
 	fb.prepared = true
 }
 
-func (fb *FB) Paint() {
+func (fb *FB) Begin() {
 	if !fb.IsEnabled() {
 		errlog("sunani fb.paint was called, but Framebuffer API is not enabled.\nExport snunani_fb_init to enable this API.")
 		return
@@ -121,6 +121,19 @@ func (fb *FB) Paint() {
 	oy := (fh - height) / 2
 
 	gl.Viewport(int32(ox), int32(oy), int32(width), int32(height))
+}
+
+func (fb *FB) Paint() {
+	if !fb.IsEnabled() {
+		errlog("sunani fb.paint was called, but Framebuffer API is not enabled.\nExport snunani_fb_init to enable this API.")
+		return
+	}
+	if !fb.prepared {
+		return
+	}
+	if fb.window == nil {
+		panic("window is nil")
+	}
 
 	size := fb.width * fb.height * 4
 	if size < 0 {

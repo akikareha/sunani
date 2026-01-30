@@ -4,7 +4,6 @@ import (
 	"unsafe"
 
 	scr "github.com/akikareha/sunani/app-go/api/screen"
-	"github.com/akikareha/sunani/app-go/base/canvas"
 	"github.com/akikareha/sunani/app-go/base/std"
 )
 
@@ -85,7 +84,6 @@ func screenFrame() {
 	}
 
 	Clear(bgR, bgG, bgB, bgA)
-	canvas.Begin()
 
 	for _, handler := range frameHandlers {
 		handler()

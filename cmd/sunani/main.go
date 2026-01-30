@@ -59,6 +59,8 @@ func main() {
 	key := NewKey()
 	mouse := NewMouse()
 
+	state := NewState(canvas, fb)
+
 	_, err := r.NewHostModuleBuilder("sunani").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) int64 {
@@ -97,11 +99,8 @@ func main() {
 			screen.Clear(int(r), int(g), int(b), int(a))
 		}).Export("screen.clear").
 		NewFunctionBuilder().
-		WithFunc(func(ctx context.Context) {
-			canvas.Begin()
-		}).Export("canvas.begin").
-		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, r, g, b, a uint32) {
+			state.EnsureCanvas()
 			canvas.Color(int(r), int(g), int(b), int(a))
 		}).Export("canvas.color").
 		NewFunctionBuilder().
@@ -110,30 +109,37 @@ func main() {
 			x1, y1 int32,
 			x2, y2 int32,
 		) {
+			state.EnsureCanvas()
 			canvas.Line(int(x1), int(y1), int(x2), int(y2))
 		}).Export("canvas.line").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, x, y int32, w, h int32) {
+			state.EnsureCanvas()
 			canvas.Rect(int(x), int(y), int(w), int(h))
 		}).Export("canvas.rect").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, x, y int32, w, h int32) {
+			state.EnsureCanvas()
 			canvas.FillRect(int(x), int(y), int(w), int(h))
 		}).Export("canvas.fill_rect").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
+			state.EnsureCanvas()
 			canvas.Path()
 		}).Export("canvas.path").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context, x, y int32) {
+			state.EnsureCanvas()
 			canvas.Vertex(int(x), int(y))
 		}).Export("canvas.vertex").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
+			state.EnsureCanvas()
 			canvas.Polygon()
 		}).Export("canvas.polygon").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
+			state.EnsureCanvas()
 			canvas.FillPolygon()
 		}).Export("canvas.fill_polygon").
 		NewFunctionBuilder().
@@ -146,6 +152,7 @@ func main() {
 		}).Export("fb.params").
 		NewFunctionBuilder().
 		WithFunc(func(ctx context.Context) {
+			state.EnsureFB()
 			fb.Paint()
 		}).Export("fb.paint").
 		Instantiate(ctx)
@@ -232,6 +239,8 @@ func main() {
 
 		// --- main loop ---
 		for !window.ShouldClose() {
+			state.EnsureNone()
+
 			screen.Frame()
 
 			window.SwapBuffers()

@@ -16,7 +16,6 @@ func screenInit() {}
 //export sunani_screen_frame
 func screenFrame() {
 	screen.Clear(0, 0, 0, 255)
-	canvas.Begin()
 	canvas.Color(255, 255, 255, 255)
 	font.ASCII.DrawString(x, y, w, h, message)
 }

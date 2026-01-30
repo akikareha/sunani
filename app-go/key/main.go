@@ -107,8 +107,6 @@ var RK61 = Keyboard{
 func screenFrame() {
 	screen.Clear(0, 0, 0, 255)
 
-	canvas.Begin()
-
 	kb := RK61
 	ox, oy := 0, 0
 	pitch := 32

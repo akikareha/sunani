@@ -55,8 +55,6 @@ func consoleGet(ptr uint32, length uint32) {
 func canvasDraw() {
 	screen.Clear(16, 16, 24, 255)
 
-	canvas.Begin()
-
 	canvas.Color(127, 127, 127, 255)
 	canvas.Rect(8, 8, width-16, height-16)
 
