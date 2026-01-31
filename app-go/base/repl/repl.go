@@ -8,45 +8,77 @@ import (
 	"github.com/akikareha/sunani/app-go/base/screen"
 )
 
-type Command func(*REPL, []string) bool
+type Fn func(*REPL, []string) bool
+
+type Command struct {
+	name     string
+	shortcut string
+	fn       Fn
+	help     string
+}
+
+func NewCommand(
+	name string,
+	shortcut string,
+	fn Fn,
+	help string,
+) *Command {
+	return &Command{
+		name:     name,
+		shortcut: shortcut,
+		fn:       fn,
+		help:     help,
+	}
+}
+
 type EchoHandler func(*REPL, string)
 
 type REPL struct {
 	greeting     string
 	prompt       string
-	commands     map[string]Command
+	commands     map[string]*Command
+	shortcuts    map[string]*Command
+	list         []*Command
 	echoHandlers []EchoHandler
 }
 
-const greeting = `Hello, World!
+func Default() *REPL {
+	r := New()
+
+	r.SetGreeting(`Hello, World!
 This is Sunani REPL System.
 Type h for help or q to quit.
-`
-const prompt = "> "
+`)
 
-var commands = map[string]Command{
-	"h":  hCommand,
-	"q":  qCommand,
-	"bg": bgCommand,
+	help := NewCommand(
+		"help",
+		"h",
+		hFn,
+		"Show help message.\n",
+	)
+	r.AddCommand(help)
+
+	quit := NewCommand(
+		"quit",
+		"q",
+		qFn,
+		"Quit this system.\n",
+	)
+	r.AddCommand(quit)
+
+	return r
 }
 
-var Default = New(greeting, prompt, commands)
-
-func New(
-	greeting string,
-	prompt string,
-	commands map[string]Command,
-) *REPL {
-	cmds := make(map[string]Command, len(commands))
-	for k, v := range commands {
-		cmds[k] = v
-	}
-	return &REPL{
-		greeting:     greeting,
-		prompt:       prompt,
-		commands:     cmds,
+func New() *REPL {
+	r := REPL{
+		greeting:     "Ready.",
+		prompt:       "> ",
+		commands:     make(map[string]*Command, 0),
+		shortcuts:    make(map[string]*Command, 0),
+		list:         make([]*Command, 0),
 		echoHandlers: make([]EchoHandler, 0),
 	}
+	return &r
 }
 
 func (r *REPL) Init() {
@@ -55,8 +87,30 @@ func (r *REPL) Init() {
 	r.Print(r.prompt)
 }
 
+func (r *REPL) AddCommand(c *Command) {
+	r.commands[c.name] = c
+	r.shortcuts[c.shortcut] = c
+	r.list = append(r.list, c)
+}
+
 func (r *REPL) AddEchoHandler(handler EchoHandler) {
 	r.echoHandlers = append(r.echoHandlers, handler)
+}
+
+func (r *REPL) GetGreeting() string {
+	return r.greeting
+}
+
+func (r *REPL) SetGreeting(s string) {
+	r.greeting = s
+}
+
+func (r *REPL) GetPrompt() string {
+	return r.prompt
+}
+
+func (r *REPL) SetPrompt(s string) {
+	r.prompt = s
 }
 
 func (r *REPL) Print(s string) {
@@ -73,11 +127,14 @@ func (r *REPL) echo(s string) {
 func (r *REPL) consoleInputHandler(line string) {
 	r.echo(line + "\n")
 	args := strings.Split(line, " ")
-	c := args[0]
-	command := r.commands[c]
-	if command == nil {
-		r.Print(fmt.Sprintf("Unknown command: %s\n", c))
-	} else if command(r, args) {
+	name := args[0]
+	c := r.commands[name]
+	if c == nil {
+		c = r.shortcuts[name]
+	}
+	if c == nil {
+		r.Print(fmt.Sprintf("Unknown command: %s\n", name))
+	} else if c.fn(r, args) {
 		return
 	}
 	r.Print(r.prompt)
@@ -88,44 +145,31 @@ func (r *REPL) Input(line string) {
 	r.consoleInputHandler(line)
 }
 
-func hCommand(r *REPL, args []string) bool {
-	r.Print("Commands:\n")
-	r.Print("h q bg\n")
+func hFn(r *REPL, args []string) bool {
+	if len(args) < 2 {
+		r.Print("List of commands:\n")
+		for _, c := range r.list {
+			r.Print(fmt.Sprintf("* %s (%s)\n", c.name, c.shortcut))
+		}
+		r.Print("Try > help [command]\n")
+		r.Print("for more help for [command].\n")
+		return false
+	}
+	name := args[1]
+	c := r.commands[name]
+	if c == nil {
+		c = r.shortcuts[name]
+	}
+	if c == nil {
+		r.Print(fmt.Sprintf("Help: Unknown command: %s\n", c))
+		return false
+	}
+	r.Print(c.help)
 	return false
 }
 
-func qCommand(r *REPL, args []string) bool {
+func qFn(r *REPL, args []string) bool {
 	r.Print("See you.\n")
 	screen.Halt()
 	return true
-}
-
-func bgCommand(r *REPL, args []string) bool {
-	if len(args) < 2 {
-		r.Print(fmt.Sprintf("Usage: %s COLOR_NAME\n", args[0]))
-		r.Print("COLOR_NAME: black white red green blue cyan purple yellow\n")
-		return false
-	}
-	switch args[1] {
-	case "black":
-		screen.SetBg(0, 0, 0, 255)
-	case "white":
-		screen.SetBg(255, 255, 255, 255)
-	case "red":
-		screen.SetBg(255, 0, 0, 255)
-	case "green":
-		screen.SetBg(0, 255, 0, 255)
-	case "blue":
-		screen.SetBg(0, 0, 255, 255)
-	case "cyan":
-		screen.SetBg(0, 255, 255, 255)
-	case "purple":
-		screen.SetBg(255, 0, 255, 255)
-	case "yellow":
-		screen.SetBg(255, 255, 0, 255)
-	default:
-		r.Print(fmt.Sprintf("Unknown color: %s\n", args[1]))
-		bgCommand(r, []string{args[0]}) // show usage
-	}
-	return false
 }

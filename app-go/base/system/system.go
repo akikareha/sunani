@@ -2,6 +2,7 @@ package system
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/akikareha/sunani/app-go/base/canvas"
 	"github.com/akikareha/sunani/app-go/base/canvas/widget"
@@ -10,27 +11,23 @@ import (
 	"github.com/akikareha/sunani/app-go/base/kb"
 	"github.com/akikareha/sunani/app-go/base/key"
 	"github.com/akikareha/sunani/app-go/base/mouse"
-	"github.com/akikareha/sunani/app-go/base/repl"
 	"github.com/akikareha/sunani/app-go/base/screen"
 	"github.com/akikareha/sunani/lib"
 )
 
-var text = widget.NewText()
+var cursor = widget.NewCursor()
 var input = widget.NewText()
+var text = widget.NewText()
 
 var startCallback func()
 var infoVisible bool
 
 var virtualKey = lib.KeyUnknown
 
-var mouseSignX = 1
-var mouseSignY = 1
-
 func Init() {
 	screen.AddFrameHandler(frameHandler)
 	key.AddEventHandler(keyEventHandler)
 	mouse.AddButtonHandler(mouseButtonHandler)
-	repl.Default.AddEchoHandler(echoHandler)
 
 	text.SetColor(255, 255, 255, 128)
 	input.SetColor(255, 255, 0, 192)
@@ -42,7 +39,7 @@ func start() {
 		startCallback()
 	}
 
-	repl.Default.Init()
+	initREPL()
 }
 
 func SetStart(callback func()) {
@@ -69,19 +66,25 @@ func frameHandler() {
 
 	fb.Paint()
 
-	showMouse()
+	cursor.Draw()
+
 	if infoVisible {
 		showInfo()
 	}
 }
 
 func putKey(key lib.Key) {
-	char := kb.Char(key)
-	if char == "\n" {
+	if key == lib.KeyEnter {
 		line := input.Get()
 		input.Clear()
-		repl.Default.Input(line)
+		REPL.Input(line)
+	} else if key == lib.KeyBackspace {
+		line := input.Get()
+		input.Clear()
+		_, size := utf8.DecodeLastRuneInString(line)
+		input.Add(line[:len(line)-size])
 	} else {
+		char := kb.Char(key)
 		input.Add(char)
 	}
 }
@@ -98,41 +101,6 @@ func mouseButtonHandler(button lib.Mouse, action lib.Action) {
 			putKey(virtualKey)
 		}
 	}
-}
-
-func echoHandler(r *repl.REPL, s string) {
-	text.Add(s)
-}
-
-var cursor = canvas.Polygon{
-	0, 0,
-	48, 24,
-	24, 24,
-	24, 48,
-}
-
-func showMouse() {
-	width, height := screen.GetSize()
-	mouseX, mouseY := mouse.GetPosition()
-
-	if mouseX < 64 {
-		mouseSignX = 1
-	} else if mouseX >= width-64 {
-		mouseSignX = -1
-	}
-	if mouseY < 64 {
-		mouseSignY = 1
-	} else if mouseY >= height-64 {
-		mouseSignY = -1
-	}
-
-	denomW, denomH := canvas.GetDenoms()
-
-	canvas.SetColor(0, 0, 255, 128)
-	cursor.Draw(mouseX, mouseY, denomW*mouseSignX, denomH*mouseSignY)
-
-	canvas.SetColor(255, 255, 0, 128)
-	cursor.Fill(mouseX, mouseY, denomW*mouseSignX, denomH*mouseSignY)
 }
 
 func showInfo() {
