@@ -19,13 +19,13 @@ func systemPrint(s string) {
 	addConsoleLine(s)
 }
 
-func consoleHandler(line string) {
+func consoleInputHandler(line string) {
 	addConsoleLine(line + "\n")
 	repl(line)
 	systemPrint(prompt)
 }
 
-func keyHandler(key lib.Key, action lib.Action) {
+func keyEventHandler(key lib.Key, action lib.Action) {
 	if action == lib.ActionPress {
 		addConsoleLine(kb.Char(key))
 	}
@@ -40,9 +40,9 @@ func mouseButtonHandler(button lib.Mouse, action lib.Action) {
 }
 
 func Init() {
-	console.AddHandler(consoleHandler)
+	console.AddInputHandler(consoleInputHandler)
 	screen.AddFrameHandler(frameHandler)
-	key.AddHandler(keyHandler)
+	key.AddEventHandler(keyEventHandler)
 	mouse.AddButtonHandler(mouseButtonHandler)
 }
 
@@ -70,8 +70,15 @@ func start() {
 // System
 //
 
-var mouseSignX int = 1
-var mouseSignY int = 1
+var mouseSignX = 1
+var mouseSignY = 1
+
+var cursor = canvas.Polygon{
+	0, 0,
+	48, 24,
+	24, 24,
+	24, 48,
+}
 
 func showMouse() {
 	width, height := screen.GetSize()
@@ -88,21 +95,13 @@ func showMouse() {
 		mouseSignY = -1
 	}
 
-	canvas.Color(0, 0, 255, 128)
-	canvas.Path()
-	canvas.Vertex(mouseX, mouseY)
-	canvas.Vertex(mouseX+48*mouseSignX, mouseY+24*mouseSignY)
-	canvas.Vertex(mouseX+24*mouseSignX, mouseY+24*mouseSignY)
-	canvas.Vertex(mouseX+24*mouseSignX, mouseY+48*mouseSignY)
-	canvas.Polygon()
+	denomW, denomH := canvas.GetDenoms()
 
-	canvas.Color(255, 255, 0, 128)
-	canvas.Path()
-	canvas.Vertex(mouseX, mouseY)
-	canvas.Vertex(mouseX+48*mouseSignX, mouseY+24*mouseSignY)
-	canvas.Vertex(mouseX+24*mouseSignX, mouseY+24*mouseSignY)
-	canvas.Vertex(mouseX+24*mouseSignX, mouseY+48*mouseSignY)
-	canvas.FillPolygon()
+	canvas.SetColor(0, 0, 255, 128)
+	cursor.Draw(mouseX, mouseY, denomW*mouseSignX, denomH*mouseSignY)
+
+	canvas.SetColor(255, 255, 0, 128)
+	cursor.Fill(mouseX, mouseY, denomW*mouseSignX, denomH*mouseSignY)
 }
 
 func btoi(b bool) int {
@@ -121,15 +120,15 @@ func showInfo() {
 	mouseLeft, mouseRight, mouseMiddle := mouse.GetButtons()
 	wheelX, wheelY := mouse.GetWheel()
 
-	canvas.Color(255, 255, 255, 128)
+	canvas.SetColor(255, 255, 255, 128)
 	font.ASCII.DrawString(0, 0, 16, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseRight), btoi(mouseMiddle), wheelX, wheelY))
 	font.ASCII.DrawString(0, 16, 16, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%d", now, clock, fps))
 }
 
-var consoleLines []string = []string{""}
+var consoleLines = []string{""}
 
 func showConsole(ox, oy int, sx, sy int) {
-	canvas.Color(255, 255, 255, 128)
+	canvas.SetColor(255, 255, 255, 128)
 	n := len(consoleLines)
 	for i := 0; i < n; i++ {
 		font.ASCII.DrawString(ox, oy+(-n+i)*sy, sx, sy, consoleLines[i])

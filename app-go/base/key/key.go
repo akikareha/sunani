@@ -4,26 +4,13 @@ import (
 	"github.com/akikareha/sunani/lib"
 )
 
+type EventHandler func(key lib.Key, action lib.Action)
+
+var table = make([]bool, lib.KeyCount)
+var eventHandlers = make([]EventHandler, 0)
+
 //export sunani_key_init
 func keyInit() {}
-
-var table []bool = make([]bool, lib.KeyCount)
-
-func IsDown(key lib.Key) bool {
-	// key cannot be negative since lib.Key is uint16.
-	if key >= lib.KeyCount {
-		return false
-	}
-	return table[key]
-}
-
-type Handler func(key lib.Key, action lib.Action)
-
-var handlers []Handler = make([]Handler, 0)
-
-func AddHandler(handler Handler) {
-	handlers = append(handlers, handler)
-}
 
 //export sunani_key_event
 func keyEvent(key uint32, action uint32) {
@@ -36,7 +23,19 @@ func keyEvent(key uint32, action uint32) {
 		table[k] = false
 	}
 
-	for _, handler := range handlers {
+	for _, handler := range eventHandlers {
 		handler(k, a)
 	}
+}
+
+func AddEventHandler(handler EventHandler) {
+	eventHandlers = append(eventHandlers, handler)
+}
+
+func IsDown(key lib.Key) bool {
+	// key cannot be negative since lib.Key is uint16.
+	if key >= lib.KeyCount {
+		return false
+	}
+	return table[key]
 }

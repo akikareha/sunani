@@ -18,11 +18,18 @@ var clock uint64
 var mouseX int
 var mouseY int
 var mouseBlink int
-var mouseSize int = 32
+var mouseSize = 32
 
 var anchorEnabled bool
 var anchorX int
 var anchorY int
+
+var cursor = canvas.Polygon{
+	0, 0,
+	48, 24,
+	24, 24,
+	24, 48,
+}
 
 //export sunani_screen_resize
 func screenResize(w, h int32) {
@@ -55,45 +62,46 @@ func consoleGet(ptr uint32, length uint32) {
 func canvasDraw() {
 	screen.Clear(16, 16, 24, 255)
 
-	canvas.Color(127, 127, 127, 255)
-	canvas.Rect(8, 8, width-16, height-16)
+	canvas.SetColor(127, 127, 127, 255)
+	canvas.DrawRect(8, 8, width-16, height-16)
 
-	canvas.Color(255, 255, 255, 255)
-	canvas.Line(50, 50, 300, 200)
+	canvas.SetColor(255, 255, 255, 255)
+	canvas.DrawLine(50, 50, 300, 200)
 
-	canvas.Color(32, 239, 96, 255)
+	canvas.SetColor(32, 239, 96, 255)
 	canvas.FillRect(100, 300, 200, 120)
 
-	canvas.Color(255, 64, 64, 255)
-	canvas.Rect(400, 100, 180, 180)
+	canvas.SetColor(255, 64, 64, 255)
+	canvas.DrawRect(400, 100, 180, 180)
 
 	if anchorEnabled {
-		canvas.Color(0, 255, 0, 255)
+		canvas.SetColor(0, 255, 0, 255)
 		canvas.FillRect(anchorX-8, anchorY-8, 16, 16)
 	}
 
 	if anchorEnabled {
-		canvas.Color(0, 255, 255, 255)
-		canvas.Line(anchorX, anchorY, mouseX, mouseY)
+		canvas.SetColor(0, 255, 255, 255)
+		canvas.DrawLine(anchorX, anchorY, mouseX, mouseY)
 	}
 
 	if mouseBlink&0x10 == 0 {
-		canvas.Color(255, 0, 0, 255)
+		canvas.SetColor(255, 0, 0, 255)
 	} else {
-		canvas.Color(255, 255, 0, 255)
+		canvas.SetColor(255, 255, 0, 255)
 	}
-	canvas.FillRect(mouseX-mouseSize/2, mouseY-mouseSize/2, mouseSize, mouseSize)
+	canvas.FillRect(
+		mouseX-mouseSize/2,
+		mouseY-mouseSize/2,
+		mouseSize,
+		mouseSize,
+	)
 
-	canvas.Path()
-	canvas.Vertex(mouseX, mouseY)
-	canvas.Vertex(mouseX+48, mouseY+24)
-	canvas.Vertex(mouseX+24, mouseY+24)
-	canvas.Vertex(mouseX+24, mouseY+48)
-	canvas.FillPolygon()
+	denomW, denomH := canvas.GetDenoms()
+	cursor.Fill(mouseX, mouseY, denomW, denomH)
 
 	mouseBlink++
 
-	canvas.Color(255, 255, 255, 255)
+	canvas.SetColor(255, 255, 255, 255)
 	for j := 2; j <= 7; j++ {
 		for i := 0; i <= 15; i++ {
 			font.ASCII.Draw(

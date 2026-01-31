@@ -17,15 +17,15 @@ var title string
 var cursorVisible bool
 
 var width, height int
-var resizeHandlers []ResizeHandler = make([]ResizeHandler, 0)
+var resizeHandlers = make([]ResizeHandler, 0)
 
 var clock int64
 var now int64
 var tick int64 = 16
 var prev int64
 var fps int64
-var bgR, bgG, bgB, bgA int = 0, 0, 0, 255
-var frameHandlers []FrameHandler = make([]FrameHandler, 0)
+var bgR, bgG, bgB, bgA = 0, 0, 0, 255
+var frameHandlers = make([]FrameHandler, 0)
 
 //export sunani_screen_init
 func screenInit() {
@@ -45,34 +45,6 @@ func screenResize(w, h int32) {
 	}
 }
 
-func GetSize() (int, int) {
-	return width, height
-}
-
-func GetTick() int {
-	return int(tick)
-}
-
-func SetTick(value int) {
-	tick = int64(value)
-}
-
-func GetBg() (int, int, int, int) {
-	return bgR, bgG, bgB, bgA
-}
-
-func SetBg(r, g, b, a int) {
-	bgR, bgG, bgB, bgA = r, g, b, a
-}
-
-func Clear(r, g, b, a int) {
-	scr.Clear(uint32(r), uint32(g), uint32(b), uint32(a))
-}
-
-func AddFrameHandler(handler FrameHandler) {
-	frameHandlers = append(frameHandlers, handler)
-}
-
 //export sunani_screen_frame
 func screenFrame() {
 	clock++
@@ -83,27 +55,15 @@ func screenFrame() {
 		prev = now
 	}
 
-	Clear(bgR, bgG, bgB, bgA)
+	Clear()
 
 	for _, handler := range frameHandlers {
 		handler()
 	}
 }
 
-func Now() int64 {
-	return now
-}
-
-func Clock() int64 {
-	return clock
-}
-
-func FPS() int {
-	return int(fps)
-}
-
-func Halt() {
-	scr.Halt()
+func AddFrameHandler(handler FrameHandler) {
+	frameHandlers = append(frameHandlers, handler)
 }
 
 func GetTitle() string {
@@ -145,4 +105,44 @@ func SetCursorVisible(visible bool) {
 	} else {
 		scr.Cursor(0)
 	}
+}
+
+func GetSize() (int, int) {
+	return width, height
+}
+
+func Clock() int64 {
+	return clock
+}
+
+func Now() int64 {
+	return now
+}
+
+func GetTick() int {
+	return int(tick)
+}
+
+func SetTick(value int) {
+	tick = int64(value)
+}
+
+func FPS() int {
+	return int(fps)
+}
+
+func GetBg() (int, int, int, int) {
+	return bgR, bgG, bgB, bgA
+}
+
+func SetBg(r, g, b, a int) {
+	bgR, bgG, bgB, bgA = r, g, b, a
+}
+
+func Clear() {
+	scr.Clear(uint32(bgR), uint32(bgG), uint32(bgB), uint32(bgA))
+}
+
+func Halt() {
+	scr.Halt()
 }

@@ -22,7 +22,7 @@ type FB struct {
 
 	prepared bool
 
-	ox, oy int
+	rx, ry int
 	rw, rh int
 }
 
@@ -46,8 +46,8 @@ func (fb *FB) DoResize(width, height int) {
 	}
 	_, err := fb.rect.Call(
 		ctx,
-		uint64(fb.ox),
-		uint64(fb.oy),
+		uint64(fb.rx),
+		uint64(fb.ry),
 		uint64(fb.rw),
 		uint64(fb.rh),
 	)
@@ -91,8 +91,8 @@ func (fb *FB) updateRect() {
 		fb.rw = int(fb.width) * scale
 		fb.rh = int(fb.height) * scale
 	}
-	fb.ox = (fw - fb.rw) / 2
-	fb.oy = (fh - fb.rh) / 2
+	fb.rx = (fw - fb.rw) / 2
+	fb.ry = (fh - fb.rh) / 2
 }
 
 func (fb *FB) Params(ptr uint32, width, height int) {
@@ -153,7 +153,7 @@ func (fb *FB) Begin() {
 	gl.Disable(gl.DEPTH_TEST)
 	gl.Enable(gl.TEXTURE_2D)
 
-	gl.Viewport(int32(fb.ox), int32(fb.oy), int32(fb.rw), int32(fb.rh))
+	gl.Viewport(int32(fb.rx), int32(fb.ry), int32(fb.rw), int32(fb.rh))
 }
 
 func (fb *FB) Paint() {

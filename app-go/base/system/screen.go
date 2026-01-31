@@ -15,7 +15,7 @@ func min(a, b int) int {
 	return b
 }
 
-var virtualKey lib.Key = lib.KeyUnknown
+var virtualKey = lib.KeyUnknown
 
 var infoVisible bool
 

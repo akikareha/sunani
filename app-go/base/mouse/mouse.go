@@ -4,22 +4,23 @@ import (
 	"github.com/akikareha/sunani/lib"
 )
 
-//export sunani_mouse_init
-func mouseInit() {}
+type MotionHandler func(int, int)
+type ButtonHandler func(lib.Mouse, lib.Action)
+type WheelHandler func(int, int)
 
 var px, py int
+var motionHandlers = make([]MotionHandler, 0)
 
-func GetPosition() (int, int) {
-	return px, py
-}
+var left bool
+var right bool
+var middle bool
+var buttonHandlers = make([]ButtonHandler, 0)
 
-type MotionHandler func(int, int)
+var wx, wy int
+var wheelHandlers = make([]WheelHandler, 0)
 
-var motionHandlers []MotionHandler = make([]MotionHandler, 0)
-
-func AddMotionHandler(handler MotionHandler) {
-	motionHandlers = append(motionHandlers, handler)
-}
+//export sunani_mouse_init
+func mouseInit() {}
 
 //export sunani_mouse_motion
 func mouseMotion(x, y int32) {
@@ -29,22 +30,6 @@ func mouseMotion(x, y int32) {
 	for _, handler := range motionHandlers {
 		handler(px, py)
 	}
-}
-
-var left bool
-var right bool
-var middle bool
-
-func GetButtons() (bool, bool, bool) {
-	return left, right, middle
-}
-
-type ButtonHandler func(lib.Mouse, lib.Action)
-
-var buttonHandlers []ButtonHandler = make([]ButtonHandler, 0)
-
-func AddButtonHandler(handler ButtonHandler) {
-	buttonHandlers = append(buttonHandlers, handler)
 }
 
 //export sunani_mouse_button
@@ -78,16 +63,6 @@ func mouseButton(button uint32, action uint32) {
 	}
 }
 
-var wx, wy int
-
-func GetWheel() (int, int) {
-	return wx, wy
-}
-
-type WheelHandler func(int, int)
-
-var wheelHandlers []WheelHandler = make([]WheelHandler, 0)
-
 //export sunani_mouse_wheel
 func mouseWheel(xoff, yoff int32) {
 	dx := int(xoff)
@@ -99,4 +74,28 @@ func mouseWheel(xoff, yoff int32) {
 	for _, handler := range wheelHandlers {
 		handler(dx, dy)
 	}
+}
+
+func AddMotionHandler(handler MotionHandler) {
+	motionHandlers = append(motionHandlers, handler)
+}
+
+func AddButtonHandler(handler ButtonHandler) {
+	buttonHandlers = append(buttonHandlers, handler)
+}
+
+func AddWheelHandler(handler WheelHandler) {
+	wheelHandlers = append(wheelHandlers, handler)
+}
+
+func GetPosition() (int, int) {
+	return px, py
+}
+
+func GetButtons() (bool, bool, bool) {
+	return left, right, middle
+}
+
+func GetWheel() (int, int) {
+	return wx, wy
 }

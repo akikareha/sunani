@@ -1,12 +1,12 @@
 package system
 
-var greeting string = "Hello, World!\n"
+var greeting = "Hello, World!\n"
 
 func SetGreeting(s string) {
 	greeting = s
 }
 
-var prompt string = "> "
+var prompt = "> "
 
 func SetPrompt(s string) {
 	prompt = s

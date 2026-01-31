@@ -111,7 +111,7 @@ func screenFrame() {
 	ox, oy := 0, 0
 	pitch := 32
 
-	canvas.Color(64, 64, 64, 255)
+	canvas.SetColor(64, 64, 64, 255)
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		canvas.FillRect(
@@ -122,7 +122,7 @@ func screenFrame() {
 		)
 	}
 
-	canvas.Color(255, 255, 255, 255)
+	canvas.SetColor(255, 255, 255, 255)
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		n := len(k.Label)

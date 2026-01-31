@@ -117,8 +117,8 @@ let fbPtr = 0;
 let fbW = 0;
 let fbH = 0;
 let fbImageData = null;
-let ox = 0;
-let oy = 0;
+let rx = 0;
+let ry = 0;
 let rw = 0;
 let rh = 0;
 
@@ -133,8 +133,8 @@ function updateRect() {
     rw = fbW * scale;
     rh = fbH * scale;
   }
-  ox = Math.floor((cw - rw) * 0.5);
-  oy = Math.floor((ch - rh) * 0.5);
+  rx = Math.floor((cw - rw) * 0.5);
+  ry = Math.floor((ch - rh) * 0.5);
 }
 
 // ==== API ====
@@ -280,7 +280,7 @@ const importObject = {
       ctx2d.drawImage(
         fbOffscreen,
         0, 0, fbW, fbH,
-        ox, oy, rw, rh
+        rx, ry, rw, rh
       );
 
       // for compatibility
@@ -335,7 +335,7 @@ function notifyResize() {
 }
 
 function notifyRect() {
-  call("sunani_fb_rect", ox, oy, rw, rh);
+  call("sunani_fb_rect", rx, ry, rw, rh);
 }
 
 const ro = new ResizeObserver(() => {

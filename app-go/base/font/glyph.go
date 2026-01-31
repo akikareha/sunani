@@ -58,7 +58,7 @@ func (g Glyph) Draw(x, y int, w, h int) {
 			i++
 			y2 := int(g[i])
 			i++
-			canvas.Line(
+			canvas.DrawLine(
 				x+x1*w/gw,
 				y+y1*h/gh,
 				x+x2*w/gw,

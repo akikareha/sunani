@@ -29,9 +29,9 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int, mouseX, mouseY int) lib.Key {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		if key.IsDown(k.Code) {
-			canvas.Color(128, 128, 128, 128)
+			canvas.SetColor(128, 128, 128, 128)
 		} else {
-			canvas.Color(64, 64, 64, 64)
+			canvas.SetColor(64, 64, 64, 64)
 		}
 		canvas.FillRect(
 			ox+int(k.X)*pitch/int(kb.GridWidth)+pitch/8,
@@ -43,8 +43,8 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int, mouseX, mouseY int) lib.Key {
 			mouseX < ox+int(k.X)*pitch/int(kb.GridWidth)+int(k.Width)*pitch/int(kb.GridWidth) &&
 			mouseY >= oy+int(k.Y)*pitch/int(kb.GridHeight) &&
 			mouseY < oy+int(k.Y)*pitch/int(kb.GridHeight)+int(k.Height)*pitch/int(kb.GridHeight) {
-			canvas.Color(128, 128, 0, 128)
-			canvas.Rect(
+			canvas.SetColor(128, 128, 0, 128)
+			canvas.DrawRect(
 				ox+int(k.X)*pitch/int(kb.GridWidth),
 				oy+int(k.Y)*pitch/int(kb.GridHeight),
 				int(k.Width)*pitch/int(kb.GridWidth),
@@ -58,9 +58,9 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int, mouseX, mouseY int) lib.Key {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		if key.IsDown(k.Code) {
-			canvas.Color(0, 0, 0, 255)
+			canvas.SetColor(0, 0, 0, 255)
 		} else {
-			canvas.Color(255, 255, 255, 128)
+			canvas.SetColor(255, 255, 255, 128)
 		}
 		n := len(k.Label)
 		width := pitch * int(k.Width) / int(kb.GridWidth) / n
