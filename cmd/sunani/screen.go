@@ -28,7 +28,10 @@ func (scr *Screen) IsEnabled() bool {
 	return scr.init != nil
 }
 
-func (scr *Screen) doResize(width, height int) {
+func (scr *Screen) DoResize(width, height int) {
+	if scr.resize == nil {
+		return
+	}
 	_, err := scr.resize.Call(
 		ctx,
 		uint64(width),
@@ -55,17 +58,8 @@ func (scr *Screen) Init(window *glfw.Window) {
 		}
 	}
 
-	if scr.resize != nil {
-		window.SetFramebufferSizeCallback(func(
-			w *glfw.Window,
-			width, height int,
-		) {
-			scr.doResize(width, height)
-		})
-
-		fbw, fbh := window.GetFramebufferSize()
-		scr.doResize(fbw, fbh)
-	}
+	fbw, fbh := window.GetFramebufferSize()
+	scr.DoResize(fbw, fbh)
 }
 
 func (scr *Screen) Halt() {

@@ -14,7 +14,7 @@
     - exports: init
     - imports: color line rect fill_rect path vertex polygon fill_polygon
 * Framebuffer API
-    - exports: fb_init
+    - exports: init rect
     - imports: params paint
 * Keyboard API
     - exports: init event
@@ -341,6 +341,15 @@ This function is called from host when Framebuffer API is ready.
 //export sunani_fb_init
 func fbInit()
 ```
+
+### rect
+
+This function is called when host window or tab is resized.
+This function is called at least once when app is launched.
+
+```
+//export sunani_fb_rect
+func fbRect(x, y int32, w, h int32)
 
 ## Framebuffer API imports
 

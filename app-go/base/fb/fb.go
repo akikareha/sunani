@@ -9,6 +9,8 @@ import (
 var initialized bool
 var w, h int = 256, 256
 var buffer []byte
+var ox, oy int
+var rw, rh int
 
 func SetSize(width, height int) {
 	w = width
@@ -42,6 +44,18 @@ func fbInit() {
 	initialized = true
 
 	SetSize(w, h)
+}
+
+//export sunani_fb_rect
+func fbRect(x, y int32, w, h int32) {
+	ox = int(x)
+	oy = int(y)
+	rw = int(w)
+	rh = int(h)
+}
+
+func GetRect() (int, int, int, int) {
+	return ox, oy, rw, rh
 }
 
 func Paint() {

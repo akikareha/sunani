@@ -117,6 +117,25 @@ let fbPtr = 0;
 let fbW = 0;
 let fbH = 0;
 let fbImageData = null;
+let ox = 0;
+let oy = 0;
+let rw = 0;
+let rh = 0;
+
+function updateRect() {
+  let cw = canvas.width;
+  let ch = canvas.height;
+  if (fbW == 0 || fbH == 0) {
+    rw = 0;
+    rh = 0;
+  } else {
+    const scale = Math.floor(Math.min(cw / fbW, ch / fbH));
+    rw = fbW * scale;
+    rh = fbH * scale;
+  }
+  ox = Math.floor((cw - rw) * 0.5);
+  oy = Math.floor((ch - rh) * 0.5);
+}
 
 // ==== API ====
 
@@ -234,6 +253,8 @@ const importObject = {
 
       // Canvas ImageData buffer (clamped RGBA)
       fbImageData = new ImageData(fbW, fbH);
+
+      updateRect();
     },
     "fb.paint": () => {
       if (!fbPtr || !fbW || !fbH || !fbImageData) return;
@@ -250,17 +271,6 @@ const importObject = {
       const src = memU8.subarray(fbPtr, fbPtr + len);
       fbImageData.data.set(src);
 
-      // Begin() in Go
-      const cw = canvas.width;
-      const ch = canvas.height;
-
-      const scale = Math.floor(Math.min(cw / fbW, ch / fbH));
-      const dw = fbW * scale;
-      const dh = fbH * scale;
-
-      const ox = Math.floor((cw - dw) * 0.5);
-      const oy = Math.floor((ch - dh) * 0.5);
-
       // ImageData -> offscreen canvas -> magnified draw
       fbOffscreen.width = fbW;
       fbOffscreen.height = fbH;
@@ -270,7 +280,7 @@ const importObject = {
       ctx2d.drawImage(
         fbOffscreen,
         0, 0, fbW, fbH,
-        ox, oy, dw, dh
+        ox, oy, rw, rh
       );
 
       // for compatibility
@@ -324,8 +334,14 @@ function notifyResize() {
   call("sunani_screen_resize", width, height);
 }
 
+function notifyRect() {
+  call("sunani_fb_rect", ox, oy, rw, rh);
+}
+
 const ro = new ResizeObserver(() => {
   notifyResize();
+  updateRect();
+  notifyRect();
 });
 ro.observe(canvas);
 
@@ -392,6 +408,7 @@ canvas.addEventListener("wheel", (e) => {
 
 // init
 notifyResize();
+notifyRect();
 
 call("sunani_start");
 

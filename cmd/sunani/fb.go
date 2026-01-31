@@ -10,6 +10,7 @@ var mem api.Memory
 
 type FB struct {
 	init api.Function
+	rect api.Function
 
 	window *glfw.Window
 
@@ -20,6 +21,9 @@ type FB struct {
 	tex uint32
 
 	prepared bool
+
+	ox, oy int
+	rw, rh int
 }
 
 func NewFB() *FB {
@@ -28,10 +32,28 @@ func NewFB() *FB {
 
 func (fb *FB) Preinit() {
 	fb.init = mod.ExportedFunction("sunani_fb_init")
+	fb.rect = mod.ExportedFunction("sunani_fb_rect")
 }
 
 func (fb *FB) IsEnabled() bool {
 	return fb.init != nil
+}
+
+func (fb *FB) DoResize(width, height int) {
+	fb.updateRect()
+	if fb.rect == nil {
+		return
+	}
+	_, err := fb.rect.Call(
+		ctx,
+		uint64(fb.ox),
+		uint64(fb.oy),
+		uint64(fb.rw),
+		uint64(fb.rh),
+	)
+	if err != nil {
+		die("sunani_fb_rect call failed:", err)
+	}
 }
 
 func (fb *FB) Init(window *glfw.Window) {
@@ -54,6 +76,23 @@ func (fb *FB) Init(window *glfw.Window) {
 			die("sunani_fb_init call failed:", err)
 		}
 	}
+
+	fbw, fbh := window.GetFramebufferSize()
+	fb.DoResize(fbw, fbh)
+}
+
+func (fb *FB) updateRect() {
+	fw, fh := fb.window.GetFramebufferSize()
+	if fb.width == 0 || fb.height == 0 {
+		fb.rw = 0
+		fb.rh = 0
+	} else {
+		scale := min(fw/int(fb.width), fh/int(fb.height))
+		fb.rw = int(fb.width) * scale
+		fb.rh = int(fb.height) * scale
+	}
+	fb.ox = (fw - fb.rw) / 2
+	fb.oy = (fh - fb.rh) / 2
 }
 
 func (fb *FB) Params(ptr uint32, width, height int) {
@@ -87,6 +126,8 @@ func (fb *FB) Params(ptr uint32, width, height int) {
 		nil,
 	)
 
+	fb.updateRect()
+
 	fb.prepared = true
 }
 
@@ -112,15 +153,7 @@ func (fb *FB) Begin() {
 	gl.Disable(gl.DEPTH_TEST)
 	gl.Enable(gl.TEXTURE_2D)
 
-	fw, fh := fb.window.GetFramebufferSize()
-	scale := min(fw/int(fb.width), fh/int(fb.height))
-	width := int(fb.width) * scale
-	height := int(fb.height) * scale
-
-	ox := (fw - width) / 2
-	oy := (fh - height) / 2
-
-	gl.Viewport(int32(ox), int32(oy), int32(width), int32(height))
+	gl.Viewport(int32(fb.ox), int32(fb.oy), int32(fb.rw), int32(fb.rh))
 }
 
 func (fb *FB) Paint() {

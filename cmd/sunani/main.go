@@ -212,6 +212,14 @@ func main() {
 		}
 		window.MakeContextCurrent()
 
+		window.SetFramebufferSizeCallback(func(
+			w *glfw.Window,
+			width, height int,
+		) {
+			screen.DoResize(width, height)
+			fb.DoResize(width, height)
+		})
+
 		screen.Init(window)
 		canvas.Init(window)
 		fb.Init(window)
