@@ -9,10 +9,10 @@ type Polygon []int
 func (poly Polygon) Draw(x, y int, w, h int) {
 	path()
 	for i := 0; i < len(poly); i += 2 {
-		if i + 1 >= len(poly) {
+		if i+1 >= len(poly) {
 			break
 		}
-		vertex(x + poly[i] * w / denomW, y + poly[i + 1] * h / denomH)
+		vertex(x+poly[i]*w/denomW, y+poly[i+1]*h/denomH)
 	}
 	polygon()
 }
@@ -20,10 +20,10 @@ func (poly Polygon) Draw(x, y int, w, h int) {
 func (poly Polygon) Fill(x, y int, w, h int) {
 	path()
 	for i := 0; i < len(poly); i += 2 {
-		if i + 1 >= len(poly) {
+		if i+1 >= len(poly) {
 			break
 		}
-		vertex(x + poly[i] * w / denomW, y + poly[i + 1] * h / denomH)
+		vertex(x+poly[i]*w/denomW, y+poly[i+1]*h/denomH)
 	}
 	fillPolygon()
 }

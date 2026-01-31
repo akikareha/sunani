@@ -10,7 +10,7 @@ const (
 
 type State struct {
 	canvas *Canvas
-	fb *FB
+	fb     *FB
 
 	draw Draw
 }
@@ -18,7 +18,7 @@ type State struct {
 func NewState(canvas *Canvas, fb *FB) *State {
 	return &State{
 		canvas: canvas,
-		fb: fb,
+		fb:     fb,
 	}
 }
 

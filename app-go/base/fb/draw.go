@@ -37,9 +37,9 @@ func GetPixel(x, y int) (int, int, int, int) {
 	}
 	i := (y*w + x) * 4
 	return int(buffer[i]),
-		 int(buffer[i+1]),
-		 int(buffer[i+2]),
-		 int(buffer[i+3])
+		int(buffer[i+1]),
+		int(buffer[i+2]),
+		int(buffer[i+3])
 }
 
 func DrawPixel(x, y int) {

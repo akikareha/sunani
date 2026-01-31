@@ -2,58 +2,38 @@ package system
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/akikareha/sunani/app-go/base/canvas"
-	"github.com/akikareha/sunani/app-go/base/console"
+	"github.com/akikareha/sunani/app-go/base/canvas/widget"
+	"github.com/akikareha/sunani/app-go/base/fb"
 	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/app-go/base/kb"
 	"github.com/akikareha/sunani/app-go/base/key"
 	"github.com/akikareha/sunani/app-go/base/mouse"
+	"github.com/akikareha/sunani/app-go/base/repl"
 	"github.com/akikareha/sunani/app-go/base/screen"
 	"github.com/akikareha/sunani/lib"
 )
 
-func systemPrint(s string) {
-	console.Print(s)
-	addConsoleLine(s)
-}
+var text = widget.NewText()
+var input = widget.NewText()
 
-func consoleInputHandler(line string) {
-	addConsoleLine(line + "\n")
-	repl(line)
-	systemPrint(prompt)
-}
+var startCallback func()
+var infoVisible bool
 
-func keyEventHandler(key lib.Key, action lib.Action) {
-	if action == lib.ActionPress {
-		addConsoleLine(kb.Char(key))
-	}
-}
+var virtualKey = lib.KeyUnknown
 
-func mouseButtonHandler(button lib.Mouse, action lib.Action) {
-	if button == lib.MouseLeft && action == lib.ActionPress {
-		if virtualKey != lib.KeyUnknown {
-			addConsoleLine(kb.Char(virtualKey))
-		}
-	}
-}
+var mouseSignX = 1
+var mouseSignY = 1
 
 func Init() {
-	console.AddInputHandler(consoleInputHandler)
 	screen.AddFrameHandler(frameHandler)
 	key.AddEventHandler(keyEventHandler)
 	mouse.AddButtonHandler(mouseButtonHandler)
-}
+	repl.Default.AddEchoHandler(echoHandler)
 
-//
-// Start
-//
-
-var startCallback func()
-
-func SetStart(callback func()) {
-	startCallback = callback
+	text.SetColor(255, 255, 255, 128)
+	input.SetColor(255, 255, 0, 192)
 }
 
 //export sunani_start
@@ -62,16 +42,67 @@ func start() {
 		startCallback()
 	}
 
-	systemPrint(greeting)
-	systemPrint(prompt)
+	repl.Default.Init()
 }
 
-//
-// System
-//
+func SetStart(callback func()) {
+	startCallback = callback
+}
 
-var mouseSignX = 1
-var mouseSignY = 1
+func SetInfoVisible(v bool) {
+	infoVisible = v
+}
+
+func frameHandler() {
+	width, height := screen.GetSize()
+	pitch := min(width/15, height/5)
+	ox := (width - pitch*15) / 2
+	oy := height - pitch*5
+	mouseX, mouseY := mouse.GetPosition()
+	virtualKey = kb.Default.Draw(
+		int(ox), int(oy), int(pitch),
+		int(mouseX), int(mouseY),
+	)
+
+	text.Draw(int(ox), int(oy), int(pitch)/2, int(pitch)/2)
+	input.Draw(int(ox+pitch/2), int(oy), int(pitch)/2, int(pitch)/2)
+
+	fb.Paint()
+
+	showMouse()
+	if infoVisible {
+		showInfo()
+	}
+}
+
+func putKey(key lib.Key) {
+	char := kb.Char(key)
+	if char == "\n" {
+		line := input.Get()
+		input.Clear()
+		repl.Default.Input(line)
+	} else {
+		input.Add(char)
+	}
+}
+
+func keyEventHandler(key lib.Key, action lib.Action) {
+	if action == lib.ActionPress {
+		putKey(key)
+	}
+}
+
+func mouseButtonHandler(button lib.Mouse, action lib.Action) {
+	if button == lib.MouseLeft && action == lib.ActionPress {
+		if virtualKey != lib.KeyUnknown {
+			putKey(virtualKey)
+		}
+	}
+}
+
+func echoHandler(r *repl.REPL, s string) {
+	text.Add(s)
+}
 
 var cursor = canvas.Polygon{
 	0, 0,
@@ -104,13 +135,6 @@ func showMouse() {
 	cursor.Fill(mouseX, mouseY, denomW*mouseSignX, denomH*mouseSignY)
 }
 
-func btoi(b bool) int {
-	if b {
-		return 1
-	}
-	return 0
-}
-
 func showInfo() {
 	now := screen.Now()
 	width, height := screen.GetSize()
@@ -125,25 +149,16 @@ func showInfo() {
 	font.ASCII.DrawString(0, 16, 16, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%d", now, clock, fps))
 }
 
-var consoleLines = []string{""}
-
-func showConsole(ox, oy int, sx, sy int) {
-	canvas.SetColor(255, 255, 255, 128)
-	n := len(consoleLines)
-	for i := 0; i < n; i++ {
-		font.ASCII.DrawString(ox, oy+(-n+i)*sy, sx, sy, consoleLines[i])
+func min(a, b int) int {
+	if a < b {
+		return a
 	}
+	return b
 }
 
-func addConsoleLine(s string) {
-	lines := strings.Split(s, "\n")
-	if len(lines) < 1 {
-		return
+func btoi(b bool) int {
+	if b {
+		return 1
 	}
-	consoleLines[len(consoleLines)-1] += lines[0]
-	consoleLines = append(consoleLines, lines[1:]...)
-
-	if len(consoleLines) > 8 {
-		consoleLines = consoleLines[len(consoleLines)-8:]
-	}
+	return 0
 }
