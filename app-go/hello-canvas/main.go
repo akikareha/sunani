@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/akikareha/sunani/app-go/api/screen"
 	"github.com/akikareha/sunani/app-go/base/canvas"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
@@ -16,6 +17,6 @@ func screenInit() {}
 //export sunani_screen_frame
 func screenFrame() {
 	screen.Clear(0, 0, 0, 255)
-	canvas.SetColor(255, 255, 255, 255)
+	canvas.SetColor(color.New(255, 255, 255, 255))
 	font.ASCII.DrawString(x, y, w, h, message)
 }

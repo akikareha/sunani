@@ -2,21 +2,23 @@ package canvas
 
 import (
 	api "github.com/akikareha/sunani/app-go/api/canvas"
+	"github.com/akikareha/sunani/app-go/base/color"
 )
 
-var fgR, fgG, fgB, fgA = 255, 255, 255, 255
+var fg = color.New(255, 255, 255, 255)
 
 //export sunani_canvas_init
 func canvasInit() {
-	SetColor(fgR, fgG, fgB, fgA)
+	SetColor(fg)
 }
 
-func GetColor() (int, int, int, int) {
-	return fgR, fgG, fgB, fgA
+func GetColor() color.Color {
+	return fg
 }
 
-func SetColor(r, g, b, a int) {
-	fgR, fgG, fgB, fgA = r, g, b, a
+func SetColor(c color.Color) {
+	fg = c
+	r, g, b, a := c.Values()
 	api.Color(uint32(r), uint32(g), uint32(b), uint32(a))
 }
 

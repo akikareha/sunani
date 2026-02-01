@@ -6,6 +6,7 @@ import (
 
 	"github.com/akikareha/sunani/app-go/base/canvas"
 	"github.com/akikareha/sunani/app-go/base/canvas/widget"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/fb"
 	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/app-go/base/kb"
@@ -24,13 +25,15 @@ var infoVisible bool
 
 var virtualKey = lib.KeyUnknown
 
+var infoFg = color.New(255, 255, 255, 128)
+
 func Init() {
 	screen.AddFrameHandler(frameHandler)
 	key.AddEventHandler(keyEventHandler)
 	mouse.AddButtonHandler(mouseButtonHandler)
 
-	text.SetColor(255, 255, 255, 128)
-	input.SetColor(255, 255, 0, 192)
+	input.SetColor(color.New(255, 255, 255, 192))
+	text.SetColor(color.New(255, 255, 255, 128))
 }
 
 //export sunani_start
@@ -112,7 +115,7 @@ func showInfo() {
 	mouseLeft, mouseRight, mouseMiddle := mouse.GetButtons()
 	wheelX, wheelY := mouse.GetWheel()
 
-	canvas.SetColor(255, 255, 255, 128)
+	canvas.SetColor(infoFg)
 	font.ASCII.DrawString(0, 0, 16, 16, fmt.Sprintf("Size=%dx%d Mouse=%d,%d Button=%d,%d,%d Wheel=%d,%d", width, height, mouseX, mouseY, btoi(mouseLeft), btoi(mouseRight), btoi(mouseMiddle), wheelX, wheelY))
 	font.ASCII.DrawString(0, 16, 16, 16, fmt.Sprintf("Now=%d Clock=%d FPS=%d", now, clock, fps))
 }

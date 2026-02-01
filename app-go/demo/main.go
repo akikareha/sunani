@@ -8,6 +8,7 @@ import (
 	"github.com/akikareha/sunani/app-go/api/fb"
 	"github.com/akikareha/sunani/app-go/api/screen"
 	"github.com/akikareha/sunani/app-go/base/canvas"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
@@ -62,32 +63,32 @@ func consoleGet(ptr uint32, length uint32) {
 func canvasDraw() {
 	screen.Clear(16, 16, 24, 255)
 
-	canvas.SetColor(127, 127, 127, 255)
+	canvas.SetColor(color.New(127, 127, 127, 255))
 	canvas.DrawRect(8, 8, width-16, height-16)
 
-	canvas.SetColor(255, 255, 255, 255)
+	canvas.SetColor(color.New(255, 255, 255, 255))
 	canvas.DrawLine(50, 50, 300, 200)
 
-	canvas.SetColor(32, 239, 96, 255)
+	canvas.SetColor(color.New(32, 239, 96, 255))
 	canvas.FillRect(100, 300, 200, 120)
 
-	canvas.SetColor(255, 64, 64, 255)
+	canvas.SetColor(color.New(255, 64, 64, 255))
 	canvas.DrawRect(400, 100, 180, 180)
 
 	if anchorEnabled {
-		canvas.SetColor(0, 255, 0, 255)
+		canvas.SetColor(color.New(0, 255, 0, 255))
 		canvas.FillRect(anchorX-8, anchorY-8, 16, 16)
 	}
 
 	if anchorEnabled {
-		canvas.SetColor(0, 255, 255, 255)
+		canvas.SetColor(color.New(0, 255, 255, 255))
 		canvas.DrawLine(anchorX, anchorY, mouseX, mouseY)
 	}
 
 	if mouseBlink&0x10 == 0 {
-		canvas.SetColor(255, 0, 0, 255)
+		canvas.SetColor(color.New(255, 0, 0, 255))
 	} else {
-		canvas.SetColor(255, 255, 0, 255)
+		canvas.SetColor(color.New(255, 255, 0, 255))
 	}
 	canvas.FillRect(
 		mouseX-mouseSize/2,
@@ -101,7 +102,7 @@ func canvasDraw() {
 
 	mouseBlink++
 
-	canvas.SetColor(255, 255, 255, 255)
+	canvas.SetColor(color.New(255, 255, 255, 255))
 	for j := 2; j <= 7; j++ {
 		for i := 0; i <= 15; i++ {
 			font.ASCII.Draw(

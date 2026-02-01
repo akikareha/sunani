@@ -1,45 +1,55 @@
 package fb
 
-var bgR, bgG, bgB, bgA uint8 = 0, 0, 0, 0
-var fgR, fgG, fgB, fgA uint8 = 255, 255, 255, 255
+import (
+	"github.com/akikareha/sunani/app-go/base/color"
+)
 
-func GetBgColor() (int, int, int, int) {
-	return int(bgR), int(bgG), int(bgB), int(bgA)
+var clear = color.New(0, 0, 0, 0)
+
+var bg = color.New(0, 0, 0, 0)
+var fg = color.New(255, 255, 255, 255)
+
+func GetBgColor() color.Color {
+	return bg
 }
 
-func SetBgColor(r, g, b, a int) {
-	bgR, bgG, bgB, bgA = uint8(r), uint8(g), uint8(b), uint8(a)
+func SetBgColor(c color.Color) {
+	bg = c
 }
 
-func GetColor() (int, int, int, int) {
-	return int(fgR), int(fgG), int(fgB), int(fgA)
+func GetColor() color.Color {
+	return fg
 }
 
-func SetColor(r, g, b, a int) {
-	fgR, fgG, fgB, fgA = uint8(r), uint8(g), uint8(b), uint8(a)
+func SetColor(c color.Color) {
+	fg = c
 }
 
 func Clear() {
+	bgr, bgg, bgb, bga := bg.Values()
+	r, g, b, a := uint8(bgr), uint8(bgg), uint8(bgb), uint8(bga)
 	for i := 0; i < len(buffer); i += 4 {
-		buffer[i] = bgR
-		buffer[i+1] = bgG
-		buffer[i+2] = bgB
-		buffer[i+3] = bgA
+		buffer[i] = r
+		buffer[i+1] = g
+		buffer[i+2] = b
+		buffer[i+3] = a
 	}
 }
 
-func GetPixel(x, y int) (int, int, int, int) {
+func GetPixel(x, y int) color.Color {
 	if x < 0 || x >= w {
-		return 0, 0, 0, 0
+		return clear
 	}
 	if y < 0 || y >= h {
-		return 0, 0, 0, 0
+		return clear
 	}
 	i := (y*w + x) * 4
-	return int(buffer[i]),
+	return color.New(
+		int(buffer[i]),
 		int(buffer[i+1]),
 		int(buffer[i+2]),
-		int(buffer[i+3])
+		int(buffer[i+3]),
+	)
 }
 
 func DrawPixel(x, y int) {
@@ -50,8 +60,9 @@ func DrawPixel(x, y int) {
 		return
 	}
 	i := (y*w + x) * 4
-	buffer[i] = fgR
-	buffer[i+1] = fgG
-	buffer[i+2] = fgB
-	buffer[i+3] = fgA
+	r, g, b, a := fg.Values()
+	buffer[i] = uint8(r)
+	buffer[i+1] = uint8(g)
+	buffer[i+2] = uint8(b)
+	buffer[i+3] = uint8(a)
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/akikareha/sunani/app-go/api/screen"
 	"github.com/akikareha/sunani/app-go/base/canvas"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/lib"
 )
@@ -111,7 +112,7 @@ func screenFrame() {
 	ox, oy := 0, 0
 	pitch := 32
 
-	canvas.SetColor(64, 64, 64, 255)
+	canvas.SetColor(color.New(64, 64, 64, 255))
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		canvas.FillRect(
@@ -122,7 +123,7 @@ func screenFrame() {
 		)
 	}
 
-	canvas.SetColor(255, 255, 255, 255)
+	canvas.SetColor(color.New(255, 255, 255, 255))
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		n := len(k.Label)

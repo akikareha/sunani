@@ -2,6 +2,7 @@ package kb
 
 import (
 	"github.com/akikareha/sunani/app-go/base/canvas"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/font"
 	"github.com/akikareha/sunani/app-go/base/key"
 	"github.com/akikareha/sunani/lib"
@@ -23,15 +24,21 @@ type Keyboard struct {
 	GridHeight int8
 }
 
+var upFg = color.New(255, 255, 255, 128)
+var downFg = color.New(0, 0, 0, 255)
+var upBg = color.New(64, 64, 64, 64)
+var downBg = color.New(128, 128, 128, 128)
+var cursorColor = color.New(128, 128, 0, 128)
+
 func (kb *Keyboard) Draw(ox, oy int, pitch int, mouseX, mouseY int) lib.Key {
 	found := lib.KeyUnknown
 
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		if key.IsDown(k.Code) {
-			canvas.SetColor(128, 128, 128, 128)
+			canvas.SetColor(downBg)
 		} else {
-			canvas.SetColor(64, 64, 64, 64)
+			canvas.SetColor(upBg)
 		}
 		canvas.FillRect(
 			ox+int(k.X)*pitch/int(kb.GridWidth)+pitch/8,
@@ -43,7 +50,7 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int, mouseX, mouseY int) lib.Key {
 			mouseX < ox+int(k.X)*pitch/int(kb.GridWidth)+int(k.Width)*pitch/int(kb.GridWidth) &&
 			mouseY >= oy+int(k.Y)*pitch/int(kb.GridHeight) &&
 			mouseY < oy+int(k.Y)*pitch/int(kb.GridHeight)+int(k.Height)*pitch/int(kb.GridHeight) {
-			canvas.SetColor(128, 128, 0, 128)
+			canvas.SetColor(cursorColor)
 			canvas.DrawRect(
 				ox+int(k.X)*pitch/int(kb.GridWidth),
 				oy+int(k.Y)*pitch/int(kb.GridHeight),
@@ -58,9 +65,9 @@ func (kb *Keyboard) Draw(ox, oy int, pitch int, mouseX, mouseY int) lib.Key {
 	for i := 0; i < len(kb.Keys); i++ {
 		k := kb.Keys[i]
 		if key.IsDown(k.Code) {
-			canvas.SetColor(0, 0, 0, 255)
+			canvas.SetColor(downFg)
 		} else {
-			canvas.SetColor(255, 255, 255, 128)
+			canvas.SetColor(upFg)
 		}
 		n := len(k.Label)
 		width := pitch * int(k.Width) / int(kb.GridWidth) / n

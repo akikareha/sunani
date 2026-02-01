@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/fb"
 	"github.com/akikareha/sunani/app-go/base/mouse"
 	"github.com/akikareha/sunani/app-go/base/screen"
@@ -16,7 +17,7 @@ func sunaniInit() {
 
 	screen.AddFrameHandler(frameHandler)
 	fb.SetSize(fbW, fbH)
-	fb.SetColor(255, 128, 64, 192)
+	fb.SetColor(color.New(255, 0, 0, 128))
 }
 
 func frameHandler() {

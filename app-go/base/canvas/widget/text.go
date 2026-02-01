@@ -4,27 +4,25 @@ import (
 	"strings"
 
 	"github.com/akikareha/sunani/app-go/base/canvas"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/font"
 )
 
 type Text struct {
 	s          string
-	r, g, b, a int
+	color color.Color
 }
 
 func NewText() *Text {
 	return &Text{
-		r: 255,
-		g: 255,
-		b: 255,
-		a: 255,
+		color: color.New(255, 255, 255, 255),
 	}
 }
 
 func (t *Text) Draw(x, y int, w, h int) {
 	lines := strings.Split(t.s, "\n")
 	n := len(lines)
-	canvas.SetColor(t.r, t.g, t.b, t.a)
+	canvas.SetColor(t.color)
 	for i := 0; i < n; i++ {
 		font.ASCII.DrawString(x, y+(-n+i)*h, w, h, lines[i])
 	}
@@ -42,6 +40,6 @@ func (t *Text) Add(s string) {
 	t.s += s
 }
 
-func (t *Text) SetColor(r, g, b, a int) {
-	t.r, t.g, t.b, t.a = r, g, b, a
+func (t *Text) SetColor(c color.Color) {
+	t.color = c
 }

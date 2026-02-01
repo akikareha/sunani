@@ -4,6 +4,7 @@ import (
 	"unsafe"
 
 	scr "github.com/akikareha/sunani/app-go/api/screen"
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/std"
 )
 
@@ -24,7 +25,7 @@ var now int64
 var tick int64 = 16
 var prev int64
 var fps int64
-var bgR, bgG, bgB, bgA = 0, 0, 0, 255
+var bg = color.New(0, 0, 0, 255)
 var frameHandlers = make([]FrameHandler, 0)
 
 //export sunani_screen_init
@@ -131,16 +132,17 @@ func FPS() int {
 	return int(fps)
 }
 
-func GetBg() (int, int, int, int) {
-	return bgR, bgG, bgB, bgA
+func GetBg() color.Color {
+	return bg
 }
 
-func SetBg(r, g, b, a int) {
-	bgR, bgG, bgB, bgA = r, g, b, a
+func SetBg(c color.Color) {
+	bg = c
 }
 
 func Clear() {
-	scr.Clear(uint32(bgR), uint32(bgG), uint32(bgB), uint32(bgA))
+	r, g, b, a := bg.Values()
+	scr.Clear(uint32(r), uint32(g), uint32(b), uint32(a))
 }
 
 func Halt() {

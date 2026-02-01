@@ -3,6 +3,7 @@ package system
 import (
 	"fmt"
 
+	"github.com/akikareha/sunani/app-go/base/color"
 	"github.com/akikareha/sunani/app-go/base/repl"
 	"github.com/akikareha/sunani/app-go/base/screen"
 )
@@ -38,29 +39,21 @@ func echoHandler(r *repl.REPL, s string) {
 func bgFn(r *repl.REPL, args []string) bool {
 	if len(args) < 2 {
 		r.Print(fmt.Sprintf("Usage: %s COLOR_NAME\n", args[0]))
-		r.Print("COLOR_NAME: black white red green blue cyan magenta yellow\n")
+		r.Print("COLOR_NAME:")
+		for _, name := range color.Names() {
+			r.Print(" " + name)
+		}
+		r.Print("\n")
 		return false
 	}
-	switch args[1] {
-	case "black":
-		screen.SetBg(0, 0, 0, 255)
-	case "white":
-		screen.SetBg(255, 255, 255, 255)
-	case "red":
-		screen.SetBg(255, 0, 0, 255)
-	case "green":
-		screen.SetBg(0, 255, 0, 255)
-	case "blue":
-		screen.SetBg(0, 0, 255, 255)
-	case "cyan":
-		screen.SetBg(0, 255, 255, 255)
-	case "magenta":
-		screen.SetBg(255, 0, 255, 255)
-	case "yellow":
-		screen.SetBg(255, 255, 0, 255)
-	default:
+	c, ok := color.ByName(args[1])
+	if !ok {
 		r.Print(fmt.Sprintf("Unknown color: %s\n", args[1]))
 		bgFn(r, []string{args[0]}) // show usage
+		return false
 	}
+	screen.SetBg(c)
+	input.SetColor(c.ToFg().WithAlpha(192))
+	text.SetColor(c.ToFg().WithAlpha(128))
 	return false
 }
