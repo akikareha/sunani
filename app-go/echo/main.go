@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/akikareha/sunani/app-go/api/console"
+	"tea.kareha.org/loom/sunani/app-go/api/console"
 )
 
 const consoleBufferLength = 1024

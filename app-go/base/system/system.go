@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"unicode/utf8"
 
-	"github.com/akikareha/sunani/app-go/base/canvas"
-	"github.com/akikareha/sunani/app-go/base/canvas/widget"
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/fb"
-	"github.com/akikareha/sunani/app-go/base/font"
-	"github.com/akikareha/sunani/app-go/base/kb"
-	"github.com/akikareha/sunani/app-go/base/key"
-	"github.com/akikareha/sunani/app-go/base/mouse"
-	"github.com/akikareha/sunani/app-go/base/screen"
-	"github.com/akikareha/sunani/lib"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas/widget"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/fb"
+	"tea.kareha.org/loom/sunani/app-go/base/font"
+	"tea.kareha.org/loom/sunani/app-go/base/kb"
+	"tea.kareha.org/loom/sunani/app-go/base/key"
+	"tea.kareha.org/loom/sunani/app-go/base/mouse"
+	"tea.kareha.org/loom/sunani/app-go/base/screen"
+	"tea.kareha.org/loom/sunani/lib"
 )
 
 var cursor = widget.NewCursor()

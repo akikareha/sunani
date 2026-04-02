@@ -1,7 +1,7 @@
 package font
 
 import (
-	"github.com/akikareha/sunani/app-go/base/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas"
 )
 
 // 0: grid width

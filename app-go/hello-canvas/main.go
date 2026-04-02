@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/app-go/api/screen"
-	"github.com/akikareha/sunani/app-go/base/canvas"
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/font"
+	"tea.kareha.org/loom/sunani/app-go/api/screen"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/font"
 )
 
 const x, y = 8, 8

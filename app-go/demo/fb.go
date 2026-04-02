@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/resources/fonts"
+	"tea.kareha.org/loom/sunani/resources/fonts"
 )
 
 const (

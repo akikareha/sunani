@@ -1,4 +1,4 @@
-module github.com/akikareha/sunani
+module tea.kareha.org/loom/sunani
 
 go 1.24.4
 

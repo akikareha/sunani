@@ -1,7 +1,7 @@
 package canvas
 
 import (
-	api "github.com/akikareha/sunani/app-go/api/canvas"
+	api "tea.kareha.org/loom/sunani/app-go/api/canvas"
 )
 
 type Polygon []int

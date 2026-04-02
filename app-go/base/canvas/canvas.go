@@ -1,8 +1,8 @@
 package canvas
 
 import (
-	api "github.com/akikareha/sunani/app-go/api/canvas"
-	"github.com/akikareha/sunani/app-go/base/color"
+	api "tea.kareha.org/loom/sunani/app-go/api/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
 )
 
 var fg = color.New(255, 255, 255, 255)

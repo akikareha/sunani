@@ -1,7 +1,7 @@
 package mouse
 
 import (
-	"github.com/akikareha/sunani/lib"
+	"tea.kareha.org/loom/sunani/lib"
 )
 
 type MotionHandler func(int, int)

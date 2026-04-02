@@ -1,7 +1,7 @@
 package key
 
 import (
-	"github.com/akikareha/sunani/lib"
+	"tea.kareha.org/loom/sunani/lib"
 )
 
 type EventHandler func(key lib.Key, action lib.Action)

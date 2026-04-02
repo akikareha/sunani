@@ -1,11 +1,11 @@
 package kb
 
 import (
-	"github.com/akikareha/sunani/app-go/base/canvas"
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/font"
-	"github.com/akikareha/sunani/app-go/base/key"
-	"github.com/akikareha/sunani/lib"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/font"
+	"tea.kareha.org/loom/sunani/app-go/base/key"
+	"tea.kareha.org/loom/sunani/lib"
 )
 
 type Key struct {

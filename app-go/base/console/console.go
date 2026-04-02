@@ -3,7 +3,7 @@ package console
 import (
 	"unsafe"
 
-	con "github.com/akikareha/sunani/app-go/api/console"
+	con "tea.kareha.org/loom/sunani/app-go/api/console"
 )
 
 type InputHandler func(line string)

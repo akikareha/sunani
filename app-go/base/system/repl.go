@@ -3,9 +3,9 @@ package system
 import (
 	"fmt"
 
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/repl"
-	"github.com/akikareha/sunani/app-go/base/screen"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/repl"
+	"tea.kareha.org/loom/sunani/app-go/base/screen"
 )
 
 var REPL *repl.REPL

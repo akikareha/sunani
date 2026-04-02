@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/lib"
+	"tea.kareha.org/loom/sunani/lib"
 )
 
 //export sunani_mouse_motion

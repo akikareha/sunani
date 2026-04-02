@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/akikareha/sunani/app-go/base/console"
-	"github.com/akikareha/sunani/app-go/base/screen"
+	"tea.kareha.org/loom/sunani/app-go/base/console"
+	"tea.kareha.org/loom/sunani/app-go/base/screen"
 )
 
 type Fn func(*REPL, []string) bool

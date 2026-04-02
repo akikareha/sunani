@@ -62,7 +62,7 @@ func stdInit()
 now
 
 ```
-import "github.com/akikareha/sunani/api/std"
+import "tea.kareha.org/loom/sunani/api/std"
 ```
 
 ### now
@@ -104,7 +104,7 @@ func consoleGet(ptr uint32, length uint32)
 params put
 
 ```
-import "github.com/akikareha/sunani/api/console"
+import "tea.kareha.org/loom/sunani/api/console"
 ```
 
 ### params
@@ -185,7 +185,7 @@ func screenFrame()
 halt title cursor clear
 
 ```
-import "github.com/akikareha/sunani/api/screen"
+import "tea.kareha.org/loom/sunani/api/screen"
 ```
 
 ### halt
@@ -248,7 +248,7 @@ This function is called from host when Canvas API is ready.
 color line rect fill_rect path vertex polygon fill_polygon
 
 ```
-import "github.com/akikareha/sunani/api/canvas"
+import "tea.kareha.org/loom/sunani/api/canvas"
 ```
 
 ### color
@@ -356,7 +356,7 @@ func fbRect(x, y int32, w, h int32)
 params paint
 
 ```
-import "github.com/akikareha/sunani/api/fb"
+import "tea.kareha.org/loom/sunani/api/fb"
 ```
 
 ### params
@@ -383,7 +383,7 @@ fb.Paint()
 init event
 
 ```
-import "github.com/akikareha/sunani/lib"
+import "tea.kareha.org/loom/sunani/lib"
 ```
 
 ### init
@@ -413,7 +413,7 @@ func keyEvent(key uint32, action uint32)
 init motion button wheel
 
 ```
-import "github.com/akikareha/sunani/lib"
+import "tea.kareha.org/loom/sunani/lib"
 ```
 
 ### init

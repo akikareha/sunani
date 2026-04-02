@@ -3,13 +3,13 @@ package widget
 import (
 	"strings"
 
-	"github.com/akikareha/sunani/app-go/base/canvas"
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/font"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/font"
 )
 
 type Text struct {
-	s          string
+	s     string
 	color color.Color
 }
 

@@ -35,31 +35,38 @@ app-go: build/app-go/demo.wasm \
         build/app-go/system.wasm
 
 build/app-go/demo.wasm: app-go/demo/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/demo.wasm ./app-go/demo
 
 build/app-go/hello.wasm: app-go/hello/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/hello.wasm ./app-go/hello
 
 build/app-go/echo.wasm: app-go/echo/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/echo.wasm ./app-go/echo
 
 build/app-go/hello-canvas.wasm: app-go/hello-canvas/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/hello-canvas.wasm ./app-go/hello-canvas
 
 build/app-go/hello-fb.wasm: app-go/hello-fb/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/hello-fb.wasm ./app-go/hello-fb
 
 build/app-go/key.wasm: app-go/key/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/key.wasm ./app-go/key
 
 build/app-go/system.wasm: app-go/system/*.go app-go/base/system/*.go
-	tinygo build -target=wasm-unknown -scheduler=none -gc=conservative \
+	tinygo build -no-debug \
+	-target=wasm-unknown -scheduler=none -gc=conservative \
 	-o build/app-go/system.wasm ./app-go/system
 
 #

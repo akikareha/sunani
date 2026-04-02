@@ -1,17 +1,17 @@
 package widget
 
 import (
-	"github.com/akikareha/sunani/app-go/base/canvas"
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/mouse"
-	"github.com/akikareha/sunani/app-go/base/screen"
+	"tea.kareha.org/loom/sunani/app-go/base/canvas"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/mouse"
+	"tea.kareha.org/loom/sunani/app-go/base/screen"
 )
 
 type Cursor struct {
-	polygon    canvas.Polygon
-	color color.Color
-	mw, mh     int
-	dx, dy     int
+	polygon canvas.Polygon
+	color   color.Color
+	mw, mh  int
+	dx, dy  int
 }
 
 func NewCursor() *Cursor {

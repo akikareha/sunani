@@ -1,7 +1,7 @@
 package fb
 
 import (
-	"github.com/akikareha/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
 )
 
 var clear = color.New(0, 0, 0, 0)

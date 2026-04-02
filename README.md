@@ -78,7 +78,7 @@ In these demos:
 
 See:
 
-- [Sunani Demo](https://akikareha.github.io/sunani/)
+- [Sunani Demo](https://sunani.kareha.org/)
 
 ---
 
@@ -130,4 +130,4 @@ See the [LICENSE](LICENSE) file for details.
 
 ## Source Code
 
-https://github.com/akikareha/sunani
+https://tea.kareha.org/loom/sunani

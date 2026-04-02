@@ -3,9 +3,9 @@ package main
 import (
 	"unsafe"
 
-	"github.com/akikareha/sunani/app-go/api/fb"
-	"github.com/akikareha/sunani/app-go/api/screen"
-	"github.com/akikareha/sunani/resources/fonts"
+	"tea.kareha.org/loom/sunani/app-go/api/fb"
+	"tea.kareha.org/loom/sunani/app-go/api/screen"
+	"tea.kareha.org/loom/sunani/resources/fonts"
 )
 
 const hello = "Hello, World!\n"

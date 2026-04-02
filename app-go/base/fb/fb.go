@@ -3,7 +3,7 @@ package fb
 import (
 	"unsafe"
 
-	api "github.com/akikareha/sunani/app-go/api/fb"
+	api "tea.kareha.org/loom/sunani/app-go/api/fb"
 )
 
 type RectHandler func(int, int, int, int)

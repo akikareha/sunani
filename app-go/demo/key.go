@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/app-go/api/screen"
-	"github.com/akikareha/sunani/lib"
+	"tea.kareha.org/loom/sunani/app-go/api/screen"
+	"tea.kareha.org/loom/sunani/lib"
 )
 
 //export sunani_key_event

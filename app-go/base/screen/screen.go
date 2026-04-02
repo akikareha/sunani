@@ -3,9 +3,9 @@ package screen
 import (
 	"unsafe"
 
-	scr "github.com/akikareha/sunani/app-go/api/screen"
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/std"
+	scr "tea.kareha.org/loom/sunani/app-go/api/screen"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/std"
 )
 
 type ResizeHandler func(int, int)

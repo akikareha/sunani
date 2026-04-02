@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/akikareha/sunani/app-go/base/color"
-	"github.com/akikareha/sunani/app-go/base/fb"
-	"github.com/akikareha/sunani/app-go/base/mouse"
-	"github.com/akikareha/sunani/app-go/base/screen"
-	"github.com/akikareha/sunani/app-go/base/system"
+	"tea.kareha.org/loom/sunani/app-go/base/color"
+	"tea.kareha.org/loom/sunani/app-go/base/fb"
+	"tea.kareha.org/loom/sunani/app-go/base/mouse"
+	"tea.kareha.org/loom/sunani/app-go/base/screen"
+	"tea.kareha.org/loom/sunani/app-go/base/system"
 )
 
 const fbW, fbH = 256, 256
