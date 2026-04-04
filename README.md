@@ -78,7 +78,7 @@ In these demos:
 
 See:
 
-- [Sunani Demo](https://page.kareha.org/sunani/)
+- [Sunani Demo](https://demo.kareha.org/sunani/)
 
 ---
 
